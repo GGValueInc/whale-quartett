@@ -1,6 +1,0 @@
-# Ignore large binary files
-*.pdf
-*.zip
-*.tar.gz
-dist/
-node_modules/
