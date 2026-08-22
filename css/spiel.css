@@ -1,0 +1,679 @@
+/* spiel.css – Wal-Quartett Spielbrett-Styling */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a1628 0%, #1e3c72 50%, #0d2137 100%);
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+/* === SCREEN MANAGEMENT === */
+.screen {
+    display: none;
+    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* === START SCREEN === */
+#start-screen {
+    justify-content: center;
+    text-align: center;
+    gap: 30px;
+}
+
+.logo {
+    font-size: 5em;
+    margin-bottom: -20px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.title {
+    font-size: 3em;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    opacity: 0.8;
+    margin-bottom: 40px;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 300px;
+}
+
+.btn-primary {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #00d4ff, #0099cc);
+    color: #fff;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.5);
+}
+
+.btn-secondary {
+    padding: 12px 25px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50px;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.5);
+}
+
+/* === DIFFICULTY SELECT === */
+.difficulty-select {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.diff-card {
+    width: 180px;
+    padding: 25px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.diff-card:hover {
+    border-color: #00d4ff;
+    transform: translateY(-5px);
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.diff-card.selected {
+    border-color: #00d4ff;
+    background: rgba(0, 212, 255, 0.15);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+}
+
+.diff-emoji {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.diff-label {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.diff-desc {
+    font-size: 0.85em;
+    opacity: 0.7;
+}
+
+/* === GAME SCREEN === */
+#game-screen {
+    padding: 15px;
+}
+
+.game-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.game-title {
+    font-size: 1.5em;
+}
+
+.game-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.score-display {
+    background: rgba(255,255,255,0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9em;
+}
+
+.btn-small {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.2s;
+}
+
+.btn-small:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* === PLAYING AREA === */
+.playing-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    flex: 1;
+    gap: 20px;
+}
+
+.player-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+}
+
+.player-name {
+    font-size: 1.3em;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.card-count {
+    background: rgba(255,255,255,0.15);
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 0.9em;
+}
+
+/* === GAME CARD === */
+.game-card {
+    width: 300px;
+    background: linear-gradient(145deg, #ffffff 0%, #e6f3ff 100%);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    color: #1e3c72;
+    transition: transform 0.3s;
+}
+
+.game-card:hover {
+    transform: translateY(-3px);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.card-header h3 {
+    font-size: 1.15em;
+    margin-bottom: 2px;
+}
+
+.card-header .scientific {
+    font-style: italic;
+    opacity: 0.8;
+    font-size: 0.75em;
+}
+
+.card-image {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4em;
+    position: relative;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-stats {
+    padding: 12px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(30, 60, 114, 0.1);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 5px;
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: 0.9em;
+}
+
+.stat-row:hover {
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.stat-row.selected {
+    background: rgba(0, 212, 255, 0.2);
+    border: 1px solid #00d4ff;
+}
+
+.stat-row.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.stat-row.disabled:hover {
+    background: transparent;
+}
+
+.stat-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9em;
+}
+
+.stat-value {
+    font-weight: bold;
+    font-size: 1em;
+    color: #2a5298;
+}
+
+.card-footer {
+    background: rgba(30, 60, 114, 0.05);
+    padding: 14px 16px;
+    font-size: 0.82em;
+    color: #555;
+    border-top: 1px solid rgba(30, 60, 114, 0.1);
+    min-height: 65px;
+    line-height: 1.4;
+}
+
+/* === CARD BACK === */
+.card-back {
+    width: 280px;
+    height: 420px;
+    background: linear-gradient(145deg, #1e3c72 0%, #2a5298 100%);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    border: 3px solid rgba(255,255,255,0.2);
+}
+
+.card-back-emoji {
+    font-size: 5em;
+}
+
+.card-back-text {
+    font-size: 1.2em;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+/* === CENTER / JACKPOT === */
+.center-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    min-width: 150px;
+}
+
+.jackpot-area {
+    background: rgba(255, 215, 0, 0.15);
+    border: 2px dashed rgba(255, 215, 0, 0.4);
+    border-radius: 15px;
+    padding: 15px 25px;
+    text-align: center;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.jackpot-label {
+    font-size: 0.9em;
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.jackpot-count {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #ffd700;
+}
+
+.jackpot-cards {
+    font-size: 1.8em;
+    margin-top: 5px;
+}
+
+.turn-indicator {
+    background: rgba(0, 212, 255, 0.2);
+    border: 1px solid #00d4ff;
+    border-radius: 15px;
+    padding: 10px 20px;
+    font-size: 0.95em;
+    text-align: center;
+}
+
+/* === RESULT OVERLAY === */
+.result-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.result-overlay.active {
+    display: flex;
+}
+
+.result-box {
+    background: linear-gradient(145deg, #1e3c72, #2a5298);
+    border-radius: 25px;
+    padding: 40px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+.result-emoji {
+    font-size: 4em;
+    margin-bottom: 15px;
+}
+
+.result-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.result-text {
+    font-size: 1.1em;
+    opacity: 0.9;
+    margin-bottom: 25px;
+}
+
+/* === ANIMATIONS === */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(255, 215, 0, 0); }
+    50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); }
+}
+
+.jackpot-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+
+/* === CARD FLIP ANIMATION === */
+@keyframes cardFlip {
+    0% { transform: rotateY(0deg); }
+    50% { transform: rotateY(90deg); }
+    100% { transform: rotateY(0deg); }
+}
+
+.card-flip {
+    animation: cardFlip 0.8s ease-in-out;
+}
+
+/* === CARD DEAL ANIMATION === */
+@keyframes cardDealPlayer {
+    0% { opacity: 0; transform: translateY(-200px) rotate(-10deg) scale(0.5); }
+    60% { opacity: 1; transform: translateY(10px) rotate(2deg) scale(1.05); }
+    100% { transform: translateY(0) rotate(0deg) scale(1); }
+}
+
+@keyframes cardDealComputer {
+    0% { opacity: 0; transform: translateY(-200px) rotate(10deg) scale(0.5); }
+    60% { opacity: 1; transform: translateY(10px) rotate(-2deg) scale(1.05); }
+    100% { transform: translateY(0) rotate(0deg) scale(1); }
+}
+
+.card-deal-player {
+    animation: cardDealPlayer 0.6s ease-out;
+}
+
+.card-deal-computer {
+    animation: cardDealComputer 0.6s ease-out;
+}
+
+/* === CATEGORY SELECT HIGHLIGHT === */
+@keyframes categoryPulse {
+    0%, 100% { background: rgba(0, 212, 255, 0.2); transform: scale(1); }
+    50% { background: rgba(0, 212, 255, 0.4); transform: scale(1.02); }
+}
+
+.category-selected {
+    animation: categoryPulse 0.6s ease-in-out 3;
+    border: 2px solid #00d4ff !important;
+    background: rgba(0, 212, 255, 0.25) !important;
+}
+
+/* === WIN ANIMATION === */
+@keyframes winPulse {
+    0% { transform: scale(1); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+    25% { transform: scale(1.08) rotate(2deg); box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3); }
+    50% { transform: scale(1.05) rotate(-1deg); box-shadow: 0 15px 40px rgba(0, 212, 255, 0.2); }
+    75% { transform: scale(1.08) rotate(1deg); box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3); }
+    100% { transform: scale(1); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+}
+
+.win-animation {
+    animation: winPulse 0.8s ease-in-out;
+}
+
+/* === LOSE ANIMATION === */
+@keyframes loseShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px) rotate(-2deg); }
+    40% { transform: translateX(8px) rotate(2deg); }
+    60% { transform: translateX(-4px) rotate(-1deg); }
+    80% { transform: translateX(4px) rotate(1deg); }
+}
+
+.lose-animation {
+    animation: loseShake 0.5s ease-in-out;
+}
+
+/* === DRAW ANIMATION === */
+@keyframes drawPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+}
+
+.draw-animation {
+    animation: drawPulse 0.5s ease-in-out 2;
+}
+
+/* === TURN INDICATOR FLASH === */
+@keyframes turnFlash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.turn-flash {
+    animation: turnFlash 0.3s ease-in-out 2;
+}
+
+/* === CARD STACK COUNT UPDATE === */
+@keyframes countBump {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); color: #00d4ff; }
+    100% { transform: scale(1); }
+}
+
+.count-update {
+    animation: countBump 0.4s ease-out;
+}
+
+/* === CONFETTI FALL === */
+@keyframes confettiFall {
+    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+.confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    top: -10px;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.confetti-1 { left: 10%; animation: confettiFall 2.5s ease-out forwards; background: #00d4ff; }
+.confetti-2 { left: 25%; animation: confettiFall 3s ease-out 0.2s forwards; background: #ffd700; width: 8px; height: 8px; }
+.confetti-3 { left: 40%; animation: confettiFall 2.8s ease-out 0.1s forwards; background: #ff6b6b; width: 12px; height: 6px; }
+.confetti-4 { left: 55%; animation: confettiFall 3.2s ease-out 0.3s forwards; background: #00d4ff; width: 6px; height: 12px; }
+.confetti-5 { left: 70%; animation: confettiFall 2.6s ease-out 0.15s forwards; background: #ffd700; }
+.confetti-6 { left: 85%; animation: confettiFall 3s ease-out 0.25s forwards; background: #ff6b6b; width: 10px; height: 10px; }
+.confetti-7 { left: 15%; animation: confettiFall 2.9s ease-out 0.35s forwards; background: #00d4ff; width: 7px; height: 7px; }
+.confetti-8 { left: 50%; animation: confettiFall 2.7s ease-out 0.05s forwards; background: #ffd700; width: 9px; height: 9px; }
+
+/* === SCREEN TRANSITION === */
+@keyframes screenFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.screen.active {
+    animation: screenFadeIn 0.4s ease-out;
+}
+
+/* === BUTTON HOVER ENHANCEMENT === */
+.btn-primary:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 10px rgba(0, 212, 255, 0.3);
+}
+
+/* === DIFF CARD SELECT ANIMATION === */
+.diff-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.diff-card:hover {
+    transform: translateY(-8px) scale(1.02);
+}
+
+.diff-card.selected {
+    transform: translateY(-5px) scale(1.03);
+}
+
+/* === CARD IMAGE HOVER === */
+.card-image img {
+    transition: transform 0.4s ease;
+}
+
+.card-image:hover img {
+    transform: scale(1.08);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 900px) {
+    .playing-area {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .game-card, .card-back {
+        width: 240px;
+    }
+    
+    .card-image {
+        height: 130px;
+    }
+    
+    .title {
+        font-size: 2em;
+    }
+    
+    .logo {
+        font-size: 3.5em;
+    }
+}
+
+@media (max-width: 500px) {
+    .game-card, .card-back {
+        width: 200px;
+    }
+    
+    .card-image {
+        height: 110px;
+    }
+    
+    .stat-row {
+        padding: 4px 0;
+    }
+    
+    .diff-card {
+        width: 140px;
+        padding: 15px;
+    }
+}

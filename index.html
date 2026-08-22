@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whale Quartett 🐋 – Digital Game</title>
+    <link rel="stylesheet" href="css/spiel.css">
+</head>
+<body>
+
+<!-- === SCREEN 1: START === -->
+<div id="start-screen" class="screen active">
+    <div class="logo">🐋</div>
+    <h1 class="title">Whale Quartett</h1>
+    <p class="subtitle">The ultimate whale card game · 32 species · Who has the best card?</p>
+    
+    <div class="menu-buttons">
+        <button class="btn-primary" onclick="showDifficulty()">🎮 1 Player vs. Computer</button>
+        <button class="btn-primary" onclick="showPlayer2Setup()">👥 2 Players (local)</button>
+        <button class="btn-secondary" onclick="showRules()">📋 Rules</button>
+        <button class="btn-secondary" onclick="goToGallery()">🖼️ Card Gallery</button>
+    </div>
+    
+    <p style="margin-top: 30px; opacity: 0.5; font-size: 0.85em;">
+        Offline-capable · No server required · Progress saved
+    </p>
+</div>
+
+<!-- === SCREEN 2: DIFFICULTY SELECT === -->
+<div id="difficulty-screen" class="screen">
+    <div class="logo">🎯</div>
+    <h1 class="title">Choose Difficulty</h1>
+    <p class="subtitle">How strong should the computer opponent be?</p>
+    
+    <div class="difficulty-select">
+        <div class="diff-card" data-diff="easy" onclick="selectDifficulty('easy')">
+            <div class="diff-emoji">🌊</div>
+            <div class="diff-label">Easy</div>
+            <div class="diff-desc">Computer chooses randomly</div>
+        </div>
+        <div class="diff-card" data-diff="medium" onclick="selectDifficulty('medium')">
+            <div class="diff-emoji">🌊🌊</div>
+            <div class="diff-label">Medium</div>
+            <div class="diff-desc">Computer picks best category</div>
+        </div>
+        <div class="diff-card" data-diff="hard" onclick="selectDifficulty('hard')">
+            <div class="diff-emoji">🌊🌊🌊</div>
+            <div class="diff-label">Hard</div>
+            <div class="diff-desc">Computer plays optimally</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <button class="btn-primary" id="start-game-btn" onclick="startGame()" disabled>▶️ Start Game</button>
+        <button class="btn-secondary" onclick="showStart()">⬅️ Back</button>
+    </div>
+</div>
+
+<!-- === SCREEN 2b: 2 PLAYER SETUP === -->
+<div id="player2-screen" class="screen">
+    <div class="logo">👥</div>
+    <h1 class="title">2 Players</h1>
+    <p class="subtitle">Enter the names of both players</p>
+    
+    <div class="menu-buttons" style="gap: 20px;">
+        <div style="text-align: left; width: 300px;">
+            <label style="font-size: 0.9em; opacity: 0.8;">Player 1:</label>
+            <input type="text" id="p2-name-1" value="Player 1" style="width: 100%; padding: 12px; margin-top: 5px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #fff; font-size: 1em;">
+        </div>
+        <div style="text-align: left; width: 300px; margin-top: 10px;">
+            <label style="font-size: 0.9em; opacity: 0.8;">Player 2:</label>
+            <input type="text" id="p2-name-2" value="Player 2" style="width: 100%; padding: 12px; margin-top: 5px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #fff; font-size: 1em;">
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <button class="btn-primary" onclick="startGame2P()">▶️ Start Game</button>
+        <button class="btn-secondary" onclick="showStart()">⬅️ Back</button>
+    </div>
+</div>
+
+<!-- === SCREEN 3: GAME === -->
+<div id="game-screen" class="screen">
+    <div class="game-header">
+        <div class="game-title">🐋 Whale Quartett</div>
+        <div class="game-info">
+            <span class="score-display" id="score-display">You: 16 · Computer: 16</span>
+            <button class="btn-small" onclick="toggleSoundUI()">🔊</button>
+            <button class="btn-small" onclick="quitGame()">🏠 Menu</button>
+        </div>
+    </div>
+    
+    <div class="playing-area">
+        <!-- Player Zone -->
+        <div class="player-zone" id="player-zone">
+            <div class="player-name" id="player-zone-name">👤 You</div>
+            <div class="card-count" id="player-count">16 cards</div>
+            <div id="player-card-container">
+                <!-- Card rendered here -->
+            </div>
+        </div>
+        
+        <!-- Center / Jackpot -->
+        <div class="center-zone">
+            <div class="turn-indicator" id="turn-indicator">
+                🎯 Your turn!<br>
+                <small>Choose a category</small>
+            </div>
+            <div class="jackpot-area" id="jackpot-area">
+                <div class="jackpot-label">🏆 Jackpot</div>
+                <div class="jackpot-count" id="jackpot-count">0 cards</div>
+                <div class="jackpot-cards" id="jackpot-cards"></div>
+            </div>
+        </div>
+        
+        <!-- Computer Zone -->
+        <div class="player-zone" id="computer-zone">
+            <div class="player-name" id="computer-zone-name">🤖 Computer</div>
+            <div class="card-count" id="computer-count">16 cards</div>
+            <div id="computer-card-container">
+                <!-- Card back rendered here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- === RESULT OVERLAY === -->
+<div class="result-overlay" id="result-overlay">
+    <div class="result-box slide-in">
+        <div class="result-emoji" id="result-emoji">🏆</div>
+        <div class="result-title" id="result-title">Round won!</div>
+        <div class="result-text" id="result-text">You get the cards.</div>
+        <button class="btn-primary" onclick="nextRound()">Continue ➡️</button>
+    </div>
+</div>
+
+<!-- === GAME OVER OVERLAY === -->
+<div class="result-overlay" id="gameover-overlay">
+    <div class="result-box slide-in">
+        <div class="result-emoji" id="gameover-emoji">🎉</div>
+        <div class="result-title" id="gameover-title">Game Over!</div>
+        <div class="result-text" id="gameover-text"></div>
+        <button class="btn-primary" onclick="showStart()">New Game 🔄</button>
+    </div>
+</div>
+
+<!-- === RULES OVERLAY === -->
+<div class="result-overlay" id="rules-overlay">
+    <div class="result-box" style="max-width: 600px; text-align: left;">
+        <div class="result-title" style="text-align: center;">📋 How to Play</div>
+        <div style="margin: 20px 0; line-height: 1.6;">
+            <p><strong>Goal:</strong> Collect all 32 cards.</p>
+            <p style="margin-top: 10px;"><strong>How to play:</strong></p>
+            <ol style="margin-left: 20px; margin-top: 5px;">
+                <li>32 cards are shuffled and evenly distributed (16 each).</li>
+                <li>You choose a category on your top card (Weight, Length, Lifespan, or Dive).</li>
+                <li>The computer reveals its top card.</li>
+                <li>Whoever has the higher value wins both cards.</li>
+                <li>In case of a tie, cards go to the jackpot – the next winner gets everything.</li>
+            </ol>
+            <p style="margin-top: 15px;"><strong>Tip:</strong> Bigger is not always better – some whales are unbeatable in certain categories!</p>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn-primary" onclick="closeRules()">Got it ✓</button>
+        </div>
+    </div>
+</div>
+
+<!-- === GALLERY OVERLAY === -->
+<div class="result-overlay" id="gallery-overlay">
+    <div class="result-box" style="max-width: 95vw; max-height: 90vh; overflow-y: auto; text-align: left;">
+        <div class="result-title" style="text-align: center; margin-bottom: 20px;">🖼️ Card Gallery (32 Whale Species)</div>
+        <div id="gallery-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+            <!-- Cards rendered here -->
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn-primary" onclick="closeGallery()">Close ✓</button>
+        </div>
+    </div>
+</div>
+
+<!-- === SCRIPTS === -->
+<script src="js/cards.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/game.js"></script>
+
+</body>
+</html>
