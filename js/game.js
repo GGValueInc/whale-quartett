@@ -161,13 +161,13 @@ function updateTurnIndicator() {
         if (gameState.waitingForComputer) {
             el.innerHTML = `🤫 ${otherName}'s card is being shown...<br><small>Please don't look!</small>`;
         } else {
-            el.innerHTML = `🎯 ${activeName} 's turn!<br><small>Choose a category</small>`;
+            el.innerHTML = `🎯 ${activeName}'s turn!<br><small>Choose a category</small>`;
         }
     } else {
         if (gameState.currentTurn === 'player') {
             el.innerHTML = '🎯 Your turn!<br><small>Choose a category</small>';
         } else {
-            el.innerHTML = '🤖 Computer's turn...<br><small>Please wait</small>';
+            el.innerHTML = '🤖 Computer\'s turn...<br><small>Please wait</small>';
         }
     }
 }
