@@ -146,6 +146,11 @@ function updateUI() {
     const p2Name = gameState.playerNames[1];
     document.getElementById('score-display').textContent = `${p1Name}: ${gameState.playerHand.length} · ${p2Name}: ${gameState.computerHand.length}`;
     
+    // Zonennamen aktualisieren (wichtig für 2P-Modus)
+    document.getElementById('player-zone-name').textContent = '👤 ' + p1Name;
+    const p2Icon = gameState.gameMode === '2p' ? '👤' : '🤖';
+    document.getElementById('computer-zone-name').textContent = p2Icon + ' ' + p2Name;
+    
     const jackpotCount = gameState.jackpot.length;
     document.getElementById('jackpot-count').textContent = `${jackpotCount} Karten`;
     const jackpotArea = document.getElementById('jackpot-area');
