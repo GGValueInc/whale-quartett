@@ -124,7 +124,7 @@ function startGame() {
     // Start ambient sound
     startAmbient();
     
-    // Show cards with deal animation
+    // Zeige Karten mit Deal-Animation
     if (gameState.currentTurn === 'computer') {
         renderSpielerCard(true, true);
         renderComputerCardBack(true);
@@ -139,15 +139,15 @@ function startGame() {
 
 // === UI UPDATES ===
 function updateUI() {
-    document.getElementById('player-count').textContent = `${gameState.playerHand.length} cards`;
-    document.getElementById('computer-count').textContent = `${gameState.computerHand.length} cards`;
+    document.getElementById('player-count').textContent = `${gameState.playerHand.length} Karten`;
+    document.getElementById('computer-count').textContent = `${gameState.computerHand.length} Karten`;
     
     const p1Name = gameState.playerNames[0];
     const p2Name = gameState.playerNames[1];
     document.getElementById('score-display').textContent = `${p1Name}: ${gameState.playerHand.length} · ${p2Name}: ${gameState.computerHand.length}`;
     
     const jackpotCount = gameState.jackpot.length;
-    document.getElementById('jackpot-count').textContent = `${jackpotCount} cards`;
+    document.getElementById('jackpot-count').textContent = `${jackpotCount} Karten`;
     const jackpotArea = document.getElementById('jackpot-area');
     jackpotArea.classList.toggle('jackpot-pulse', jackpotCount > 0);
 }
@@ -407,11 +407,11 @@ function resolveRound(category) {
     
     // category-Label
     const catLabels = {
-        weight: '⚖️ ${categories.weight.label}',
-        length: '📏 ${categories.length.label}',
-        lifespan: '⏳ ${categories.lifespan.label}',
-        dive: '🤿 ${categories.dive.label}',
-        speed: '💨 ${categories.speed.label}'
+        weight: `⚖️ ${categories.weight.label}`,
+        length: `📏 ${categories.length.label}`,
+        lifespan: `⏳ ${categories.lifespan.label}`,
+        dive: `🤿 ${categories.dive.label}`,
+        speed: `💨 ${categories.speed.label}`
     };
     const catLabel = catLabels[category] || category;
     const catUnit = category === 'weight' ? 't' : category === 'length' ? 'm' : category === 'lifespan' ? 'J' : category === 'dive' ? 'min' : 'km/h';
@@ -448,7 +448,7 @@ function resolveRound(category) {
         winner = 'draw';
         resultEmoji = '🤝';
         resultTitle = 'Gleichstand!';
-        resultText = `${catLabel}: Beide haben ${playerValue} ${catUnit}. Die cards gehen in den Jackpot.`;
+        resultText = `${catLabel}: Beide haben ${playerValue} ${catUnit}. Die Karten gehen in den Jackpot.`;
         // Draw-Animation auf beide cards
         if (playerCardEl) playerCardEl.classList.add('draw-animation');
         if (computerCardEl) computerCardEl.classList.add('draw-animation');
@@ -516,8 +516,8 @@ function showGameOver() {
     const emoji = playerWon ? '🎉' : '😢';
     const title = playerWon ? 'Du hast gewonnen!' : 'Computer gewinnt!';
     const text = playerWon 
-        ? `Glückwunsch! You hast alle ${gameState.playerHand.length} cards gesammelt.`
-        : `The computer collected all ${gameState.computerHand.length} cards gesammelt. Nochmal versuchen?`;
+        ? `Glückwunsch! Du hast alle ${gameState.playerHand.length} cards gesammelt.`
+        : `Der Computer hat alle ${gameState.computerHand.length} cards gesammelt. Nochmal versuchen?`;
     
     document.getElementById('gameover-emoji').textContent = emoji;
     document.getElementById('gameover-title').textContent = title;
@@ -846,7 +846,7 @@ function resolveRound2P(category) {
         winner = 'draw';
         resultEmoji = '🤝';
         resultTitle = 'Gleichstand!';
-        resultText = `${catLabel}: Beide haben ${p1Value} ${catUnit}. Die cards gehen in den Jackpot.`;
+        resultText = `${catLabel}: Beide haben ${p1Value} ${catUnit}. Die Karten gehen in den Jackpot.`;
         if (p1CardEl) p1CardEl.classList.add('draw-animation');
         if (p2CardEl) p2CardEl.classList.add('draw-animation');
         soundDraw();
@@ -890,7 +890,7 @@ function showGameOver2P() {
     const winnerName = p1Won ? gameState.playerNames[0] : gameState.playerNames[1];
     const emoji = '🎉';
     const title = `${winnerName} gewinnt!`;
-    const text = `${winnerName} hat alle cards gesammelt!`;
+    const text = `${winnerName} hat alle Karten gesammelt!`;
     
     document.getElementById('gameover-emoji').textContent = emoji;
     document.getElementById('gameover-title').textContent = title;
