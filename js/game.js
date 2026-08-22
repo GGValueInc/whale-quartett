@@ -612,7 +612,7 @@ function spawnConfetti() {
 }
 
 // === 2 SPIELER MODUS ===
-function showSpieler2Setup() {
+function showPlayer2Setup() {
     showScreen('player2-screen');
 }
 
