@@ -49,20 +49,20 @@ function playNoise(duration, volume = 0.1) {
 
 // === SOUND EFFECTS ===
 
-/** Karten-Flip / Aufdecken */
+/** Card flip / reveal */
 function soundFlip() {
     initAudio();
     playNoise(0.08, 0.08);
     playTone(800, 0.1, 'triangle', 0.05);
 }
 
-/** Kategorie ausgewählt */
+/** Category selected */
 function soundSelect() {
     initAudio();
     playTone(523, 0.12, 'sine', 0.15);
 }
 
-/** Runde gewonnen */
+/** Round won */
 function soundWin() {
     initAudio();
     playTone(523, 0.15, 'sine', 0.2);  // C5
@@ -70,7 +70,7 @@ function soundWin() {
     playTone(784, 0.25, 'sine', 0.2, 0.16);  // G5
 }
 
-/** Runde verloren */
+/** Round lost */
 function soundLose() {
     initAudio();
     playTone(300, 0.25, 'sine', 0.2);
@@ -84,7 +84,7 @@ function soundDraw() {
     playTone(440, 0.3, 'sine', 0.15, 0.15);
 }
 
-/** Jackpot-Karten in die Mitte */
+/** Jackpot cards to center */
 function soundJackpot() {
     initAudio();
     playTone(600, 0.1, 'sine', 0.1);
@@ -92,7 +92,7 @@ function soundJackpot() {
     playTone(800, 0.2, 'sine', 0.15, 0.16);
 }
 
-/** Spiel gewonnen (Fanfare) */
+/** Game won (fanfare) */
 function soundVictory() {
     initAudio();
     const notes = [523, 659, 784, 1047];
@@ -101,7 +101,7 @@ function soundVictory() {
     });
 }
 
-/** Spiel verloren */
+/** Game lost */
 function soundDefeat() {
     initAudio();
     playTone(400, 0.3, 'sine', 0.15);
@@ -109,12 +109,12 @@ function soundDefeat() {
     playTone(300, 0.5, 'sine', 0.1, 0.4);
 }
 
-// === WELLENRAUSCHEN AMBIENTE ===
+// === WAVE SOUND AMBIENT ===
 function startAmbient() {
     if (!audioCtx) initAudio();
     if (ambientPlaying || !gameState.soundEnabled) return;
     
-    // 1. Braunes Rauschen für Meeresrauschen
+    // 1. Brown noise for ocean sound
     const bufferSize = audioCtx.sampleRate * 2;
     const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -130,30 +130,30 @@ function startAmbient() {
     ambientSource.buffer = buffer;
     ambientSource.loop = true;
     
-    // 2. Tiefpass-Filter für dumpfes Unterwasser-Gefühl
+    // 2. Low-pass filter for muffled underwater feel
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.value = 400;
     
-    // 3. LFO (Low Frequency Oscillator) für Wellen-Schwankungen
-    // Erzeugt langsame Lautstärke-Wellen wie ans Ufer rollendes Wasser
+    // 3. LFO for wave fluctuations
+    // Creates slow volume waves like water rolling ashore
     const lfo = audioCtx.createOscillator();
     lfo.type = 'sine';
     lfo.frequency.value = 0.15;  // ~6.7 Sekunden pro Welle
     
     ambientLFOGain = audioCtx.createGain();
-    ambientLFOGain.gain.value = 0.04;  // Amplitude der Wellen
+    ambientLFOGain.gain.value = 0.04;  // Wave amplitude
     
     lfo.connect(ambientLFOGain);
     
-    // 4. Haupt-Gain: Basis-Lautstärke + Wellen-Schwankung
+    // 4. Haupt-Gain: Base volume + Wellen-Schwankung
     ambientGain = audioCtx.createGain();
-    ambientGain.gain.value = 0.03;  // Basis-Lautstärke (leise)
+    ambientGain.gain.value = 0.03;  // Base volume (quiet)
     
-    // LFO moduliert den Gain (Wellen-Effekt)
+    // LFO modulates gain (wave effect)
     ambientLFOGain.connect(ambientGain.gain);
     
-    // Kette: Rauschen -> Filter -> Gain (mit LFO-Modulation) -> Output
+    // Chain: Noise -> Filter -> Gain (with LFO modulation) -> Output
     ambientSource.connect(filter);
     filter.connect(ambientGain);
     ambientGain.connect(audioCtx.destination);
@@ -175,7 +175,7 @@ function setAmbientVolume(vol) {
     if (ambientGain) ambientGain.gain.value = vol;
 }
 
-// === TOGGLE SOUND (überschreibt die alte Funktion) ===
+// === TOGGLE SOUND (overrides the old function) ===
 function toggleSoundUI() {
     gameState.soundEnabled = !gameState.soundEnabled;
     const btn = event.target;

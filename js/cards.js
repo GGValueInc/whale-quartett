@@ -1,5 +1,5 @@
-// cards.js – Wal-Quartett Karten-Daten (32 Walarten)
-// Quelle: wal_quartett.html (aus dem Fileserver)
+// cards.js – Whale Quartett Card Data (32 whale species)
+// Source: wal_quartett.html (from the fileserver)
 
 const whales = [
     { id: 1, name: "Blauwal", scientific: "Balaenoptera musculus", weight: 190, length: 33.0, lifespan: 90, dive: 15, speed: 30, fact: "Herz so groß wie ein Kleinwagen, Zunge wie ein Elefant: Der Blauwal ist das schwerste Lebewesen, das je existierte.", emoji: "🐋" },
@@ -36,13 +36,13 @@ const whales = [
     { id: 32, name: "Indopazifischer Buckelwal", scientific: "Indopacetus pacificus", weight: 13, length: 9.8, lifespan: 60, dive: 45, speed: 25, fact: "Extrem seltene Tiefseeart. Erst zwei Mal lebend gesichtet. Gehört zur gleichen Familie wie Ziphius.", emoji: "🐋" }
 ];
 
-// Kategorie-Labels für die UI
+// Category labels for the UI
 const categories = {
-    weight: { label: "Gewicht", unit: "t", icon: "⚖️", iconText: "🪨" },
-    length: { label: "Länge", unit: "m", icon: "📏", iconText: "📏" },
-    lifespan: { label: "Lebenserwartung", unit: "J", icon: "⏳", iconText: "⏳" },
-    dive: { label: "Tauchgang", unit: "min", icon: "🤿", iconText: "🤿" },
-    speed: { label: "Geschwindigkeit", unit: "km/h", icon: "💨", iconText: "💨" }
+    weight: { label: "Weight", unit: "t", icon: "⚖️", iconText: "🪨" },
+    length: { label: "Length", unit: "m", icon: "📏", iconText: "📏" },
+    lifespan: { label: "Lifespan", unit: "y", icon: "⏳", iconText: "⏳" },
+    dive: { label: "Dive", unit: "min", icon: "🤿", iconText: "🤿" },
+    speed: { label: "Speed", unit: "km/h", icon: "💨", iconText: "💨" }
 };
 
 // Fisher-Yates Shuffle
@@ -55,7 +55,7 @@ function shuffle(array) {
     return arr;
 }
 
-// Karten verteilen
+// Deal cards
 function dealCards(playerCount) {
     const shuffled = shuffle(whales);
     const hands = [];

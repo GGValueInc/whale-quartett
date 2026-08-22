@@ -60,7 +60,7 @@ function renderGallery() {
         <div class="gallery-card" style="background: linear-gradient(145deg, #1e3c72, #2a5298); border-radius: 15px; padding: 15px; text-align: center; border: 2px solid rgba(255,255,255,0.2); transition: transform 0.3s;">
             <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 8px;">${card.emoji} ${card.name}</div>
             <div style="font-size: 0.7em; opacity: 0.7; margin-bottom: 10px;">${card.scientific}</div>
-            <img src="../whale_images/${card.id}.jpg" alt="${card.name}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; background: #0d2137;">
+            <img src="./whale_images/${card.id}.jpg" alt="${card.name}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; background: #0d2137;">
             <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.85em;">
                 <div style="display: flex; justify-content: space-between;">
                     <span>⚖️</span>
@@ -191,7 +191,7 @@ function renderPlayerCard(active = true, animate = false) {
                 <div class="scientific">${card.scientific}</div>
             </div>
             <div class="card-image">
-                <img src="../whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
+                <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
             </div>
             <div class="card-stats">
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="weight" onclick="playerSelectCategory('weight')">
@@ -211,7 +211,7 @@ function renderPlayerCard(active = true, animate = false) {
                     <span class="stat-value">${card.dive} min</span>
                 </div>
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="speed" onclick="playerSelectCategory('speed')">
-                    <span class="stat-label">💨 Geschwindigkeit</span>
+                    <span class="stat-label">💨 Speed</span>
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
@@ -249,7 +249,7 @@ function renderComputerCardRevealed(highlightCat = null) {
                 <div class="scientific">${card.scientific}</div>
             </div>
             <div class="card-image">
-                <img src="../whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
+                <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
             </div>
             <div class="card-stats">
                 <div class="stat-row ${highlightCat === 'weight' ? 'selected' : ''}">
@@ -269,7 +269,7 @@ function renderComputerCardRevealed(highlightCat = null) {
                     <span class="stat-value">${card.dive} min</span>
                 </div>
                 <div class="stat-row ${highlightCat === 'speed' ? 'selected' : ''}">
-                    <span class="stat-label">💨 Geschwindigkeit</span>
+                    <span class="stat-label">💨 Speed</span>
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
@@ -299,7 +299,7 @@ function playerSelectCategory(category) {
     
     updateTurnIndicator();
     
-    // Computer-Karte aufdecken
+    // Computer card aufdecken
     setTimeout(() => {
         soundFlip();
         renderComputerCardRevealed(category);
@@ -316,12 +316,12 @@ function computerPlaysTurn() {
     gameState.waitingForComputer = true;
     updateTurnIndicator();
     
-    // Computer wählt category
+    // Computer chooses category
     setTimeout(() => {
         const category = computerChooseCategory();
         gameState.selectedCategory = category;
         
-        // Computer-Karte zeigt gewählte category (noch verdeckt / halb aufgedeckt)
+        // Computer card zeigt chosen category (noch verdeckt / halb aufgedeckt)
         renderComputerCardRevealed(category);
         
         updateTurnIndicator();
@@ -329,7 +329,7 @@ function computerPlaysTurn() {
         // Player-Karte zeigt die category hervorgehoben
         setTimeout(() => {
             renderPlayerCard(false); // Player ist nicht aktiv, nur Anzeige
-            // Markiere die vom Computer gewählte category beim Player
+            // Markiere die vom Computer chosen category beim Player
             const playerRows = document.querySelectorAll('#player-card-container .stat-row');
             playerRows.forEach(row => {
                 if (row.dataset.cat === category) {
@@ -360,7 +360,7 @@ function computerChooseCategory() {
             return findBestCategory(card);
             
         case 'medium': {
-            // Mittel: 60% beste category, 40% zufällig
+            // Medium: 60% best category, 40% random
             if (Math.random() < 0.6) {
                 return findBestCategory(card);
             }
@@ -411,7 +411,7 @@ function resolveRound(category) {
         length: '📏 Length',
         lifespan: '⏳ Lifespan',
         dive: '🤿 Dive',
-        speed: '💨 Geschwindigkeit'
+        speed: '💨 Speed'
     };
     const catLabel = catLabels[category] || category;
     const catUnit = category === 'weight' ? 't' : category === 'length' ? 'm' : category === 'lifespan' ? 'J' : category === 'dive' ? 'min' : 'km/h';
@@ -437,9 +437,9 @@ function resolveRound(category) {
     } else if (computerValue > playerValue) {
         winner = 'computer';
         resultEmoji = '🤖';
-        resultTitle = 'Computer gewinnt!';
+        resultTitle = 'Computer wins!';
         resultText = `${catLabel}: ${computerCard.name} (${computerValue} ${catUnit}) schlägt deinen ${playerCard.name} (${playerValue} ${catUnit}).`;
-        // Win-Animation auf Computer-Karte
+        // Win-Animation auf Computer card
         if (computerCardEl) computerCardEl.classList.add('win-animation');
         if (playerCardEl) playerCardEl.classList.add('lose-animation');
         // Sound
@@ -476,7 +476,7 @@ function resolveRound(category) {
         // Computer bekommt beide cards + Jackpot
         gameState.computerHand.push(computerTop, playerTop, ...gameState.jackpot);
         gameState.jackpot = [];
-        // Computer hat gewonnen -> Computer ist wieder dran
+        // Computer hat gewonnen -> Computer's turn again
         gameState.currentTurn = 'computer';
     } else {
         // Gleichstand -> Jackpot
@@ -486,7 +486,7 @@ function resolveRound(category) {
     
     updateUI();
     
-    // Spielende prüfen
+    // Check game end
     if (gameState.playerHand.length === 0 || gameState.computerHand.length === 0) {
         gameState.gameOver = true;
         setTimeout(() => showGameOver(), 1000);
@@ -514,10 +514,10 @@ function hideResult() {
 function showGameOver() {
     const playerWon = gameState.playerHand.length > gameState.computerHand.length;
     const emoji = playerWon ? '🎉' : '😢';
-    const title = playerWon ? 'You hast gewonnen!' : 'Computer gewinnt!';
+    const title = playerWon ? 'You won!' : 'Computer wins!';
     const text = playerWon 
         ? `Glückwunsch! You hast alle ${gameState.playerHand.length} cards gesammelt.`
-        : `Der Computer hat alle ${gameState.computerHand.length} cards gesammelt. Nochmal versuchen?`;
+        : `The computer collected all ${gameState.computerHand.length} cards gesammelt. Nochmal versuchen?`;
     
     document.getElementById('gameover-emoji').textContent = emoji;
     document.getElementById('gameover-title').textContent = title;
@@ -575,7 +575,7 @@ function hideOverlays() {
 
 // === QUIT ===
 function quitGame() {
-    if (confirm('Spiel beenden und zum Menu zurückkehren?')) {
+    if (confirm('Quit game and return to menu?')) {
         stopAmbient();
         showStart();
     }
@@ -708,7 +708,7 @@ function renderPlayer2Card(active = true, animate = false) {
                 <div class="scientific">${card.scientific}</div>
             </div>
             <div class="card-image">
-                <img src="../whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
+                <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
             </div>
             <div class="card-stats">
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="weight" onclick="player2SelectCategory('weight')">
@@ -728,7 +728,7 @@ function renderPlayer2Card(active = true, animate = false) {
                     <span class="stat-value">${card.dive} min</span>
                 </div>
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="speed" onclick="player2SelectCategory('speed')">
-                    <span class="stat-label">💨 Geschwindigkeit</span>
+                    <span class="stat-label">💨 Speed</span>
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
@@ -780,7 +780,7 @@ function renderPlayerCardRevealed(highlightCat = null) {
                 <div class="scientific">${card.scientific}</div>
             </div>
             <div class="card-image">
-                <img src="../whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
+                <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
             </div>
             <div class="card-stats">
                 <div class="stat-row ${highlightCat === 'weight' ? 'selected' : ''}">
@@ -800,7 +800,7 @@ function renderPlayerCardRevealed(highlightCat = null) {
                     <span class="stat-value">${card.dive} min</span>
                 </div>
                 <div class="stat-row ${highlightCat === 'speed' ? 'selected' : ''}">
-                    <span class="stat-label">💨 Geschwindigkeit</span>
+                    <span class="stat-label">💨 Speed</span>
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
