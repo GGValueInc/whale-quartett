@@ -36,13 +36,13 @@ const whales = [
     { id: 32, name: "Indopazifischer Buckelwal", scientific: "Indopacetus pacificus", weight: 13, length: 9.8, lifespan: 60, dive: 45, speed: 25, fact: "Extrem seltene Tiefseeart. Erst zwei Mal lebend gesichtet. Gehört zur gleichen Familie wie Ziphius.", emoji: "🐋" }
 ];
 
-// Category labels for the UI
+// Category labels for the UI (German, as displayed in-game)
 const categories = {
-    weight: { label: "Weight", unit: "t", icon: "⚖️", iconText: "🪨" },
-    length: { label: "Length", unit: "m", icon: "📏", iconText: "📏" },
-    lifespan: { label: "Lifespan", unit: "y", icon: "⏳", iconText: "⏳" },
-    dive: { label: "Dive", unit: "min", icon: "🤿", iconText: "🤿" },
-    speed: { label: "Speed", unit: "km/h", icon: "💨", iconText: "💨" }
+    weight: { label: "Gewicht", unit: "t", icon: "⚖️", iconText: "🪨" },
+    length: { label: "Länge", unit: "m", icon: "📏", iconText: "📏" },
+    lifespan: { label: "Lebenserwartung", unit: "J", icon: "⏳", iconText: "⏳" },
+    dive: { label: "Tauchgang", unit: "min", icon: "🤿", iconText: "🤿" },
+    speed: { label: "Geschwindigkeit", unit: "km/h", icon: "💨", iconText: "💨" }
 };
 
 // Fisher-Yates Shuffle

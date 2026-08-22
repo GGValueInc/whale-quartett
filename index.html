@@ -1,180 +1,180 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whale Quartett 🐋 – Digital Game</title>
-    <link rel="stylesheet" href="css/spiel.css">
+    <title>Wal-Quartett 🐋 – Digitales Spiel</title>
+    <link rel="stylesheet" href="css/game.css">
 </head>
 <body>
 
 <!-- === SCREEN 1: START === -->
 <div id="start-screen" class="screen active">
     <div class="logo">🐋</div>
-    <h1 class="title">Whale Quartett</h1>
-    <p class="subtitle">The ultimate whale card game · 32 species · Who has the best card?</p>
+    <h1 class="title">Wal-Quartett</h1>
+    <p class="subtitle">Das ultimative Wal-Kartenspiel · 32 Arten · Wer hat die beste Karte?</p>
     
     <div class="menu-buttons">
-        <button class="btn-primary" onclick="showDifficulty()">🎮 1 Player vs. Computer</button>
-        <button class="btn-primary" onclick="showPlayer2Setup()">👥 2 Players (local)</button>
-        <button class="btn-secondary" onclick="showRules()">📋 Rules</button>
-        <button class="btn-secondary" onclick="goToGallery()">🖼️ Card Gallery</button>
+        <button class="btn-primary" onclick="showDifficulty()">🎮 1 Spieler vs. Computer</button>
+        <button class="btn-primary" onclick="showPlayer2Setup()">👥 2 Spieler (lokal)</button>
+        <button class="btn-secondary" onclick="showRules()">📋 Spielanleitung</button>
+        <button class="btn-secondary" onclick="goToGallery()">🖼️ Karten-Galerie</button>
     </div>
     
     <p style="margin-top: 30px; opacity: 0.5; font-size: 0.85em;">
-        Offline-capable · No server required · Progress saved
+        Offline-fähig · Kein Server nötig · Spielstand wird gespeichert
     </p>
 </div>
 
 <!-- === SCREEN 2: DIFFICULTY SELECT === -->
 <div id="difficulty-screen" class="screen">
     <div class="logo">🎯</div>
-    <h1 class="title">Choose Difficulty</h1>
-    <p class="subtitle">How strong should the computer opponent be?</p>
+    <h1 class="title">Schwierigkeit wählen</h1>
+    <p class="subtitle">Wie stark soll der Computer-Gegner sein?</p>
     
     <div class="difficulty-select">
         <div class="diff-card" data-diff="easy" onclick="selectDifficulty('easy')">
             <div class="diff-emoji">🌊</div>
-            <div class="diff-label">Easy</div>
-            <div class="diff-desc">Computer chooses randomly</div>
+            <div class="diff-label">Leicht</div>
+            <div class="diff-desc">Computer wählt zufällig</div>
         </div>
         <div class="diff-card" data-diff="medium" onclick="selectDifficulty('medium')">
             <div class="diff-emoji">🌊🌊</div>
-            <div class="diff-label">Medium</div>
-            <div class="diff-desc">Computer picks best category</div>
+            <div class="diff-label">Mittel</div>
+            <div class="diff-desc">Computer wählt beste Kategorie</div>
         </div>
         <div class="diff-card" data-diff="hard" onclick="selectDifficulty('hard')">
             <div class="diff-emoji">🌊🌊🌊</div>
-            <div class="diff-label">Hard</div>
-            <div class="diff-desc">Computer plays optimally</div>
+            <div class="diff-label">Schwer</div>
+            <div class="diff-desc">Computer spielt optimal</div>
         </div>
     </div>
     
     <div style="margin-top: 30px;">
-        <button class="btn-primary" id="start-game-btn" onclick="startGame()" disabled>▶️ Start Game</button>
-        <button class="btn-secondary" onclick="showStart()">⬅️ Back</button>
+        <button class="btn-primary" id="start-game-btn" onclick="startGame()" disabled>▶️ Spiel starten</button>
+        <button class="btn-secondary" onclick="showStart()">⬅️ Zurück</button>
     </div>
 </div>
 
-<!-- === SCREEN 2b: 2 PLAYER SETUP === -->
+<!-- === SCREEN 2b: 2 SPIELER SETUP === -->
 <div id="player2-screen" class="screen">
     <div class="logo">👥</div>
-    <h1 class="title">2 Players</h1>
-    <p class="subtitle">Enter the names of both players</p>
+    <h1 class="title">2 Spieler</h1>
+    <p class="subtitle">Gib die Namen der beiden Spieler ein</p>
     
     <div class="menu-buttons" style="gap: 20px;">
         <div style="text-align: left; width: 300px;">
-            <label style="font-size: 0.9em; opacity: 0.8;">Player 1:</label>
-            <input type="text" id="p2-name-1" value="Player 1" style="width: 100%; padding: 12px; margin-top: 5px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #fff; font-size: 1em;">
+            <label style="font-size: 0.9em; opacity: 0.8;">Spieler 1:</label>
+            <input type="text" id="p2-name-1" value="Spieler 1" style="width: 100%; padding: 12px; margin-top: 5px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #fff; font-size: 1em;">
         </div>
         <div style="text-align: left; width: 300px; margin-top: 10px;">
-            <label style="font-size: 0.9em; opacity: 0.8;">Player 2:</label>
-            <input type="text" id="p2-name-2" value="Player 2" style="width: 100%; padding: 12px; margin-top: 5px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #fff; font-size: 1em;">
+            <label style="font-size: 0.9em; opacity: 0.8;">Spieler 2:</label>
+            <input type="text" id="p2-name-2" value="Spieler 2" style="width: 100%; padding: 12px; margin-top: 5px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #fff; font-size: 1em;">
         </div>
     </div>
     
     <div style="margin-top: 30px;">
-        <button class="btn-primary" onclick="startGame2P()">▶️ Start Game</button>
-        <button class="btn-secondary" onclick="showStart()">⬅️ Back</button>
+        <button class="btn-primary" onclick="startGame2P()">▶️ Spiel starten</button>
+        <button class="btn-secondary" onclick="showStart()">⬅️ Zurück</button>
     </div>
 </div>
 
-<!-- === SCREEN 3: GAME === -->
+<!-- === SCREEN 3: SPIEL === -->
 <div id="game-screen" class="screen">
     <div class="game-header">
-        <div class="game-title">🐋 Whale Quartett</div>
+        <div class="game-title">🐋 Wal-Quartett</div>
         <div class="game-info">
-            <span class="score-display" id="score-display">You: 16 · Computer: 16</span>
+            <span class="score-display" id="score-display">Du: 16 · Computer: 16</span>
             <button class="btn-small" onclick="toggleSoundUI()">🔊</button>
-            <button class="btn-small" onclick="quitGame()">🏠 Menu</button>
+            <button class="btn-small" onclick="quitGame()">🏠 Menü</button>
         </div>
     </div>
     
     <div class="playing-area">
-        <!-- Player Zone -->
+        <!-- Spieler-Zone -->
         <div class="player-zone" id="player-zone">
-            <div class="player-name" id="player-zone-name">👤 You</div>
-            <div class="card-count" id="player-count">16 cards</div>
+            <div class="player-name" id="player-zone-name">👤 Du</div>
+            <div class="card-count" id="player-count">16 Karten</div>
             <div id="player-card-container">
-                <!-- Card rendered here -->
+                <!-- Karte wird hier gerendert -->
             </div>
         </div>
         
-        <!-- Center / Jackpot -->
+        <!-- Mitte / Jackpot -->
         <div class="center-zone">
             <div class="turn-indicator" id="turn-indicator">
-                🎯 Your turn!<br>
-                <small>Choose a category</small>
+                🎯 Du bist dran!<br>
+                <small>Wähle eine Kategorie</small>
             </div>
             <div class="jackpot-area" id="jackpot-area">
                 <div class="jackpot-label">🏆 Jackpot</div>
-                <div class="jackpot-count" id="jackpot-count">0 cards</div>
+                <div class="jackpot-count" id="jackpot-count">0 Karten</div>
                 <div class="jackpot-cards" id="jackpot-cards"></div>
             </div>
         </div>
         
-        <!-- Computer Zone -->
+        <!-- Computer-Zone -->
         <div class="player-zone" id="computer-zone">
             <div class="player-name" id="computer-zone-name">🤖 Computer</div>
-            <div class="card-count" id="computer-count">16 cards</div>
+            <div class="card-count" id="computer-count">16 Karten</div>
             <div id="computer-card-container">
-                <!-- Card back rendered here -->
+                <!-- Kartenrücken wird hier gerendert -->
             </div>
         </div>
     </div>
 </div>
 
-<!-- === RESULT OVERLAY === -->
+<!-- === ERGEBNIS-OVERLAY === -->
 <div class="result-overlay" id="result-overlay">
     <div class="result-box slide-in">
         <div class="result-emoji" id="result-emoji">🏆</div>
-        <div class="result-title" id="result-title">Round won!</div>
-        <div class="result-text" id="result-text">You get the cards.</div>
-        <button class="btn-primary" onclick="nextRound()">Continue ➡️</button>
+        <div class="result-title" id="result-title">Runde gewonnen!</div>
+        <div class="result-text" id="result-text">Du bekommst die Karten.</div>
+        <button class="btn-primary" onclick="nextRound()">Weiter ➡️</button>
     </div>
 </div>
 
-<!-- === GAME OVER OVERLAY === -->
+<!-- === SPIELENDE-OVERLAY === -->
 <div class="result-overlay" id="gameover-overlay">
     <div class="result-box slide-in">
         <div class="result-emoji" id="gameover-emoji">🎉</div>
-        <div class="result-title" id="gameover-title">Game Over!</div>
+        <div class="result-title" id="gameover-title">Spielende!</div>
         <div class="result-text" id="gameover-text"></div>
-        <button class="btn-primary" onclick="showStart()">New Game 🔄</button>
+        <button class="btn-primary" onclick="showStart()">Neues Spiel 🔄</button>
     </div>
 </div>
 
-<!-- === RULES OVERLAY === -->
+<!-- === ANLEITUNGS-OVERLAY === -->
 <div class="result-overlay" id="rules-overlay">
     <div class="result-box" style="max-width: 600px; text-align: left;">
-        <div class="result-title" style="text-align: center;">📋 How to Play</div>
+        <div class="result-title" style="text-align: center;">📋 Spielanleitung</div>
         <div style="margin: 20px 0; line-height: 1.6;">
-            <p><strong>Goal:</strong> Collect all 32 cards.</p>
-            <p style="margin-top: 10px;"><strong>How to play:</strong></p>
+            <p><strong>Ziel:</strong> Sammle alle 32 Karten.</p>
+            <p style="margin-top: 10px;"><strong>So geht's:</strong></p>
             <ol style="margin-left: 20px; margin-top: 5px;">
-                <li>32 cards are shuffled and evenly distributed (16 each).</li>
-                <li>You choose a category on your top card (Weight, Length, Lifespan, or Dive).</li>
-                <li>The computer reveals its top card.</li>
-                <li>Whoever has the higher value wins both cards.</li>
-                <li>In case of a tie, cards go to the jackpot – the next winner gets everything.</li>
+                <li>32 Karten werden gemischt und gleichmäßig verteilt (je 16).</li>
+                <li>Du wählst eine Kategorie deiner obersten Karte (Gewicht, Länge, Lebenserwartung, Tauchgang oder Geschwindigkeit).</li>
+                <li>Der Computer zeigt seine oberste Karte.</li>
+                <li>Wer den höheren Wert hat, gewinnt beide Karten.</li>
+                <li>Bei Gleichstand gehen die Karten in den Jackpot – der nächste Gewinner bekommt alles.</li>
             </ol>
-            <p style="margin-top: 15px;"><strong>Tip:</strong> Bigger is not always better – some whales are unbeatable in certain categories!</p>
+            <p style="margin-top: 15px;"><strong>Tipp:</strong> Größer ist nicht immer besser – manche Wale sind in bestimmten Kategorien unschlagbar!</p>
         </div>
         <div style="text-align: center; margin-top: 20px;">
-            <button class="btn-primary" onclick="closeRules()">Got it ✓</button>
+            <button class="btn-primary" onclick="closeRules()">Verstanden ✓</button>
         </div>
     </div>
 </div>
 
-<!-- === GALLERY OVERLAY === -->
+<!-- === GALERIE-OVERLAY === -->
 <div class="result-overlay" id="gallery-overlay">
     <div class="result-box" style="max-width: 95vw; max-height: 90vh; overflow-y: auto; text-align: left;">
-        <div class="result-title" style="text-align: center; margin-bottom: 20px;">🖼️ Card Gallery (32 Whale Species)</div>
+        <div class="result-title" style="text-align: center; margin-bottom: 20px;">🖼️ Karten-Galerie (32 Walarten)</div>
         <div id="gallery-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
-            <!-- Cards rendered here -->
+            <!-- Karten werden hier gerendert -->
         </div>
         <div style="text-align: center; margin-top: 20px;">
-            <button class="btn-primary" onclick="closeGallery()">Close ✓</button>
+            <button class="btn-primary" onclick="closeGallery()">Schließen ✓</button>
         </div>
     </div>
 </div>

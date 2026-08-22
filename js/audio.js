@@ -139,14 +139,14 @@ function startAmbient() {
     // Creates slow volume waves like water rolling ashore
     const lfo = audioCtx.createOscillator();
     lfo.type = 'sine';
-    lfo.frequency.value = 0.15;  // ~6.7 Sekunden pro Welle
+    lfo.frequency.value = 0.15;  // ~6.7 seconds per wave
     
     ambientLFOGain = audioCtx.createGain();
     ambientLFOGain.gain.value = 0.04;  // Wave amplitude
     
     lfo.connect(ambientLFOGain);
     
-    // 4. Haupt-Gain: Base volume + Wellen-Schwankung
+    // 4. Main gain: base volume + wave fluctuation
     ambientGain = audioCtx.createGain();
     ambientGain.gain.value = 0.03;  // Base volume (quiet)
     

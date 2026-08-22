@@ -15,7 +15,7 @@ let gameState = {
     waitingForComputer: false,
     gameOver: false,
     gameMode: '1p',        // '1p' oder '2p'
-    playerNames: ['You', 'Computer']  // [Player 1, Player 2]
+    playerNames: ['Du', 'Computer']  // [Spieler 1, Spieler 2]
 };
 
 // === SCREEN MANAGEMENT ===
@@ -102,7 +102,7 @@ function ensureDifficultySelected() {
 // === GAME INIT ===
 function startGame() {
     gameState.gameMode = '1p';
-    gameState.playerNames = ['You', 'Computer'];
+    gameState.playerNames = ['Du', 'Computer'];
     const hands = dealCards(2);
     gameState.playerHand = hands[0];
     gameState.computerHand = hands[1];
@@ -126,12 +126,12 @@ function startGame() {
     
     // Show cards with deal animation
     if (gameState.currentTurn === 'computer') {
-        renderPlayerCard(true, true);
+        renderSpielerCard(true, true);
         renderComputerCardBack(true);
         updateTurnIndicator();
         setTimeout(() => computerPlaysTurn(), 1200);
     } else {
-        renderPlayerCard(true, true);
+        renderSpielerCard(true, true);
         renderComputerCardBack(true);
         updateTurnIndicator();
     }
@@ -159,24 +159,24 @@ function updateTurnIndicator() {
     
     if (gameState.gameMode === '2p') {
         if (gameState.waitingForComputer) {
-            el.innerHTML = `🤫 ${otherName}'s card is being shown...<br><small>Please don't look!</small>`;
+            el.innerHTML = `🤫 ${otherName}s Karte wird gezeigt...<br><small>Bitte nicht schauen!</small>`;
         } else {
-            el.innerHTML = `🎯 ${activeName}'s turn!<br><small>Choose a category</small>`;
+            el.innerHTML = `🎯 ${activeName} ist dran!<br><small>Wähle eine Kategorie</small>`;
         }
     } else {
         if (gameState.currentTurn === 'player') {
-            el.innerHTML = '🎯 Your turn!<br><small>Choose a category</small>';
+            el.innerHTML = '🎯 Du bist dran!<br><small>Wähle eine Kategorie</small>';
         } else {
-            el.innerHTML = '🤖 Computer\'s turn...<br><small>Please wait</small>';
+            el.innerHTML = '🤖 Computer\'s turn...<br><small>Bitte warten</small>';
         }
     }
 }
 
 // === CARD RENDERING ===
-function renderPlayerCard(active = true, animate = false) {
+function renderSpielerCard(active = true, animate = false) {
     const container = document.getElementById('player-card-container');
     if (gameState.playerHand.length === 0) {
-        container.innerHTML = '<div style="opacity:0.5">Keine cards</div>';
+        container.innerHTML = '<div style="opacity:0.5">Keine Karten</div>';
         return;
     }
     
@@ -223,7 +223,7 @@ function renderPlayerCard(active = true, animate = false) {
 function renderComputerCardBack(animate = false) {
     const container = document.getElementById('computer-card-container');
     if (gameState.computerHand.length === 0) {
-        container.innerHTML = '<div style="opacity:0.5">Keine cards</div>';
+        container.innerHTML = '<div style="opacity:0.5">Keine Karten</div>';
         return;
     }
     const animClass = animate ? 'card-deal-computer' : '';
@@ -231,7 +231,7 @@ function renderComputerCardBack(animate = false) {
         <div class="card-back ${animClass}">
             <div class="card-back-emoji">🐋</div>
             <div class="card-back-text">Wal-Quartett</div>
-            <div style="font-size: 0.8em; opacity: 0.6; margin-top: 10px;">${gameState.computerHand.length} cards</div>
+            <div style="font-size: 0.8em; opacity: 0.6; margin-top: 10px;">${gameState.computerHand.length} Karten</div>
         </div>
     `;
 }
@@ -326,10 +326,10 @@ function computerPlaysTurn() {
         
         updateTurnIndicator();
         
-        // Player-Karte zeigt die category hervorgehoben
+        // Spieler-Karte zeigt die category hervorgehoben
         setTimeout(() => {
-            renderPlayerCard(false); // Player ist nicht aktiv, nur Anzeige
-            // Markiere die vom Computer chosen category beim Player
+            renderSpielerCard(false); // Spieler ist nicht aktiv, nur Anzeige
+            // Markiere die vom Computer chosen category beim Spieler
             const playerRows = document.querySelectorAll('#player-card-container .stat-row');
             playerRows.forEach(row => {
                 if (row.dataset.cat === category) {
@@ -427,9 +427,9 @@ function resolveRound(category) {
     if (playerValue > computerValue) {
         winner = 'player';
         resultEmoji = '🏆';
-        resultTitle = 'Round won!';
+        resultTitle = 'Runde gewonnen!';
         resultText = `${catLabel}: Dein ${playerCard.name} (${playerValue} ${catUnit}) schlägt ${computerCard.name} (${computerValue} ${catUnit}).`;
-        // Win-Animation auf Player-Karte
+        // Win-Animation auf Spieler-Karte
         if (playerCardEl) playerCardEl.classList.add('win-animation');
         if (computerCardEl) computerCardEl.classList.add('lose-animation');
         // Sound
@@ -437,7 +437,7 @@ function resolveRound(category) {
     } else if (computerValue > playerValue) {
         winner = 'computer';
         resultEmoji = '🤖';
-        resultTitle = 'Computer wins!';
+        resultTitle = 'Computer gewinnt!';
         resultText = `${catLabel}: ${computerCard.name} (${computerValue} ${catUnit}) schlägt deinen ${playerCard.name} (${playerValue} ${catUnit}).`;
         // Win-Animation auf Computer card
         if (computerCardEl) computerCardEl.classList.add('win-animation');
@@ -467,10 +467,10 @@ function resolveRound(category) {
     const computerTop = gameState.computerHand.shift();
     
     if (winner === 'player') {
-        // Player bekommt beide cards + Jackpot
+        // Spieler bekommt beide cards + Jackpot
         gameState.playerHand.push(playerTop, computerTop, ...gameState.jackpot);
         gameState.jackpot = [];
-        // Player hat gewonnen -> Player ist wieder dran
+        // Spieler hat gewonnen -> Spieler ist wieder dran
         gameState.currentTurn = 'player';
     } else if (winner === 'computer') {
         // Computer bekommt beide cards + Jackpot
@@ -514,7 +514,7 @@ function hideResult() {
 function showGameOver() {
     const playerWon = gameState.playerHand.length > gameState.computerHand.length;
     const emoji = playerWon ? '🎉' : '😢';
-    const title = playerWon ? 'You won!' : 'Computer wins!';
+    const title = playerWon ? 'Du hast gewonnen!' : 'Computer gewinnt!';
     const text = playerWon 
         ? `Glückwunsch! You hast alle ${gameState.playerHand.length} cards gesammelt.`
         : `The computer collected all ${gameState.computerHand.length} cards gesammelt. Nochmal versuchen?`;
@@ -524,7 +524,7 @@ function showGameOver() {
     document.getElementById('gameover-text').textContent = text;
     document.getElementById('gameover-overlay').classList.add('active');
     
-    // Sound + Confetti wenn Player gewinnt
+    // Sound + Confetti wenn Spieler gewinnt
     if (playerWon) {
         soundVictory();
         spawnConfetti();
@@ -546,22 +546,22 @@ function nextRound() {
     updateUI();
     
     if (gameState.gameMode === '2p') {
-        // 2-Player: Verdecke die Karte des nicht aktiven Players
-        hideInactivePlayerCard();
-        revealActivePlayerCard();
+        // 2-Spieler: Verdecke die Karte des nicht aktiven Spielers
+        hideInactiveSpielerCard();
+        revealActiveSpielerCard();
         updateTurnIndicator();
         return;
     }
     
     if (gameState.currentTurn === 'computer' && !gameState.gameOver) {
         // Computer ist dran -> Computer spielt
-        renderPlayerCard();
+        renderSpielerCard();
         renderComputerCardBack();
         updateTurnIndicator();
         setTimeout(() => computerPlaysTurn(), 400);
     } else if (gameState.currentTurn === 'player' && !gameState.gameOver) {
-        // Player ist dran
-        renderPlayerCard();
+        // Spieler ist dran
+        renderSpielerCard();
         renderComputerCardBack();
         updateTurnIndicator();
     }
@@ -575,7 +575,7 @@ function hideOverlays() {
 
 // === QUIT ===
 function quitGame() {
-    if (confirm('Quit game and return to menu?')) {
+    if (confirm('Spiel beenden und zum Menü zurückkehren?')) {
         stopAmbient();
         showStart();
     }
@@ -612,25 +612,25 @@ function spawnConfetti() {
 }
 
 // === 2 SPIELER MODUS ===
-function showPlayer2Setup() {
+function showSpieler2Setup() {
     showScreen('player2-screen');
 }
 
 function startGame2P() {
     gameState.gameMode = '2p';
     gameState.playerNames = [
-        document.getElementById('p2-name-1').value || 'Player 1',
-        document.getElementById('p2-name-2').value || 'Player 2'
+        document.getElementById('p2-name-1').value || 'Spieler 1',
+        document.getElementById('p2-name-2').value || 'Spieler 2'
     ];
     
     const hands = dealCards(2);
     gameState.playerHand = hands[0];
-    gameState.computerHand = hands[1];  // Player 2
+    gameState.computerHand = hands[1];  // Spieler 2
     gameState.jackpot = [];
     gameState.selectedCategory = null;
     gameState.waitingForComputer = false;
     gameState.gameOver = false;
-    gameState.currentTurn = 'player';  // Player 1 beginnt
+    gameState.currentTurn = 'player';  // Spieler 1 beginnt
     
     showScreen('game-screen');
     updateUI();
@@ -642,58 +642,58 @@ function startGame2P() {
     // Start ambient sound
     startAmbient();
     
-    renderPlayerCard(true, true);
+    renderSpielerCard(true, true);
     renderComputerCardBack(true);
     updateTurnIndicator();
     
-    // In 2P-Modus: Verdecke die Karte des nicht aktiven Players
-    hideInactivePlayerCard();
+    // In 2P-Modus: Verdecke die Karte des nicht aktiven Spielers
+    hideInactiveSpielerCard();
 }
 
-// Verdecke die Karte des Players, der nicht dran ist
-function hideInactivePlayerCard() {
+// Verdecke die Karte des Spielers, der nicht dran ist
+function hideInactiveSpielerCard() {
     if (gameState.gameMode !== '2p') return;
     
     if (gameState.currentTurn === 'player') {
-        // Player 2 verdecken
+        // Spieler 2 verdecken
         const compContainer = document.getElementById('computer-card-container');
         compContainer.innerHTML = `
             <div class="card-back">
                 <div class="card-back-emoji">🐋</div>
                 <div class="card-back-text">${gameState.playerNames[1]}</div>
-                <div style="font-size: 0.8em; opacity: 0.6; margin-top: 10px;">${gameState.computerHand.length} cards</div>
+                <div style="font-size: 0.8em; opacity: 0.6; margin-top: 10px;">${gameState.computerHand.length} Karten</div>
             </div>
         `;
     } else {
-        // Player 1 verdecken
+        // Spieler 1 verdecken
         const playerContainer = document.getElementById('player-card-container');
         playerContainer.innerHTML = `
             <div class="card-back">
                 <div class="card-back-emoji">🐋</div>
                 <div class="card-back-text">${gameState.playerNames[0]}</div>
-                <div style="font-size: 0.8em; opacity: 0.6; margin-top: 10px;">${gameState.playerHand.length} cards</div>
+                <div style="font-size: 0.8em; opacity: 0.6; margin-top: 10px;">${gameState.playerHand.length} Karten</div>
             </div>
         `;
     }
 }
 
-// 2-Player: Zeige die Karte des aktiven Players
-function revealActivePlayerCard() {
+// 2-Spieler: Zeige die Karte des aktiven Spielers
+function revealActiveSpielerCard() {
     if (gameState.gameMode !== '2p') return;
     
     if (gameState.currentTurn === 'player') {
-        renderPlayerCard(true, true);
+        renderSpielerCard(true, true);
     } else {
-        // Player 2 Karte anzeigen (im Computer-Container)
-        renderPlayer2Card(true, true);
+        // Spieler 2 Karte anzeigen (im Computer-Container)
+        renderSpieler2Card(true, true);
     }
 }
 
-// Rendert Player 2 Karte (im rechten Container)
-function renderPlayer2Card(active = true, animate = false) {
+// Rendert Spieler 2 Karte (im rechten Container)
+function renderSpieler2Card(active = true, animate = false) {
     const container = document.getElementById('computer-card-container');
     if (gameState.computerHand.length === 0) {
-        container.innerHTML = '<div style="opacity:0.5">Keine cards</div>';
+        container.innerHTML = '<div style="opacity:0.5">Keine Karten</div>';
         return;
     }
     
@@ -737,7 +737,7 @@ function renderPlayer2Card(active = true, animate = false) {
     `;
 }
 
-// Player 2 wählt category
+// Spieler 2 wählt category
 function player2SelectCategory(category) {
     if (gameState.gameMode !== '2p') return;
     if (gameState.currentTurn !== 'computer' || gameState.waitingForComputer || gameState.gameOver) return;
@@ -756,18 +756,18 @@ function player2SelectCategory(category) {
     
     updateTurnIndicator();
     
-    // Player 1 Karte aufdecken
+    // Spieler 1 Karte aufdecken
     setTimeout(() => {
         soundFlip();
-        renderPlayerCardRevealed(category);
+        renderSpielerCardRevealed(category);
         setTimeout(() => {
             resolveRound2P(category);
         }, 1500);
     }, 600);
 }
 
-// Player 1 Karte aufgedeckt anzeigen (im linken Container)
-function renderPlayerCardRevealed(highlightCat = null) {
+// Spieler 1 Karte aufgedeckt anzeigen (im linken Container)
+function renderSpielerCardRevealed(highlightCat = null) {
     const container = document.getElementById('player-card-container');
     if (gameState.playerHand.length === 0) return;
     
@@ -809,7 +809,7 @@ function renderPlayerCardRevealed(highlightCat = null) {
     `;
 }
 
-// 2-Player roundsauflösung
+// 2-Spieler Rundenauflösung
 function resolveRound2P(category) {
     const p1Card = gameState.playerHand[0];
     const p2Card = gameState.computerHand[0];
@@ -902,4 +902,4 @@ function showGameOver2P() {
 }
 
 // === INIT ===
-console.log('🐋 Wal-Quartett Spiel geladen. Klicke auf "New Game" um zu beginnen.');
+console.log('🐋 Wal-Quartett Spiel geladen. Klicke auf "Neues Spiel" um zu beginnen.');
