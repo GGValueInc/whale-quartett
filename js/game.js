@@ -195,23 +195,23 @@ function renderSpielerCard(active = true, animate = false) {
             </div>
             <div class="card-stats">
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="weight" onclick="playerSelectCategory('weight')">
-                    <span class="stat-label">⚖️ Weight</span>
+                    <span class="stat-label">⚖️ ${categories.weight.label}</span>
                     <span class="stat-value">${card.weight} t</span>
                 </div>
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="length" onclick="playerSelectCategory('length')">
-                    <span class="stat-label">📏 Length</span>
+                    <span class="stat-label">📏 ${categories.length.label}</span>
                     <span class="stat-value">${card.length} m</span>
                 </div>
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="lifespan" onclick="playerSelectCategory('lifespan')">
-                    <span class="stat-label">⏳ Lifespan</span>
+                    <span class="stat-label">⏳ ${categories.lifespan.label}</span>
                     <span class="stat-value">${card.lifespan} J</span>
                 </div>
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="dive" onclick="playerSelectCategory('dive')">
-                    <span class="stat-label">🤿 Dive</span>
+                    <span class="stat-label">🤿 ${categories.dive.label}</span>
                     <span class="stat-value">${card.dive} min</span>
                 </div>
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="speed" onclick="playerSelectCategory('speed')">
-                    <span class="stat-label">💨 Speed</span>
+                    <span class="stat-label">💨 ${categories.speed.label}</span>
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
@@ -253,23 +253,23 @@ function renderComputerCardRevealed(highlightCat = null) {
             </div>
             <div class="card-stats">
                 <div class="stat-row ${highlightCat === 'weight' ? 'selected' : ''}">
-                    <span class="stat-label">⚖️ Weight</span>
+                    <span class="stat-label">⚖️ ${categories.weight.label}</span>
                     <span class="stat-value">${card.weight} t</span>
                 </div>
                 <div class="stat-row ${highlightCat === 'length' ? 'selected' : ''}">
-                    <span class="stat-label">📏 Length</span>
+                    <span class="stat-label">📏 ${categories.length.label}</span>
                     <span class="stat-value">${card.length} m</span>
                 </div>
                 <div class="stat-row ${highlightCat === 'lifespan' ? 'selected' : ''}">
-                    <span class="stat-label">⏳ Lifespan</span>
+                    <span class="stat-label">⏳ ${categories.lifespan.label}</span>
                     <span class="stat-value">${card.lifespan} J</span>
                 </div>
                 <div class="stat-row ${highlightCat === 'dive' ? 'selected' : ''}">
-                    <span class="stat-label">🤿 Dive</span>
+                    <span class="stat-label">🤿 ${categories.dive.label}</span>
                     <span class="stat-value">${card.dive} min</span>
                 </div>
                 <div class="stat-row ${highlightCat === 'speed' ? 'selected' : ''}">
-                    <span class="stat-label">💨 Speed</span>
+                    <span class="stat-label">💨 ${categories.speed.label}</span>
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
@@ -407,11 +407,11 @@ function resolveRound(category) {
     
     // category-Label
     const catLabels = {
-        weight: '⚖️ Weight',
-        length: '📏 Length',
-        lifespan: '⏳ Lifespan',
-        dive: '🤿 Dive',
-        speed: '💨 Speed'
+        weight: '⚖️ ${categories.weight.label}',
+        length: '📏 ${categories.length.label}',
+        lifespan: '⏳ ${categories.lifespan.label}',
+        dive: '🤿 ${categories.dive.label}',
+        speed: '💨 ${categories.speed.label}'
     };
     const catLabel = catLabels[category] || category;
     const catUnit = category === 'weight' ? 't' : category === 'length' ? 'm' : category === 'lifespan' ? 'J' : category === 'dive' ? 'min' : 'km/h';
@@ -712,23 +712,23 @@ function renderSpieler2Card(active = true, animate = false) {
             </div>
             <div class="card-stats">
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="weight" onclick="player2SelectCategory('weight')">
-                    <span class="stat-label">⚖️ Weight</span>
+                    <span class="stat-label">⚖️ ${categories.weight.label}</span>
                     <span class="stat-value">${card.weight} t</span>
                 </div>
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="length" onclick="player2SelectCategory('length')">
-                    <span class="stat-label">📏 Length</span>
+                    <span class="stat-label">📏 ${categories.length.label}</span>
                     <span class="stat-value">${card.length} m</span>
                 </div>
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="lifespan" onclick="player2SelectCategory('lifespan')">
-                    <span class="stat-label">⏳ Lifespan</span>
+                    <span class="stat-label">⏳ ${categories.lifespan.label}</span>
                     <span class="stat-value">${card.lifespan} J</span>
                 </div>
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="dive" onclick="player2SelectCategory('dive')">
-                    <span class="stat-label">🤿 Dive</span>
+                    <span class="stat-label">🤿 ${categories.dive.label}</span>
                     <span class="stat-value">${card.dive} min</span>
                 </div>
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="speed" onclick="player2SelectCategory('speed')">
-                    <span class="stat-label">💨 Speed</span>
+                    <span class="stat-label">💨 ${categories.speed.label}</span>
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
@@ -784,23 +784,23 @@ function renderSpielerCardRevealed(highlightCat = null) {
             </div>
             <div class="card-stats">
                 <div class="stat-row ${highlightCat === 'weight' ? 'selected' : ''}">
-                    <span class="stat-label">⚖️ Weight</span>
+                    <span class="stat-label">⚖️ ${categories.weight.label}</span>
                     <span class="stat-value">${card.weight} t</span>
                 </div>
                 <div class="stat-row ${highlightCat === 'length' ? 'selected' : ''}">
-                    <span class="stat-label">📏 Length</span>
+                    <span class="stat-label">📏 ${categories.length.label}</span>
                     <span class="stat-value">${card.length} m</span>
                 </div>
                 <div class="stat-row ${highlightCat === 'lifespan' ? 'selected' : ''}">
-                    <span class="stat-label">⏳ Lifespan</span>
+                    <span class="stat-label">⏳ ${categories.lifespan.label}</span>
                     <span class="stat-value">${card.lifespan} J</span>
                 </div>
                 <div class="stat-row ${highlightCat === 'dive' ? 'selected' : ''}">
-                    <span class="stat-label">🤿 Dive</span>
+                    <span class="stat-label">🤿 ${categories.dive.label}</span>
                     <span class="stat-value">${card.dive} min</span>
                 </div>
                 <div class="stat-row ${highlightCat === 'speed' ? 'selected' : ''}">
-                    <span class="stat-label">💨 Speed</span>
+                    <span class="stat-label">💨 ${categories.speed.label}</span>
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
@@ -816,7 +816,7 @@ function resolveRound2P(category) {
     const p1Value = p1Card[category];
     const p2Value = p2Card[category];
     
-    const catLabels = { weight: '⚖️ Weight', length: '📏 Length', lifespan: '⏳ Lifespan', dive: '🤿 Dive' };
+    const catLabels = { weight: '⚖️ ${categories.weight.label}', length: '📏 ${categories.length.label}', lifespan: '⏳ ${categories.lifespan.label}', dive: '🤿 ${categories.dive.label}' };
     const catLabel = catLabels[category];
     const catUnit = category === 'weight' ? 't' : category === 'length' ? 'm' : category === 'lifespan' ? 'J' : category === 'dive' ? 'min' : 'km/h';
     
