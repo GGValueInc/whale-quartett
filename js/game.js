@@ -829,7 +829,7 @@ function resolveRound2P(category) {
     const p1Value = p1Card[category];
     const p2Value = p2Card[category];
     
-    const catLabels = { weight: '⚖️ ${categories.weight.label}', length: '📏 ${categories.length.label}', lifespan: '⏳ ${categories.lifespan.label}', dive: '🤿 ${categories.dive.label}' };
+    const catLabels = { weight: `⚖️ ${categories.weight.label}`, length: `📏 ${categories.length.label}`, lifespan: `⏳ ${categories.lifespan.label}`, dive: `🤿 ${categories.dive.label}`, speed: `💨 ${categories.speed.label}` };
     const catLabel = catLabels[category];
     const catUnit = category === 'weight' ? 't' : category === 'length' ? 'm' : category === 'lifespan' ? 'J' : category === 'dive' ? 'min' : 'km/h';
     
