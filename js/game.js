@@ -304,12 +304,20 @@ function playerSelectCategory(category) {
     
     updateTurnIndicator();
     
-    // Computer card aufdecken
+    // Computer/Spieler 2 card aufdecken
     setTimeout(() => {
         soundFlip();
-        renderComputerCardRevealed(category);
+        if (gameState.gameMode === '2p') {
+            renderSpielerCardRevealed(category);
+        } else {
+            renderComputerCardRevealed(category);
+        }
         setTimeout(() => {
-            resolveRound(category);
+            if (gameState.gameMode === '2p') {
+                resolveRound2P(category);
+            } else {
+                resolveRound(category);
+            }
         }, 1500);
     }, 600);
 }
