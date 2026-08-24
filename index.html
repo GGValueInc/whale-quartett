@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Wal-Quartett 🐋 – Digitales Spiel</title>
-    <link rel="stylesheet" href="css/game.css?v=24">
+    <link rel="stylesheet" href="css/game.css?v=27">
 </head>
 <body>
 <!-- === SCREEN 1: START === -->
@@ -202,9 +202,9 @@
     </div>
 </div>
 <!-- === SCRIPTS === -->
-<script src="js/cards.js?v=24"></script>
-<script src="js/audio.js?v=24"></script>
-<script src="js/game.js?v=24"></script>
+<script src="js/cards.js?v=27"></script>
+<script src="js/audio.js?v=27"></script>
+<script src="js/game.js?v=27"></script>
 <!-- === ONLINE 1vs1 LOGIC === -->
 <script>
     // === ONLINE 1v1 MODE ===
@@ -379,6 +379,17 @@
                 gameState.selectedCategory = null;
                 gameState.waitingForComputer = false;
                 hideResult();
+                
+                // Karten aus Server-Nachricht übernehmen (echte Karten-Objekte)
+                if (msg.cards) {
+                    if (onlineState.playerNumber === 1) {
+                        gameState.playerHand = msg.cards.player1Hand || [];
+                        gameState.computerHand = msg.cards.player2Hand || [];
+                    } else {
+                        gameState.playerHand = msg.cards.player2Hand || [];
+                        gameState.computerHand = msg.cards.player1Hand || [];
+                    }
+                }
                 updateUI();
                 updateTurnIndicator();
                 renderSpielerCard(true, true);
@@ -425,17 +436,8 @@
         } else {
             showResult("😢", "Runde verloren...", onlineState.opponentName + " bekommt die Karten.");
         }
-        // Aktualisiere Kartenstaende
-        if (result.player1Cards !== undefined && result.player2Cards !== undefined) {
-            if (onlineState.playerNumber === 1) {
-                gameState.playerHand = new Array(result.player1Cards).fill(null);
-                gameState.computerHand = new Array(result.player2Cards).fill(null);
-            } else {
-                gameState.playerHand = new Array(result.player2Cards).fill(null);
-                gameState.computerHand = new Array(result.player1Cards).fill(null);
-            }
-            updateUI();
-        }
+        // Karten-Staende werden in newRound (2s spaeter) mit echten Karten-Objekten aktualisiert.
+        // Null-Arrays hier wuerden renderSpielerCard() zerstoeren (Bug!).
     }
     // Patche playerSelectCategory fuer Online-Modus
     var _originalPlayerSelectCategory = playerSelectCategory;
