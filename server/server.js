@@ -258,7 +258,11 @@ wss.on('connection', (ws) => {
                                 type: 'newRound',
                                 activePlayer: gs.activePlayer,
                                 player1Cards: gs.player1Hand.length,
-                                player2Cards: gs.player2Hand.length
+                                player2Cards: gs.player2Hand.length,
+                                cards: {
+                                    player1Hand: gs.player1Hand,
+                                    player2Hand: gs.player2Hand
+                                }
                             });
                         }, 2000);
                     }
@@ -279,7 +283,11 @@ wss.on('connection', (ws) => {
                         type: 'newRound',
                         activePlayer: gs.activePlayer,
                         player1Cards: gs.player1Hand.length,
-                        player2Cards: gs.player2Hand.length
+                        player2Cards: gs.player2Hand.length,
+                        cards: {
+                            player1Hand: gs.player1Hand,
+                            player2Hand: gs.player2Hand
+                        }
                     });
                     break;
                 }
