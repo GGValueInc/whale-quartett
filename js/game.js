@@ -148,7 +148,7 @@ function updateUI() {
     
     // Zonennamen aktualisieren (wichtig für 2P-Modus)
     document.getElementById('player-zone-name').textContent = '👤 ' + p1Name;
-    const p2Icon = gameState.gameMode === '2p' ? '👤' : '🤖';
+    const p2Icon = (gameState.gameMode === '2p' || gameState.gameMode === 'online') ? '👤' : '🤖';
     document.getElementById('computer-zone-name').textContent = p2Icon + ' ' + p2Name;
     
     const jackpotCount = gameState.jackpot.length;
@@ -524,21 +524,43 @@ function hideResult() {
     document.getElementById('result-overlay').classList.remove('active');
 }
 
-function showGameOver() {
-    const playerWon = gameState.playerHand.length > gameState.computerHand.length;
-    const emoji = playerWon ? '🎉' : '😢';
-    const title = playerWon ? 'Du hast gewonnen!' : 'Computer gewinnt!';
-    const text = playerWon 
+function showGameOver(playerWon) {
+    // Online-Modus: playerWon wird vom Server übergeben
+    if (gameState.gameMode === 'online') {
+        const emoji = playerWon ? '🎉' : '😢';
+        const title = playerWon ? 'Du hast gewonnen!' : 'Gegenspieler gewinnt!';
+        const text = playerWon
+            ? 'Glückwunsch! Du hast das Spiel gewonnen!'
+            : onlineState.opponentName + ' hat das Spiel gewonnen. Nochmal versuchen?';
+        
+        document.getElementById('gameover-emoji').textContent = emoji;
+        document.getElementById('gameover-title').textContent = title;
+        document.getElementById('gameover-text').textContent = text;
+        document.getElementById('gameover-overlay').classList.add('active');
+        
+        if (playerWon) {
+            soundVictory();
+            spawnConfetti();
+        } else {
+            soundDefeat();
+        }
+        return;
+    }
+    
+    // Lokale Modi (1P, 2P)
+    const won = typeof playerWon === 'boolean' ? playerWon : (gameState.playerHand.length > gameState.computerHand.length);
+    const emoji = won ? '🎉' : '😢';
+    const title = won ? 'Du hast gewonnen!' : (gameState.gameMode === '2p' ? gameState.playerNames[1] + ' gewinnt!' : 'Computer gewinnt!');
+    const text = won
         ? `Glückwunsch! Du hast alle ${gameState.playerHand.length} cards gesammelt.`
-        : `Der Computer hat alle ${gameState.computerHand.length} cards gesammelt. Nochmal versuchen?`;
+        : (gameState.gameMode === '2p' ? gameState.playerNames[1] : 'Der Computer') + ` hat alle ${gameState.computerHand.length} cards gesammelt. Nochmal versuchen?`;
     
     document.getElementById('gameover-emoji').textContent = emoji;
     document.getElementById('gameover-title').textContent = title;
     document.getElementById('gameover-text').textContent = text;
     document.getElementById('gameover-overlay').classList.add('active');
     
-    // Sound + Confetti wenn Spieler gewinnt
-    if (playerWon) {
+    if (won) {
         soundVictory();
         spawnConfetti();
     } else {
