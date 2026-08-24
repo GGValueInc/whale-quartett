@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Wal-Quartett 🐋 – Digitales Spiel</title>
-    <link rel="stylesheet" href="css/game.css?v=3">
+    <link rel="stylesheet" href="css/game.css?v=19">
 </head>
 <body>
 
@@ -20,6 +20,7 @@
     <div class="menu-buttons">
         <button class="btn-primary" onclick="showDifficulty()">🎮 1 Spieler vs. Computer</button>
         <button class="btn-primary" onclick="showPlayer2Setup()">👥 2 Spieler (lokal)</button>
+        <button class="btn-primary" onclick="showOnlineSetup()">🌐 Online 1vs1</button>
         <button class="btn-secondary" onclick="showRules()">📋 Spielanleitung</button>
         <button class="btn-secondary" onclick="goToGallery()">🖼️ Karten-Galerie</button>
     </div>
@@ -78,6 +79,42 @@
     
     <div style="margin-top: 30px;">
         <button class="btn-primary" onclick="startGame2P()">▶️ Spiel starten</button>
+        <button class="btn-secondary" onclick="showStart()">⬅️ Zurück</button>
+    </div>
+</div>
+
+<!-- === SCREEN 2c: ONLINE 1v1 SETUP === -->
+<div id="online-screen" class="screen">
+    <div class="logo">🌐</div>
+    <h1 class="title">Online 1vs1</h1>
+    <p class="subtitle">Spiele gegen Freunde über das Internet</p>
+    
+    <div class="menu-buttons" style="gap: 20px;">
+        <!-- Raum erstellen (Spieler 1) -->
+        <div id="online-create-section" style="text-align: center; width: 300px;">
+            <label style="font-size: 0.9em; opacity: 0.8; display: block; margin-bottom: 5px;">Dein Name:</label>
+            <input type="text" id="online-player-name" value="" placeholder="Dein Name" maxlength="20" style="width: 100%; padding: 12px; margin-bottom: 15px; text-align: center; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #fff; font-size: 1em;">
+            
+            <button class="btn-primary" onclick="createOnlineRoom()" style="width: 100%; margin-bottom: 15px;">🎲 Raum erstellen</button>
+            <p style="font-size: 0.85em; opacity: 0.7; margin: 10px 0;">Oder</p>
+            <label style="font-size: 0.9em; opacity: 0.8; display: block; margin-bottom: 5px;">Raum-Code eingeben:</label>
+            <input type="text" id="online-room-code" placeholder="z.B. A7B3" maxlength="6" style="width: 100%; padding: 12px; text-align: center; text-transform: uppercase; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #fff; font-size: 1.2em; letter-spacing: 4px;">
+            <button class="btn-primary" onclick="joinOnlineRoom()" style="width: 100%; margin-top: 10px;">🚪 Raum beitreten</button>
+        </div>
+        
+        <!-- Warte auf Gegenspieler (wird nach Raum-Erstellung angezeigt) -->
+        <div id="online-wait-section" style="display: none; text-align: center;">
+            <div style="font-size: 2em; margin-bottom: 15px;">⏳</div>
+            <p style="font-size: 1.1em;">Warte auf Gegenspieler...</p>
+            <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                <p style="font-size: 0.85em; opacity: 0.7; margin-bottom: 5px;">Dein Code:</p>
+                <div id="online-display-code" style="font-size: 1.8em; font-weight: bold; letter-spacing: 6px; font-family: monospace; color: #4dabf7;">----</div>
+            </div>
+            <button class="btn-secondary" onclick="cancelOnlineRoom()">❌ Abbrechen</button>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px;">
         <button class="btn-secondary" onclick="showStart()">⬅️ Zurück</button>
     </div>
 </div>
@@ -183,9 +220,274 @@
 </div>
 
 <!-- === SCRIPTS === -->
-<script src="js/cards.js?v=3"></script>
-<script src="js/audio.js?v=3"></script>
-<script src="js/game.js?v=3"></script>
+<script src="js/cards.js?v=19"></script>
+<script src="js/audio.js?v=19"></script>
+<script src="js/game.js?v=19"></script>
+
+<!-- === ONLINE 1vs1 LOGIC === -->
+<script>
+    // === ONLINE 1v1 MODE ===
+    let ws = null;
+    let onlineState = {
+        connected: false,
+        roomCode: null,
+        playerNumber: null,
+        opponentName: "Gegenspieler",
+        isMyTurn: false,
+        playerName: "Spieler"
+    };
+
+    function showOnlineSetup() {
+        console.log("showOnlineSetup aufgerufen!");
+        showScreen("online-screen");
+        document.getElementById("online-create-section").style.display = "block";
+        document.getElementById("online-wait-section").style.display = "none";
+        var nameInput = document.getElementById("online-player-name");
+        if (nameInput) {
+            nameInput.value = "";
+            nameInput.focus();
+        }
+    }
+
+    function getPlayerName() {
+        var nameInput = document.getElementById("online-player-name");
+        var name = nameInput ? nameInput.value.trim() : "";
+        return name || "Spieler";
+    }
+
+    function createOnlineRoom() {
+        onlineState.playerName = getPlayerName();
+        connectWebSocket("create");
+    }
+
+    function joinOnlineRoom() {
+        var codeInput = document.getElementById("online-room-code");
+        var code = codeInput ? codeInput.value.trim().toUpperCase() : "";
+        if (!code || code.length < 4) {
+            alert("Bitte gib einen Code ein!");
+            return;
+        }
+        onlineState.playerName = getPlayerName();
+        connectWebSocket("join", code);
+    }
+
+    function cancelOnlineRoom() {
+        if (ws) { ws.close(); ws = null; }
+        showStart();
+    }
+
+    function connectWebSocket(mode, roomCode) {
+        var wsUrl = window.location.protocol === "https:" 
+            ? "wss://" + window.location.host + "/ws"
+            : "ws://" + window.location.host + "/ws";
+        
+        console.log("Verbinde zu:", wsUrl);
+        
+        ws = new WebSocket(wsUrl);
+        
+        ws.onopen = function() {
+            console.log("WebSocket verbunden");
+            if (mode === "create") {
+                ws.send(JSON.stringify({ type: "createRoom", playerName: onlineState.playerName }));
+            } else {
+                ws.send(JSON.stringify({ type: "joinRoom", roomCode: roomCode, playerName: onlineState.playerName }));
+            }
+        };
+        
+        ws.onmessage = function(event) {
+            try {
+                var msg = JSON.parse(event.data);
+                console.log("Nachricht:", msg.type, msg);
+                handleOnlineMessage(msg);
+            } catch (e) {
+                console.error("Fehler beim Parsen:", e);
+            }
+        };
+        
+        ws.onerror = function(error) {
+            console.error("WebSocket Fehler:", error);
+            alert("Verbindungsfehler. Bitte Seite neu laden.");
+        };
+        
+        ws.onclose = function() {
+            console.log("WebSocket geschlossen");
+            if (onlineState.connected) {
+                onlineState.connected = false;
+                alert("Verbindung unterbrochen");
+                showStart();
+            }
+        };
+    }
+
+    function handleOnlineMessage(msg) {
+        switch (msg.type) {
+            case "roomCreated":
+                onlineState.roomCode = msg.roomCode;
+                onlineState.playerNumber = msg.playerNumber;
+                document.getElementById("online-create-section").style.display = "none";
+                document.getElementById("online-wait-section").style.display = "block";
+                document.getElementById("online-display-code").textContent = msg.roomCode;
+                break;
+                
+            case "gameStart":
+                onlineState.connected = true;
+                onlineState.playerName = msg.playerName || onlineState.playerName;
+                onlineState.opponentName = msg.opponentName || "Gegenspieler";
+                onlineState.isMyTurn = msg.yourTurn;
+                onlineState.playerNumber = msg.playerNumber;
+                
+                console.log("Spiel startet!");
+                console.log("Ich:", onlineState.playerName, "vs Gegner:", onlineState.opponentName);
+                
+                var myCards, oppCards;
+                if (msg.playerNumber === 1) {
+                    myCards = msg.cards.player1Hand;
+                    oppCards = msg.cards.player2Hand;
+                } else {
+                    myCards = msg.cards.player2Hand;
+                    oppCards = msg.cards.player1Hand;
+                }
+                
+                startOnlineGame(myCards, oppCards);
+                break;
+                
+            case "categorySelected":
+                if (msg.activePlayer !== onlineState.playerNumber) {
+                    console.log("Gegner hat Kategorie gewaehlt:", msg.category);
+                }
+                break;
+                
+            case "roundResult":
+                handleOnlineRoundResult(msg);
+                setTimeout(function() {
+                    if (ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify({ type: "nextRound" }));
+                    }
+                }, 2000);
+                break;
+                
+            case "newRound":
+                onlineState.isMyTurn = (msg.activePlayer === onlineState.playerNumber);
+                gameState.currentTurn = onlineState.isMyTurn ? "player" : "computer";
+                gameState.selectedCategory = null;
+                gameState.waitingForComputer = false;
+                updateUI();
+                updateTurnIndicator();
+                renderSpielerCard(true, true);
+                renderComputerCardBack(true);
+                break;
+                
+            case "gameOver":
+                var isWinner = (msg.winner === onlineState.playerNumber);
+                showGameOver(isWinner);
+                break;
+                
+            case "opponentDisconnected":
+                alert("Dein Gegenspieler hat das Spiel verlassen.");
+                showStart();
+                break;
+                
+            case "error":
+                alert("Fehler: " + msg.message);
+                break;
+        }
+    }
+
+    function startOnlineGame(myCards, oppCards) {
+        console.log("startOnlineGame aufgerufen");
+        
+        gameState.gameMode = "online";
+        gameState.playerNames = [onlineState.playerName, onlineState.opponentName];
+        
+        gameState.playerHand = Array.isArray(myCards) ? myCards.slice() : [];
+        gameState.computerHand = Array.isArray(oppCards) ? oppCards.slice() : [];
+        
+        gameState.jackpot = [];
+        gameState.currentTurn = onlineState.isMyTurn ? "player" : "computer";
+        gameState.selectedCategory = null;
+        gameState.gameOver = false;
+        gameState.waitingForComputer = false;
+        
+        showScreen("game-screen");
+        updateUI();
+        renderSpielerCard(true, true);
+        renderComputerCardBack(true);
+        updateTurnIndicator();
+        
+        console.log("Spiel gestartet!");
+    }
+
+    function handleOnlineRoundResult(result) {
+        var isWinner = (result.winner === onlineState.playerNumber);
+        var isDraw = (result.winner === 0);
+        
+        if (isDraw) {
+            showResult("🤝", "Unentschieden!", "Die Karten gehen in den Jackpot.");
+        } else if (isWinner) {
+            showResult("🏆", "Runde gewonnen!", "Du bekommst die Karten.");
+        } else {
+            showResult("😢", "Runde verloren...", onlineState.opponentName + " bekommt die Karten.");
+        }
+        
+        // Aktualisiere Kartenstaende
+        if (result.player1Cards !== undefined && result.player2Cards !== undefined) {
+            if (onlineState.playerNumber === 1) {
+                gameState.playerHand = new Array(result.player1Cards).fill(null);
+                gameState.computerHand = new Array(result.player2Cards).fill(null);
+            } else {
+                gameState.playerHand = new Array(result.player2Cards).fill(null);
+                gameState.computerHand = new Array(result.player1Cards).fill(null);
+            }
+            updateUI();
+        }
+    }
+
+    // Patche playerSelectCategory fuer Online-Modus
+    var _originalPlayerSelectCategory = playerSelectCategory;
+    playerSelectCategory = function(category) {
+        if (gameState.gameMode === "online") {
+            if (gameState.currentTurn !== "player" || gameState.waitingForComputer || gameState.gameOver) return;
+            if (gameState.playerHand.length === 0 || gameState.computerHand.length === 0) return;
+            
+            gameState.selectedCategory = category;
+            gameState.waitingForComputer = true;
+            
+            soundSelect();
+            
+            document.querySelectorAll(".stat-row").forEach(function(r) {
+                r.classList.remove("selected");
+            });
+            var selected = document.querySelector('[data-cat="' + category + '"]');
+            if (selected) selected.classList.add("selected");
+            
+            document.querySelectorAll(".stat-row").forEach(function(r) {
+                r.classList.add("disabled");
+            });
+            
+            updateTurnIndicator();
+            
+            // Sende Kategorie an Server
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: "selectCategory", category: category }));
+            }
+            return;
+        }
+        
+        _originalPlayerSelectCategory(category);
+    };
+
+    // Patche nextRound fuer Online-Modus
+    var _originalNextRound = nextRound;
+    nextRound = function() {
+        if (gameState.gameMode === "online") {
+            // Online: nextRound wird automatisch vom Server gesendet
+            return;
+        }
+        _originalNextRound();
+    };
+
+    console.log("Online 1vs1 Modul geladen!");
+</script>
 
 </body>
 </html>
