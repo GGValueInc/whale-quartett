@@ -88,8 +88,10 @@ function renderGallery() {
 function selectDifficulty(diff) {
     gameState.difficulty = diff;
     document.querySelectorAll('.diff-card').forEach(c => c.classList.remove('selected'));
-    document.querySelector(`[data-diff="${diff}"]`).classList.add('selected');
-    document.getElementById('start-game-btn').disabled = false;
+    const el = document.querySelector(`[data-diff="${diff}"]`);
+    if (el) el.classList.add('selected');
+    const startBtn = document.getElementById('start-game-btn');
+    if (startBtn) startBtn.disabled = false;
 }
 
 // Default: select medium if nothing chosen
@@ -404,18 +406,22 @@ function computerChooseCategory() {
 
 function findBestCategory(card) {
     const cats = ['weight', 'length', 'lifespan', 'dive', 'speed'];
+    if (!card || !Array.isArray(whales) || whales.length === 0) return cats[0];
+
     const maxValues = {
-        weight: Math.max(...whales.map(w => w.weight)),
-        length: Math.max(...whales.map(w => w.length)),
-        lifespan: Math.max(...whales.map(w => w.lifespan)),
-        dive: Math.max(...whales.map(w => w.dive)),
-        speed: Math.max(...whales.map(w => w.speed))
+        weight: Math.max(...whales.map(w => w.weight || 0)),
+        length: Math.max(...whales.map(w => w.length || 0)),
+        lifespan: Math.max(...whales.map(w => w.lifespan || 0)),
+        dive: Math.max(...whales.map(w => w.dive || 0)),
+        speed: Math.max(...whales.map(w => w.speed || 0))
     };
-    
+
     let bestCat = cats[0];
     let bestRatio = 0;
     for (const cat of cats) {
-        const ratio = card[cat] / maxValues[cat];
+        const cardValue = card[cat] || 0;
+        const maxValue = maxValues[cat] || 1;
+        const ratio = cardValue / maxValue;
         if (ratio > bestRatio) {
             bestRatio = ratio;
             bestCat = cat;
