@@ -27,18 +27,53 @@ const rooms = new Map(); // roomCode -> { players: [...], gameState, deck, statu
 const playerRooms = new WeakMap(); // ws -> roomCode (GC friendly)
 
 // === USAGE TRACKER ===
-const stats = {
-    createRoom: 0,
-    joinRoom: 0,
-    gameStart: 0,
-    roundsPlayed: 0,
-    gameEnd: 0,
-    disconnects: 0,
-    errors: 0,
-    peakConcurrentRooms: 0,
-    peakConcurrentPlayers: 0,
-    sessions: [] // recent finished sessions (last 50)
-};
+const STATS_FILE = path.join(__dirname, 'stats.json');
+
+function loadStatsFromDisk() {
+    try {
+        if (fs.existsSync(STATS_FILE)) {
+            const raw = fs.readFileSync(STATS_FILE, 'utf8');
+            const data = JSON.parse(raw);
+            console.log(`[STATS] Loaded: createRoom=${data.createRoom}, roundsPlayed=${data.roundsPlayed}, gameStart=${data.gameStart}`);
+            return {
+                createRoom: data.createRoom || 0,
+                joinRoom: data.joinRoom || 0,
+                gameStart: data.gameStart || 0,
+                roundsPlayed: data.roundsPlayed || 0,
+                gameEnd: data.gameEnd || 0,
+                disconnects: data.disconnects || 0,
+                errors: data.errors || 0,
+                peakConcurrentRooms: data.peakConcurrentRooms || 0,
+                peakConcurrentPlayers: data.peakConcurrentPlayers || 0,
+                sessions: Array.isArray(data.sessions) ? data.sessions.slice(0, 50) : []
+            };
+        }
+    } catch (e) { console.error('Stats load error:', e); }
+    return {
+        createRoom: 0, joinRoom: 0, gameStart: 0, roundsPlayed: 0,
+        gameEnd: 0, disconnects: 0, errors: 0,
+        peakConcurrentRooms: 0, peakConcurrentPlayers: 0, sessions: []
+    };
+}
+
+function saveStatsToDisk() {
+    try {
+        fs.writeFileSync(STATS_FILE, JSON.stringify({
+            createRoom: stats.createRoom,
+            joinRoom: stats.joinRoom,
+            gameStart: stats.gameStart,
+            roundsPlayed: stats.roundsPlayed,
+            gameEnd: stats.gameEnd,
+            disconnects: stats.disconnects,
+            errors: stats.errors,
+            peakConcurrentRooms: stats.peakConcurrentRooms,
+            peakConcurrentPlayers: stats.peakConcurrentPlayers,
+            sessions: stats.sessions.slice(0, 50)
+        }, null, 2));
+    } catch (e) { console.error('Stats save error:', e); }
+}
+
+const stats = loadStatsFromDisk();
 
 function trackEvent(event, data = {}) {
     if (typeof stats[event] === 'number') {
@@ -53,11 +88,14 @@ function trackEvent(event, data = {}) {
     const currentPlayers = Array.from(rooms.values()).reduce((sum, r) => sum + r.players.length, 0);
     if (currentRooms > stats.peakConcurrentRooms) stats.peakConcurrentRooms = currentRooms;
     if (currentPlayers > stats.peakConcurrentPlayers) stats.peakConcurrentPlayers = currentPlayers;
+    // Persist to disk
+    saveStatsToDisk();
 }
 
 function trackError(reason) {
     stats.errors++;
     console.warn(`[STATS] Error tracked: ${reason}`);
+    saveStatsToDisk();
 }
 
 // === FEEDBACK SYSTEM ===
