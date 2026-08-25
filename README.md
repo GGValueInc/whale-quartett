@@ -30,6 +30,7 @@ Das ultimative Wal-Kartenspiel — direkt im Browser spielen, keine Installation
    - 📏 **Länge** (Meter)
    - ⏳ **Lebenserwartung** (Jahre)
    - 🤿 **Tauchzeit** (Minuten)
+   - 💨 **Geschwindigkeit** (km/h)
 
 2. **Karten vergleichen:** Der höhere Wert gewinnt beide Karten
 
@@ -82,6 +83,6 @@ Jede der **32 Wal-Karten** zeigt:
 ## Über das Spiel
 
 Wal-Quartett ist ein digitales Kartenspiel im Browser.
-32 Wal-Arten, 4 Kategorien, unendlich viele Runden.
+32 Wal-Arten, 5 Kategorien, unendlich viele Runden.
 
 🐋 Viel Spaß beim Spielen!
