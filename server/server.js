@@ -544,7 +544,7 @@ const httpServer = http.createServer((req, res) => {
     if (req.url.startsWith('/api/review') && req.method === 'GET') {
         const url = new URL(req.url, `http://${req.headers.host}`);
         const token = url.searchParams.get('token');
-        if (token !== 'walquartett2026') {
+        if (token !== 'freewillyandsearchfortheothers') {
             res.writeHead(403, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Unauthorized' }));
             return;
@@ -559,7 +559,7 @@ const httpServer = http.createServer((req, res) => {
     if (req.url.startsWith('/api/review') && req.method === 'POST') {
         const url = new URL(req.url, `http://${req.headers.host}`);
         const token = url.searchParams.get('token');
-        if (token !== 'walquartett2026') {
+        if (token !== 'freewillyandsearchfortheothers') {
             res.writeHead(403, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Unauthorized' }));
             return;
