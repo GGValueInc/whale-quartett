@@ -3,6 +3,16 @@
 # Wal-Quartett Security Bootstrap Script
 # Einrichtung aller Sicherheitsmaßnahmen auf einem frischen Ubuntu-Server
 # Idempotent: Mehrfaches Ausführen ist ungefährlich
+#
+# VERWENDUNG:
+#   Option 1 (empfohlen): Key als Parameter übergeben
+#     sudo bash security-bootstrap.sh /pfad/zu/dein-key.pub
+#
+#   Option 2: Key bereits manuell installiert
+#     sudo bash security-bootstrap.sh
+#
+#   Option 3: Ohne SSH-Härtung (z.B. für Testumgebungen)
+#     SKIP_SSH_HARDEN=1 sudo bash security-bootstrap.sh
 ###############################################################################
 
 set -euo pipefail
@@ -50,35 +60,93 @@ section1() {
 }
 
 ###############################################################################
-# 2. FIREWALL (UFW)
+# 2. SSH KEY EINRICHTEN (MUSS vor SSH-Härtung passieren!)
 ###############################################################################
 section2() {
-    info "=== Schritt 2: Firewall (UFW) ==="
+    info "=== Schritt 2: SSH Key einrichten ==="
     
-    # UFW zurücksetzen falls schon aktiv
-    ufw --force reset 2>/dev/null || true
+    SSH_KEY_ARG=""
     
-    # Defaults
-    ufw default deny incoming
-    ufw default allow outgoing
+    # Prüfe ob ein SSH Key als Parameter übergeben wurde
+    if [ $# -ge 1 ] && [ -f "$1" ]; then
+        SSH_KEY_ARG="$1"
+        info "SSH Key als Parameter: $1"
+    fi
     
-    # Erlaube notwendige Ports
-    ufw allow ${SSH_PORT}/tcp comment 'SSH'
-    ufw allow 80/tcp comment 'HTTP'
-    ufw allow 443/tcp comment 'HTTPS'
+    # Prüfe ob ~/.ssh/authorized_keys bereits existiert
+    if [ -s "/root/.ssh/authorized_keys" ]; then
+        info "SSH authorized_keys existiert bereits"
+        if [ -n "${SSH_KEY_ARG}" ]; then
+            warn "Key wird trotzdem hinzugefügt (idempotent)"
+        else
+            return 0
+        fi
+    elif [ -z "${SSH_KEY_ARG}" ]; then
+        warn "KEIN SSH KEY gefunden!"
+        echo ""
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "  ACHTUNG: SSH Key fehlt!"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        echo "Ohne SSH Key wirst du nach der SSH-Härtung AUSGESPERTRT!"
+        echo ""
+        echo "Optionen:"
+        echo ""
+        echo "  1. Key als Parameter übergeben (EMPFOHLEN):"
+        echo "     sudo bash security-bootstrap.sh /pfad/zu/dein-key.pub"
+        echo ""
+        echo "  2. Key manuell einfügen, DANN Script starten:"
+        echo "     mkdir -p /root/.ssh"
+        echo "     echo 'ssh-ed25519 AAAAC3...' > /root/.ssh/authorized_keys"
+        echo "     sudo bash security-bootstrap.sh"
+        echo ""
+        echo "  3. Script OHNE SSH-Härtung ausführen:"
+        echo "     SKIP_SSH_HARDEN=1 sudo bash security-bootstrap.sh"
+        echo ""
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        
+        read -p "Trotzdem fortfahren? (j/N) " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Jj]$ ]]; then
+            error "Abgebrochen. Bitte SSH Key einrichten."
+            exit 1
+        fi
+        warn "Fortfahren ohne Key - DU WIRST AUSGESPERT!"
+        warn "Nach dem Script kannst du dich nur noch mit Passwort anmelden (falls aktiviert)"
+        sleep 3
+        return 0
+    fi
     
-    # Port 3000 explizit BLOCKIEREN (nur lokal über Nginx erreichbar)
-    ufw deny 3000/tcp comment 'Node.js direkt gesperrt'
-    
-    ufw --force enable
-    log "Firewall aktiviert: SSH(22), HTTP(80), HTTPS(443) erlaubt. Port 3000 blockiert."
+    # Key einrichten falls als Parameter übergeben
+    if [ -n "${SSH_KEY_ARG}" ]; then
+        mkdir -p /root/.ssh
+        chmod 700 /root/.ssh
+        cat "${SSH_KEY_ARG}" >> /root/.ssh/authorized_keys
+        chmod 600 /root/.ssh/authorized_keys
+        log "SSH Key aus ${SSH_KEY_ARG} installiert"
+    fi
 }
 
 ###############################################################################
 # 3. SSH HÄRTEN
 ###############################################################################
 section3() {
+    # Überspringe wenn SKIP_SSH_HARDEN gesetzt
+    if [ "${SKIP_SSH_HARDEN:-}" = "1" ]; then
+        warn "SSH-Härtung übersprungen (SKIP_SSH_HARDEN=1)"
+        return 0
+    fi
+    
     info "=== Schritt 3: SSH Härten ==="
+    
+    # Prüfe OB ein Key existiert - sonst warnen
+    if [ ! -s "/root/.ssh/authorized_keys" ]; then
+        warn "KEIN SSH Key gefunden!"
+        warn "Du wirst nach der Härtung ausgesperrt!"
+        warn "Warte 5 Sekunden... (Strg+C zum Abbrechen)"
+        sleep 5
+    fi
     
     SSH_CONFIG="/etc/ssh/sshd_config"
     
@@ -108,10 +176,35 @@ section3() {
 }
 
 ###############################################################################
-# 4. FAIL2BAN
+# 4. FIREWALL (UFW)
 ###############################################################################
 section4() {
-    info "=== Schritt 4: Fail2ban ==="
+    info "=== Schritt 4: Firewall (UFW) ==="
+    
+    # UFW zurücksetzen falls schon aktiv
+    ufw --force reset 2>/dev/null || true
+    
+    # Defaults
+    ufw default deny incoming
+    ufw default allow outgoing
+    
+    # Erlaube notwendige Ports
+    ufw allow ${SSH_PORT}/tcp comment 'SSH'
+    ufw allow 80/tcp comment 'HTTP'
+    ufw allow 443/tcp comment 'HTTPS'
+    
+    # Port 3000 explizit BLOCKIEREN (nur lokal über Nginx erreichbar)
+    ufw deny 3000/tcp comment 'Node.js direkt gesperrt'
+    
+    ufw --force enable
+    log "Firewall aktiviert: SSH(22), HTTP(80), HTTPS(443) erlaubt. Port 3000 blockiert."
+}
+
+###############################################################################
+# 5. FAIL2BAN
+###############################################################################
+section5() {
+    info "=== Schritt 5: Fail2ban ==="
     
     # SSH Jail (läuft sofort)
     cat > /etc/fail2ban/jail.local << 'EOF'
@@ -158,10 +251,10 @@ EOF
 }
 
 ###############################################################################
-# 5. UNNÖTIGE SERVICES DEAKTIVIEREN
+# 6. UNNÖTIGE SERVICES DEAKTIVIEREN
 ###############################################################################
-section5() {
-    info "=== Schritt 5: Unnötige Services deaktivieren ==="
+section6() {
+    info "=== Schritt 6: Unnötige Services deaktivieren ==="
     
     SERVICES="docker fwupd snapd"
     for svc in ${SERVICES}; do
@@ -174,10 +267,10 @@ section5() {
 }
 
 ###############################################################################
-# 6. SWAP AKTIVIEREN
+# 7. SWAP AKTIVIEREN
 ###############################################################################
-section6() {
-    info "=== Schritt 6: Swap ==="
+section7() {
+    info "=== Schritt 7: Swap ==="
     
     if ! swapon --show | grep -q "/swapfile"; then
         fallocate -l 1G /swapfile
@@ -197,10 +290,10 @@ section6() {
 }
 
 ###############################################################################
-# 7. LOG-ROTATION
+# 8. LOG-ROTATION
 ###############################################################################
-section7() {
-    info "=== Schritt 7: Log-Rotation ==="
+section8() {
+    info "=== Schritt 8: Log-Rotation ==="
     
     cat > /etc/logrotate.d/wal-quartett << 'EOF'
 /var/log/wal-quartett.log {
@@ -219,10 +312,10 @@ EOF
 }
 
 ###############################################################################
-# 8. APP-USER ERSTELLEN
+# 9. APP-USER ERSTELLEN
 ###############################################################################
-section8() {
-    info "=== Schritt 8: App-User erstellen ==="
+section9() {
+    info "=== Schritt 9: App-User erstellen ==="
     
     if ! id "${APP_USER}" &>/dev/null; then
         useradd -r -s /bin/false -d ${APP_DIR} ${APP_USER}
@@ -233,10 +326,10 @@ section8() {
 }
 
 ###############################################################################
-# 9. SYSTEMD SERVICE
+# 10. SYSTEMD SERVICE
 ###############################################################################
-section9() {
-    info "=== Schritt 9: Systemd Service ==="
+section10() {
+    info "=== Schritt 10: Systemd Service ==="
     
     cat > /etc/systemd/system/wal-quartett-server.service << EOF
 [Unit]
@@ -270,10 +363,10 @@ EOF
 }
 
 ###############################################################################
-# 10. VERZEICHNISSE + RECHTE
+# 11. VERZEICHNISSE + RECHTE
 ###############################################################################
-section10() {
-    info "=== Schritt 10: Verzeichnisse und Rechte ==="
+section11() {
+    info "=== Schritt 11: Verzeichnisse und Rechte ==="
     
     mkdir -p ${APP_DIR}
     mkdir -p ${WEB_DIR}
@@ -291,10 +384,10 @@ section10() {
 }
 
 ###############################################################################
-# 11. BACKUP SCRIPT
+# 12. BACKUP SCRIPT
 ###############################################################################
-section11() {
-    info "=== Schritt 11: Backup Script ==="
+section12() {
+    info "=== Schritt 12: Backup Script ==="
     
     cat > /usr/local/bin/wal-quartett-backup.sh << 'EOF'
 #!/bin/bash
@@ -327,10 +420,10 @@ EOF
 }
 
 ###############################################################################
-# 12. AUTOMATISCHE UPDATES
+# 13. AUTOMATISCHE UPDATES
 ###############################################################################
-section12() {
-    info "=== Schritt 12: Automatische Updates ==="
+section13() {
+    info "=== Schritt 13: Automatische Updates ==="
     
     apt-get install -y unattended-upgrades
     
@@ -338,27 +431,33 @@ section12() {
 Unattended-Upgrade::Allowed-Origins {
     "${distro_id}:${distro_codename}-security";
 };
+
+Unattended-Upgrade::Package-Blacklist {
+};
+
 Unattended-Upgrade::AutoFixInterruptedDpkg "true";
 Unattended-Upgrade::MinimalSteps "true";
 Unattended-Upgrade::InstallOnShutdown "false";
 Unattended-Upgrade::Remove-Unused-Dependencies "true";
 Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
 Unattended-Upgrade::SyslogEnable "true";
+Unattended-Upgrade::Verbose "false";
 EOF
 
     cat > /etc/apt/apt.conf.d/20auto-upgrades << 'EOF'
 APT::Periodic::Update-Package-Lists "1";
-APT::Periodic::Unattended-Upgrade "1";
+APT::Periodic::Download-Upgradeable-Packages "1";
 APT::Periodic::AutocleanInterval "7";
+APT::Periodic::Unattended-Upgrade "1";
 EOF
 
     log "Automatische Sicherheits-Updates aktiviert"
 }
 
 ###############################################################################
-# 13. ZUSAMMENFASSUNG
+# 14. ZUSAMMENFASSUNG
 ###############################################################################
-section13() {
+section14() {
     info "=== ZUSAMMENFASSUNG ==="
     
     echo ""
@@ -366,23 +465,24 @@ section13() {
     echo "  WAL-QUARTETT SECURITY BOOTSTRAP ABGESCHLOSSEN"
     echo "═══════════════════════════════════════════════════════════════"
     echo ""
+    echo "✅ System Update"
+    echo "✅ SSH Key eingerichtet"
+    echo "✅ SSH gehärtet (Key-Auth, kein Passwort)"
     echo "✅ Firewall: SSH(22), HTTP(80), HTTPS(443) erlaubt"
-    echo "✅ SSH: Kein Root-Passwort, nur Key-Auth, max 3 Versuche"
     echo "✅ Fail2ban: SSH Brute-Force + Wal-Quartett Rate-Limit"
-    echo "✅ Unnötige Services: Docker, fwupd, snapd deaktiviert"
-    echo "✅ Swap: 1 GB aktiviert (swappiness=10)"
-    echo "✅ Log-Rotation: 14 Tage Aufbewahrung"
-    echo "✅ App-User: ${APP_USER} erstellt"
-    echo "✅ Systemd: Sandbox mit NoNewPrivileges"
-    echo "✅ Backups: Täglich um 07:00 Uhr"
-    echo "✅ Auto-Updates: Sicherheitspatches automatisch"
+    echo "✅ Unnötige Services deaktiviert"
+    echo "✅ Swap: 1 GB aktiviert"
+    echo "✅ Log-Rotation: 14 Tage"
+    echo "✅ App-User: ${APP_USER}"
+    echo "✅ Systemd: Sandbox"
+    echo "✅ Backups: Täglich 07:00"
+    echo "✅ Auto-Updates: Sicherheitspatches"
     echo ""
     echo "📝 Nächste Schritte:"
-    echo "   1. SSH Public Key auf Server kopieren"
-    echo "   2. Node.js installieren (NodeSource oder nvm)"
-    echo "   3. Server-Code nach ${APP_DIR} kopieren"
-    echo "   4. SSL-Zertifikat einrichten (Let's Encrypt)"
-    echo "   5. systemctl start wal-quartett-server"
+    echo "   1. Node.js installieren"
+    echo "   2. Server-Code nach ${APP_DIR} kopieren"
+    echo "   3. SSL-Zertifikat einrichten"
+    echo "   4. systemctl start wal-quartett-server"
     echo ""
     echo "═══════════════════════════════════════════════════════════════"
 }
@@ -403,7 +503,7 @@ main() {
     echo ""
     
     section1
-    section2
+    section2 "$@"
     section3
     section4
     section5
@@ -415,6 +515,7 @@ main() {
     section11
     section12
     section13
+    section14
     
     log "Bootstrap abgeschlossen!"
 }
