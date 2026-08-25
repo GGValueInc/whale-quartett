@@ -168,6 +168,13 @@ function updateTurnIndicator() {
         } else {
             el.innerHTML = `🎯 ${activeName} ist dran!<br><small>Wähle eine Kategorie</small>`;
         }
+    } else if (gameState.gameMode === 'online') {
+        // Online-Modus: echte Namen wie im 2P-Modus
+        if (gameState.waitingForComputer) {
+            el.innerHTML = `⏳ ${otherName} ist dran...<br><small>Bitte warten</small>`;
+        } else {
+            el.innerHTML = `🎯 ${activeName} ist dran!<br><small>Wähle eine Kategorie</small>`;
+        }
     } else {
         if (gameState.currentTurn === 'player') {
             el.innerHTML = '🎯 Du bist dran!<br><small>Wähle eine Kategorie</small>';
