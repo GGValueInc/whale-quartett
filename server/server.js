@@ -248,16 +248,18 @@ function handleSelectCategory(ws, msg) {
         } else if (winner === 2) {
             gs.player2Hand.push(...gs.pot);
         } else {
-            // tie: return each player's card to their hand (we used shift, so put them back)
-            gs.player1Hand.push(gs.player1Card);
-            gs.player2Hand.push(gs.player2Card);
+            // tie: cards stay in pot for next round
+            // pot already contains both cards from line above
         }
 
-        // Clear pot and reset played cards
-        gs.pot = [];
+        // Reset played cards (pot stays for tie rounds)
         gs.player1Card = null;
         gs.player2Card = null;
         gs.currentCategory = null;
+        if (winner !== 0) {
+            // Only clear pot when someone wins
+            gs.pot = [];
+        }
 
         // Update active player (winner unless tie -> unchanged)
         gs.activePlayer = winner === 0 ? gs.activePlayer : winner;
