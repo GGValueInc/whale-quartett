@@ -26,10 +26,15 @@ const RATE_LIMIT_MAX_ROOM_CREATIONS = 5; // max 5 room creations per IP per minu
 const RATE_LIMIT_MAX_MESSAGES = 100; // max 100 messages per IP per minute
 const MAX_ROOMS = 100; // max 100 concurrent rooms
 const MAX_CONCURRENT_CONNECTIONS = 200; // max 200 concurrent WebSocket connections
+const MAX_CONCURRENT_PER_IP = 3; // max 3 concurrent connections per IP
+const CONNECTION_TIMEOUT_MS = 300000; // 5 minutes max connection duration without joining/creating room
 const ROOM_CODE_LENGTH = 6; // increased from 4 to 6 for better entropy
 
 // Rate limit tracking: ip -> { connections: count, roomCreations: count, messages: count, resetAt: timestamp }
 const rateLimits = new Map();
+
+// Track active connections per IP for concurrent limit
+const activeConnectionsByIP = new Map();
 const MAX_FEEDBACK_LENGTH = 2000;
 const FEEDBACK_RETENTION_DAYS = 7;
 const FEEDBACK_FILE = path.join(__dirname, 'feedback', 'messages.json');
@@ -142,6 +147,36 @@ function checkRateLimit(ip, type, max) {
 function isRateLimited(ws, type, max) {
     if (!ws._clientIP) return false; // Allow if no IP available
     return !checkRateLimit(ws._clientIP, type, max);
+}
+
+// === CONNECTION HARDENING: Per-IP concurrent limit ===
+function trackConnectionStart(ip, ws) {
+    if (!activeConnectionsByIP.has(ip)) {
+        activeConnectionsByIP.set(ip, new Set());
+    }
+    activeConnectionsByIP.get(ip).add(ws);
+}
+
+function trackConnectionEnd(ip, ws) {
+    const connections = activeConnectionsByIP.get(ip);
+    if (connections) {
+        connections.delete(ws);
+        if (connections.size === 0) {
+            activeConnectionsByIP.delete(ip);
+        }
+    }
+}
+
+function getActiveConnectionsForIP(ip) {
+    return activeConnectionsByIP.has(ip) ? activeConnectionsByIP.get(ip).size : 0;
+}
+
+function getAllActiveConnections() {
+    let total = 0;
+    for (const [, connections] of activeConnectionsByIP) {
+        total += connections.size;
+    }
+    return total;
 }
 
 // === FEEDBACK SYSTEM ===
@@ -763,19 +798,38 @@ wss.on('connection', (ws, req) => {
     const clientIP = getClientIP(req);
     ws._clientIP = clientIP;
     
-    // SECURITY: Max concurrent connections
+    // SECURITY: Max concurrent connections (global)
     if (wss.clients.size > MAX_CONCURRENT_CONNECTIONS) {
-        console.warn(`[SECURITY] Max connections reached (${MAX_CONCURRENT_CONNECTIONS}), rejecting ${clientIP}`);
+        console.warn(`[SECURITY] Max global connections reached (${MAX_CONCURRENT_CONNECTIONS}), rejecting ${clientIP}`);
         ws.close(1013, 'Server ueberlastet');
         return;
     }
     
-    // SECURITY: Rate limit connections per IP
+    // SECURITY: Max concurrent connections per IP
+    const activeForIP = getActiveConnectionsForIP(clientIP);
+    if (activeForIP >= MAX_CONCURRENT_PER_IP) {
+        console.warn(`[SECURITY] Max concurrent connections for ${clientIP} reached (${MAX_CONCURRENT_PER_IP}), rejecting`);
+        ws.close(1013, 'Zu viele gleichzeitige Verbindungen');
+        return;
+    }
+    
+    // SECURITY: Rate limit connections per IP (per minute)
     if (!checkRateLimit(clientIP, 'connections', RATE_LIMIT_MAX_CONNECTIONS)) {
         console.warn(`[SECURITY] Rate limit exceeded for ${clientIP}`);
         ws.close(1013, 'Zu viele Verbindungen');
         return;
     }
+    
+    // Track this connection
+    trackConnectionStart(clientIP, ws);
+    
+    // SECURITY: Auto-close idle connections after timeout
+    const connectionTimeout = setTimeout(() => {
+        if (ws.readyState === WebSocket.OPEN && !playerRooms.has(ws)) {
+            console.warn(`[SECURITY] Connection timeout for ${clientIP}, closing idle connection`);
+            ws.close(1013, 'Verbindungs-Timeout');
+        }
+    }, CONNECTION_TIMEOUT_MS);
     
     console.log(`[${nowISO()}] Neuer Spieler verbunden (${clientIP})`);
 
@@ -832,6 +886,8 @@ wss.on('connection', (ws, req) => {
     });
 
     ws.on('close', () => {
+        clearTimeout(connectionTimeout);
+        trackConnectionEnd(clientIP, ws);
         handleDisconnect(ws);
     });
 
