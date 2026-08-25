@@ -18,6 +18,18 @@ const WebSocket = require('ws');
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 const MAX_PLAYERNAME_LENGTH = 30;
 const MAX_MESSAGE_SIZE = 64 * 1024; // 64 KB defensive limit
+
+// === SECURITY: Rate Limiting ===
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const RATE_LIMIT_MAX_CONNECTIONS = 30; // max 30 connections per IP per minute
+const RATE_LIMIT_MAX_ROOM_CREATIONS = 5; // max 5 room creations per IP per minute
+const RATE_LIMIT_MAX_MESSAGES = 100; // max 100 messages per IP per minute
+const MAX_ROOMS = 100; // max 100 concurrent rooms
+const MAX_CONCURRENT_CONNECTIONS = 200; // max 200 concurrent WebSocket connections
+const ROOM_CODE_LENGTH = 6; // increased from 4 to 6 for better entropy
+
+// Rate limit tracking: ip -> { connections: count, roomCreations: count, messages: count, resetAt: timestamp }
+const rateLimits = new Map();
 const MAX_FEEDBACK_LENGTH = 2000;
 const FEEDBACK_RETENTION_DAYS = 7;
 const FEEDBACK_FILE = path.join(__dirname, 'feedback', 'messages.json');
@@ -98,6 +110,40 @@ function trackError(reason) {
     saveStatsToDisk();
 }
 
+// === SECURITY: Rate Limit Helpers ===
+function getClientIP(req) {
+    return req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket.remoteAddress || 'unknown';
+}
+
+function getRateLimitEntry(ip) {
+    const now = Date.now();
+    if (!rateLimits.has(ip)) {
+        rateLimits.set(ip, { connections: 0, roomCreations: 0, messages: 0, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    }
+    const entry = rateLimits.get(ip);
+    if (now > entry.resetAt) {
+        entry.connections = 0;
+        entry.roomCreations = 0;
+        entry.messages = 0;
+        entry.resetAt = now + RATE_LIMIT_WINDOW_MS;
+    }
+    return entry;
+}
+
+function checkRateLimit(ip, type, max) {
+    const entry = getRateLimitEntry(ip);
+    if (entry[type] >= max) {
+        return false;
+    }
+    entry[type]++;
+    return true;
+}
+
+function isRateLimited(ws, type, max) {
+    if (!ws._clientIP) return false; // Allow if no IP available
+    return !checkRateLimit(ws._clientIP, type, max);
+}
+
 // === FEEDBACK SYSTEM ===
 function loadFeedback() {
     try {
@@ -167,11 +213,12 @@ function sanitizePlayerName(name = '') {
 }
 
 function generateRoomCode() {
+    // SECURITY: 6-char hex = 16.7 million combinations (vs 65k for 4-char)
     for (let i = 0; i < 10; i++) {
-        const code = crypto.randomBytes(2).toString('hex').toUpperCase().slice(0, 4);
+        const code = crypto.randomBytes(3).toString('hex').toUpperCase().slice(0, ROOM_CODE_LENGTH);
         if (!rooms.has(code)) return code;
     }
-    return Math.random().toString(36).substring(2, 6).toUpperCase();
+    return crypto.randomBytes(4).toString('hex').toUpperCase().slice(0, ROOM_CODE_LENGTH);
 }
 
 function shuffle(array) {
@@ -237,6 +284,17 @@ function updateActivity(room) {
 
 // === MESSAGE HANDLERS ===
 function handleCreateRoom(ws, msg) {
+    // SECURITY: Rate limit room creation
+    if (isRateLimited(ws, 'roomCreations', RATE_LIMIT_MAX_ROOM_CREATIONS)) {
+        sendToPlayer(ws, { type: 'error', message: 'Zu viele Raum-Erstellungen. Bitte warte einen Moment.' });
+        return;
+    }
+    // SECURITY: Max rooms limit
+    if (rooms.size >= MAX_ROOMS) {
+        sendToPlayer(ws, { type: 'error', message: 'Server ist momentan ueberlastet. Bitte versuche es spaeter erneut.' });
+        return;
+    }
+    
     const playerName = sanitizePlayerName(msg.playerName || 'Spieler 1');
     const roomCode = generateRoomCode();
 
@@ -702,7 +760,24 @@ const httpServer = http.createServer((req, res) => {
 const wss = new WebSocket.Server({ server: httpServer, maxPayload: MAX_MESSAGE_SIZE });
 
 wss.on('connection', (ws, req) => {
-    console.log(`[${nowISO()}] Neuer Spieler verbunden (${req.socket.remoteAddress || 'unknown'})`);
+    const clientIP = getClientIP(req);
+    ws._clientIP = clientIP;
+    
+    // SECURITY: Max concurrent connections
+    if (wss.clients.size > MAX_CONCURRENT_CONNECTIONS) {
+        console.warn(`[SECURITY] Max connections reached (${MAX_CONCURRENT_CONNECTIONS}), rejecting ${clientIP}`);
+        ws.close(1013, 'Server ueberlastet');
+        return;
+    }
+    
+    // SECURITY: Rate limit connections per IP
+    if (!checkRateLimit(clientIP, 'connections', RATE_LIMIT_MAX_CONNECTIONS)) {
+        console.warn(`[SECURITY] Rate limit exceeded for ${clientIP}`);
+        ws.close(1013, 'Zu viele Verbindungen');
+        return;
+    }
+    
+    console.log(`[${nowISO()}] Neuer Spieler verbunden (${clientIP})`);
 
     ws.on('message', (data) => {
         if (!data) return;
