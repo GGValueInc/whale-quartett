@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Wal-Quartett 🐋 – Digitales Spiel</title>
-    <link rel="stylesheet" href="css/game.css?v=27">
+    <link rel="stylesheet" href="css/game.css?v=33">
 </head>
 <body>
 <!-- === SCREEN 1: START === -->
@@ -116,7 +116,7 @@
         <div class="game-info">
             <span class="score-display" id="score-display">Du: 16 · Computer: 16</span>
             <button class="btn-small" onclick="toggleSoundUI()">🔊</button>
-            <button class="btn-small" onclick="quitGame()">🏠 Menü</button>
+            <button class="btn-small" onclick="toggleSoundUI()">🔊</button><button class="btn-small" onclick="showFeedbackForm()">💬 Feedback</button><button class="btn-small" onclick="quitGame()">🏠 Menü</button>
         </div>
     </div>
     <div class="playing-area">
@@ -202,9 +202,10 @@
     </div>
 </div>
 <!-- === SCRIPTS === -->
-<script src="js/cards.js?v=27"></script>
-<script src="js/audio.js?v=27"></script>
-<script src="js/game.js?v=27"></script>
+<script src="js/cards.js?v=33"></script>
+<script src="js/audio.js?v=33"></script>
+    <script src="js/feedback.js?v=33"></script>
+<script src="js/game.js?v=33"></script>
 <!-- === ONLINE 1vs1 LOGIC === -->
 <script>
     // === ONLINE 1v1 MODE ===

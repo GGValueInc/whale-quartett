@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wal-Quartett Feedback</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 10px; font-size: 2rem; }
+        .subtitle { text-align: center; color: #8ec5e8; margin-bottom: 30px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        .stat-card h3 { font-size: 2rem; color: #4ecdc4; margin-bottom: 5px; }
+        .stat-card p { color: #8ec5e8; font-size: 0.9rem; }
+        .messages-list { margin-top: 20px; }
+        .message {
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 3px solid #4ecdc4;
+        }
+        .message.reviewed { border-left-color: #45b7a0; opacity: 0.6; }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #8ec5e8;
+        }
+        .message-text { line-height: 1.5; }
+        .review-btn {
+            background: #4ecdc4;
+            color: #0f2027;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+        .review-btn:hover { background: #45b7a0; }
+        .empty { text-align: center; color: #8ec5e8; padding: 40px; }
+        .refresh-btn {
+            display: block;
+            margin: 0 auto 20px;
+            background: #4ecdc4;
+            color: #0f2027;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .token-input {
+            display: block;
+            margin: 0 auto 20px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            width: 300px;
+            font-size: 1rem;
+        }
+        #login-section { text-align: center; padding: 40px; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐋 Wal-Quartett Feedback</h1>
+        <p class="subtitle">Support-Nachrichten & Spieler-Feedback</p>
+
+        <div id="login-section">
+            <input type="password" class="token-input" id="token" placeholder="Review Token eingeben...">
+            <button class="refresh-btn" onclick="loadFeedback()">Anmelden</button>
+        </div>
+
+        <div id="dashboard" class="hidden">
+            <button class="refresh-btn" onclick="loadFeedback()">🔄 Aktualisieren</button>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="total-count">0</h3>
+                    <p>Gesamt-Nachrichten</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="unreviewed-count">0</h3>
+                    <p>Ungelesen</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="reviewed-count">0</h3>
+                    <p>Bearbeitet</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="retention">7 Tage</h3>
+                    <p>Auto-Loschung</p>
+                </div>
+            </div>
+
+            <div id="messages-list" class="messages-list"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin + '/api';
+
+        async function loadFeedback() {
+            const token = document.getElementById('token').value;
+            if (!token) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/review?token=${token}`);
+                if (!res.ok) throw new Error('Unauthorized');
+                const messages = await res.json();
+
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+
+                document.getElementById('total-count').textContent = messages.length;
+                document.getElementById('unreviewed-count').textContent = messages.filter(m => !m.reviewed).length;
+                document.getElementById('reviewed-count').textContent = messages.filter(m => m.reviewed).length;
+
+                const list = document.getElementById('messages-list');
+                if (messages.length === 0) {
+                    list.innerHTML = '<div class="empty">Keine Nachrichten vorhanden</div>';
+                    return;
+                }
+
+                list.innerHTML = messages.map(m => `
+                    <div class="message ${m.reviewed ? 'reviewed' : ''}">
+                        <div class="message-header">
+                            <span><strong>${escapeHtml(m.name)}</strong> — ${new Date(m.timestamp).toLocaleString('de-DE')}</span>
+                            <span>${m.reviewed ? '✅ Bearbeitet' : '📩 Neu'}</span>
+                        </div>
+                        <div class="message-text">${escapeHtml(m.text)}</div>
+                        ${!m.reviewed ? `<button class="review-btn" onclick="markReviewed('${m.id}', '${token}')">Als bearbeitet markieren</button>` : ''}
+                    </div>
+                `).join('');
+            } catch (err) {
+                alert('Fehler: ' + err.message);
+            }
+        }
+
+        async function markReviewed(id, token) {
+            try {
+                await fetch(`${API_BASE}/review?token=${token}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                loadFeedback();
+            } catch (err) {
+                alert('Fehler beim Markieren');
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            if (!document.getElementById('dashboard').classList.contains('hidden')) {
+                loadFeedback();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
