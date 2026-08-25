@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Wal-Quartett 🐋 – Digitales Spiel</title>
-    <link rel="stylesheet" href="css/game.css?v=35">
+    <link rel="stylesheet" href="css/game.css?v=36">
 </head>
 <body>
 <!-- === SCREEN 1: START === -->
@@ -204,10 +204,10 @@
     </div>
 </div>
 <!-- === SCRIPTS === -->
-<script src="js/cards.js?v=35"></script>
-<script src="js/audio.js?v=35"></script>
-    <script src="js/feedback.js?v=35"></script>
-<script src="js/game.js?v=35"></script>
+<script src="js/cards.js?v=36"></script>
+<script src="js/audio.js?v=36"></script>
+    <script src="js/feedback.js?v=36"></script>
+<script src="js/game.js?v=36"></script>
 <!-- === ONLINE 1vs1 LOGIC === -->
 <script>
     // === ONLINE 1v1 MODE ===
@@ -398,13 +398,48 @@
                 renderSpielerCard(true, true);
                 renderComputerCardBack(true);
                 break;
+            case "gameReconnected":
+                // Spieler hat sich wieder verbunden - aktualisiere Spielstand
+                onlineState.connected = true;
+                onlineState.playerName = msg.playerName || onlineState.playerName;
+                onlineState.opponentName = msg.opponentName || "Gegenspieler";
+                onlineState.isMyTurn = (msg.activePlayer === msg.playerNumber);
+                onlineState.playerNumber = msg.playerNumber;
+                console.log("Wiederverbunden! Spielstand wiederhergestellt.");
+                gameState.gameMode = "online";
+                gameState.currentTurn = onlineState.isMyTurn ? "player" : "computer";
+                gameState.selectedCategory = null;
+                gameState.waitingForComputer = false;
+                hideResult();
+                if (msg.cards) {
+                    if (onlineState.playerNumber === 1) {
+                        gameState.playerHand = msg.cards.player1Hand || [];
+                        gameState.computerHand = msg.cards.player2Hand || [];
+                    } else {
+                        gameState.playerHand = msg.cards.player2Hand || [];
+                        gameState.computerHand = msg.cards.player1Hand || [];
+                    }
+                }
+                updateUI();
+                updateTurnIndicator();
+                renderSpielerCard(true, true);
+                renderComputerCardBack(true);
+                alert("Du bist wieder verbunden! Das Spiel geht weiter.");
+                break;
+            case "opponentReconnected":
+                alert(msg.message || "Dein Gegenspieler ist wieder da!");
+                break;
             case "gameOver":
                 var isWinner = (msg.winner === onlineState.playerNumber);
                 showGameOver(isWinner);
                 break;
             case "opponentDisconnected":
-                alert("Dein Gegenspieler hat das Spiel verlassen.");
-                showStart();
+                if (msg.canReconnect) {
+                    alert("Dein Gegenspieler hat die Verbindung verloren. Warte auf Wiederverbindung...\n\nDu kannst das Spiel weiterfuehren, wenn er sich wieder verbindet.");
+                } else {
+                    alert("Dein Gegenspieler hat das Spiel verlassen.");
+                    showStart();
+                }
                 break;
             case "error":
                 alert("Fehler: " + msg.message);

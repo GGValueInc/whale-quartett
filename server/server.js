@@ -271,7 +271,53 @@ function handleJoinRoom(ws, msg) {
         trackError('joinRoom_notFound');
         return;
     }
-    if (room.players.length >= 2) {
+    // === RECONNECT: Check if this is a reconnect to a paused game ===
+    if (room.status === 'paused' || room.status === 'playing') {
+        const disconnectedPlayer = room.players.find(p => p.disconnected);
+        if (disconnectedPlayer) {
+            // Reconnect!
+            disconnectedPlayer.ws = ws;
+            disconnectedPlayer.disconnected = false;
+            disconnectedPlayer.name = playerName;
+            playerRooms.set(ws, roomCode);
+            room.status = 'playing';
+            updateActivity(room);
+
+            const gs = room.gameState;
+            const opponent = room.players.find(p => p.ws !== ws);
+
+            // Send gameState to reconnected player
+            sendToPlayer(ws, {
+                type: 'gameReconnected',
+                roomCode,
+                playerNumber: disconnectedPlayer.number,
+                playerName: disconnectedPlayer.name,
+                opponentName: opponent ? opponent.name : 'Gegner',
+                activePlayer: gs.activePlayer,
+                cards: {
+                    player1Hand: gs.player1Hand,
+                    player2Hand: gs.player2Hand
+                },
+                round: gs.round,
+                potSize: gs.pot.length
+            });
+
+            // Notify opponent
+            if (opponent && opponent.ws && opponent.ws.readyState === WebSocket.OPEN) {
+                sendToPlayer(opponent.ws, {
+                    type: 'opponentReconnected',
+                    message: `${disconnectedPlayer.name} ist wieder da!`,
+                    opponentName: disconnectedPlayer.name
+                });
+            }
+
+            console.log(`[${nowISO()}] Spieler ${playerName} hat Raum ${roomCode} wieder verbunden`);
+            return;
+        }
+    }
+
+    // === NEW JOIN: Normal join flow ===
+    if (room.players.length >= 2 && !room.players.some(p => p.disconnected)) {
         sendToPlayer(ws, { type: 'error', message: 'Raum ist voll' });
         trackError('joinRoom_full');
         return;
@@ -699,6 +745,9 @@ wss.on('connection', (ws, req) => {
             case 'disconnect':
                 handleDisconnect(ws);
                 break;
+            case 'reconnect':
+                handleJoinRoom(ws, msg); // Reconnect uses same logic as join
+                break;
             case 'feedback':
                 handleFeedback(ws, msg);
                 break;
@@ -743,9 +792,23 @@ loadDeck();
 setInterval(() => {
     const now = Date.now();
     for (const [code, room] of rooms) {
+        // Clean up aborted rooms after 5 minutes
         if (room.status === 'aborted' && now - (room.lastActivity || 0) > 1000 * 60 * 5) {
             rooms.delete(code);
             console.log(`[${nowISO()}] Aborted room ${code} cleaned up`);
+        }
+        // Clean up paused rooms after 10 minutes (allow reconnect)
+        if (room.status === 'paused' && now - (room.lastActivity || 0) > 1000 * 60 * 10) {
+            const duration = room.startedAt ? Math.round((Date.now() - room.startedAt) / 1000) : 0;
+            trackEvent('gameEnd', {
+                roomCode: code,
+                durationSec: duration,
+                rounds: room.gameState ? room.gameState.round : 0,
+                finished: false,
+                when: nowISO()
+            });
+            rooms.delete(code);
+            console.log(`[${nowISO()}] Paused room ${code} cleaned up (no reconnect)`);
         }
     }
 }, 60 * 1000);
