@@ -1,0 +1,24 @@
+[Unit]
+Description=Wal-Quartett WebSocket Server
+After=network.target
+
+[Service]
+Type=simple
+User=walquartett
+Group=walquartett
+WorkingDirectory=/opt/wal-quartett-server
+ExecStart=/usr/bin/node /opt/wal-quartett-server/server.js
+Restart=always
+RestartSec=5
+StandardOutput=append:/var/log/wal-quartett.log
+StandardError=append:/var/log/wal-quartett.log
+
+# SECURITY: Restrict capabilities
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/wal-quartett-server /var/log
+
+[Install]
+WantedBy=multi-user.target

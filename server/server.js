@@ -902,6 +902,6 @@ function shutdown() {
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
 
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, '127.0.0.1', () => {
     console.log(`Wal-Quartett Server (mit Tracker) läuft auf Port ${PORT}`);
 });
