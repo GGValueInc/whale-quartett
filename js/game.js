@@ -302,13 +302,18 @@ function playerSelectCategory(category) {
     // Sound: category ausgewählt
     soundSelect();
     
-    // Visuelle Markierung
-    document.querySelectorAll('.stat-row').forEach(r => r.classList.remove('selected'));
-    const selected = document.querySelector(`[data-cat="${category}"]`);
+    // Visuelle Markierung — nur im eigenen Container
+    const playerContainer = document.getElementById('player-card-container');
+    if (playerContainer) {
+        playerContainer.querySelectorAll('.stat-row').forEach(r => r.classList.remove('selected'));
+    }
+    const selected = document.querySelector(`#player-card-container [data-cat="${category}"]`);
     if (selected) selected.classList.add('selected');
     
-    // Deaktiviere weitere Klicks
-    document.querySelectorAll('.stat-row').forEach(r => r.classList.add('disabled'));
+    // Deaktiviere weitere Klicks — nur im eigenen Container
+    if (playerContainer) {
+        playerContainer.querySelectorAll('.stat-row').forEach(r => r.classList.add('disabled'));
+    }
     
     updateTurnIndicator();
     
@@ -626,21 +631,23 @@ function quitGame() {
 
 // === KEYBOARD SHORTCUTS ===
 document.addEventListener('keydown', (e) => {
+    const resultOverlay = document.getElementById('result-overlay');
+    const rulesOverlay = document.getElementById('rules-overlay');
+    const gameScreen = document.getElementById('game-screen');
+
     if (e.key === 'Escape') {
-        const activeOverlay = document.querySelector('.result-overlay.active');
-        if (activeOverlay) {
-            if (activeOverlay.id === 'result-overlay') nextRound();
-            else if (activeOverlay.id === 'rules-overlay') closeRules();
-        } else if (document.getElementById('game-screen').classList.contains('active')) {
+        if (resultOverlay && resultOverlay.classList.contains('active')) {
+            nextRound();
+        } else if (rulesOverlay && rulesOverlay.classList.contains('active')) {
+            closeRules();
+        } else if (gameScreen && gameScreen.classList.contains('active')) {
             quitGame();
         }
     }
-    if (e.key === ' ' || e.key === 'Enter') {
-        const activeOverlay = document.querySelector('.result-overlay.active');
-        if (activeOverlay && activeOverlay.id === 'result-overlay') {
-            e.preventDefault();
-            nextRound();
-        }
+
+    if ((e.key === 'Enter' || e.code === 'Space' || e.key === ' ') && resultOverlay && resultOverlay.classList.contains('active')) {
+        e.preventDefault();
+        nextRound();
     }
 });
 
