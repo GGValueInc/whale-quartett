@@ -521,26 +521,25 @@ function handleDisconnect(ws) {
     const room = rooms.get(roomCode);
     if (room) {
         const wasPlaying = room.status === 'playing';
-        room.players = room.players.filter(p => p.ws !== ws);
+        const player = room.players.find(p => p.ws === ws);
+        
+        if (player) {
+            player.disconnected = true;
+            player.ws = null;
+            console.log('[RECONNECT] Spieler ' + player.name + ' (' + player.number + ') in Raum ' + roomCode + ' getrennt');
+        }
 
-        if (room.players.length === 0) {
-            const duration = room.startedAt ? Math.round((Date.now() - room.startedAt) / 1000) : 0;
-            trackEvent('gameEnd', {
-                roomCode,
-                durationSec: duration,
-                rounds: room.gameState ? room.gameState.round : 0,
-                finished: room.status === 'finished',
-                when: nowISO()
-            });
-            rooms.delete(roomCode);
-            console.log(`[${nowISO()}] Raum ${roomCode} gelöscht (leer)`);
-        } else {
-            broadcast(roomCode, {
-                type: 'opponentDisconnected',
-                message: 'Gegner hat das Spiel verlassen'
-            });
-            room.status = 'aborted';
+        if (wasPlaying) {
+            room.status = 'paused';
             room.lastActivity = Date.now();
+            const opponent = room.players.find(p => p.ws && p.ws.readyState === WebSocket.OPEN);
+            if (opponent) {
+                sendToPlayer(opponent.ws, {
+                    type: 'opponentDisconnected',
+                    message: 'Gegner hat die Verbindung verloren. Warte auf Wiederverbindung...',
+                    canReconnect: true
+                });
+            }
             trackEvent('disconnect');
         }
     }
