@@ -172,7 +172,8 @@ function updateTurnIndicator() {
         if (gameState.currentTurn === 'player') {
             el.innerHTML = '🎯 Du bist dran!<br><small>Wähle eine Kategorie</small>';
         } else {
-            el.innerHTML = '🤖 Computer\'s turn...<br><small>Bitte warten</small>';
+            const opponentName = gameState.playerNames[1] || 'Computer';
+            el.innerHTML = `⏳ ${opponentName} ist dran...<br><small>Bitte warten</small>`;
         }
     }
 }
