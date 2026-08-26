@@ -7,6 +7,43 @@ function showFeedbackForm() {
     var text = prompt('Dein Feedback oder Bug-Report:');
     if (!text || text.trim() === '') return;
     
+    // Client-seitige Prompt Injection Erkennung
+    var injectionPatterns = [
+        /ignore previous instructions/i,
+        /system prompt/i,
+        /you are now/i,
+        /override/i,
+        /bypass/i,
+        /forget everything/i,
+        /act as/i,
+        /pretend to be/i,
+        /exec\s*\(/i,
+        /eval\s*\(/i,
+        /system\s*\(/i,
+        /child_process/i,
+        /run this/i,
+        /execute this/i,
+        /jailbreak/i,
+        /DAN MODE/i,
+        /DEVELOPER MODE/i,
+        /```/,
+        /\[SYSTEM\]/,
+        /\[ADMIN\]/
+    ];
+    
+    for (var i = 0; i < injectionPatterns.length; i++) {
+        if (injectionPatterns[i].test(text)) {
+            alert('Deine Nachricht enthaelt potenziell unsichere Inhalte und wurde nicht gesendet.');
+            return;
+        }
+    }
+    
+    // Maximale Laenge
+    if (text.length > 2000) {
+        alert('Nachricht zu lang (maximal 2000 Zeichen).');
+        return;
+    }
+    
     var payload = JSON.stringify({ name: name || 'Anonym', message: text.trim() });
     
     // Versuche zuerst WebSocket (falls im Spiel)
