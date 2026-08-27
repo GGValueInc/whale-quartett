@@ -488,6 +488,8 @@
                 onlineState.connected = true;
                 onlineState.playerName = msg.playerName || onlineState.playerName;
                 onlineState.opponentName = msg.opponentName || "Gegenspieler";
+                onlineState.avatar = msg.avatar || onlineState.avatar;
+                onlineState.opponentAvatar = msg.opponentAvatar || "🐋";
                 onlineState.isMyTurn = (msg.activePlayer === msg.playerNumber);
                 onlineState.playerNumber = msg.playerNumber;
                 console.log("Spiel startet!");
@@ -558,6 +560,8 @@
                 onlineState.connected = true;
                 onlineState.playerName = msg.playerName || onlineState.playerName;
                 onlineState.opponentName = msg.opponentName || "Gegenspieler";
+                onlineState.avatar = msg.avatar || onlineState.avatar;
+                onlineState.opponentAvatar = msg.opponentAvatar || "🐋";
                 onlineState.isMyTurn = (msg.activePlayer === msg.playerNumber);
                 onlineState.playerNumber = msg.playerNumber;
                 console.log("Wiederverbunden! Spielstand wiederhergestellt.");
@@ -608,6 +612,7 @@
         console.log("startOnlineGame aufgerufen");
         gameState.gameMode = "online";
         gameState.playerNames = [onlineState.playerName, onlineState.opponentName];
+        gameState.playerAvatars = [onlineState.avatar, onlineState.opponentAvatar];
         gameState.playerHand = Array.isArray(myCards) ? myCards.slice() : [];
         gameState.computerHand = Array.isArray(oppCards) ? oppCards.slice() : [];
         gameState.jackpot = [];

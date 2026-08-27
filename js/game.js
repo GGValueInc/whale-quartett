@@ -154,9 +154,10 @@ function updateUI() {
     document.getElementById('score-display').textContent = `${p1Name}: ${gameState.playerHand.length} · ${p2Name}: ${gameState.computerHand.length}`;
     
     // Zonennamen aktualisieren (wichtig für 2P-Modus)
-    document.getElementById('player-zone-name').textContent = '👤 ' + p1Name;
-    const p2Icon = (gameState.gameMode === '2p' || gameState.gameMode === 'online') ? '👤' : '🤖';
-    document.getElementById('computer-zone-name').textContent = p2Icon + ' ' + p2Name;
+    var p1Avatar = (gameState.playerAvatars && gameState.playerAvatars[0]) || '👤';
+    var p2Avatar = (gameState.playerAvatars && gameState.playerAvatars[1]) || ((gameState.gameMode === '2p' || gameState.gameMode === 'online') ? '👤' : '🤖');
+    document.getElementById('player-zone-name').textContent = p1Avatar + ' ' + p1Name;
+    document.getElementById('computer-zone-name').textContent = p2Avatar + ' ' + p2Name;
     
     const jackpotCount = gameState.jackpot.length;
     document.getElementById('jackpot-count').textContent = `${jackpotCount} Karten`;
