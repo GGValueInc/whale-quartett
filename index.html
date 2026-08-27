@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Wal-Quartett 🐋 – Digitales Spiel</title>
-    <link rel="stylesheet" href="css/game.css?v=36">
+    <link rel="stylesheet" href="css/game.css?v=37">
 
 <style>
 /* === CHAT === */
@@ -318,10 +318,10 @@
     </div>
 </div>
 <!-- === SCRIPTS === -->
-<script src="js/cards.js?v=36"></script>
-<script src="js/audio.js?v=36"></script>
-    <script src="js/feedback.js?v=36"></script>
-<script src="js/game.js?v=36"></script>
+<script src="js/cards.js?v=37"></script>
+<script src="js/audio.js?v=37"></script>
+    <script src="js/feedback.js?v=37"></script>
+<script src="js/game.js?v=37"></script>
 <!-- === ONLINE 1vs1 LOGIC === -->
 <script>
     // === ONLINE 1v1 MODE ===
@@ -481,6 +481,7 @@
                 }
                 startOnlineGame(myCards, oppCards);
                 showChat();
+                clearChat();
                 break;
             case "categorySelected":
                 if (msg.activePlayer !== onlineState.playerNumber) {
@@ -496,7 +497,7 @@
                 gameState.currentTurn = onlineState.isMyTurn ? "player" : "computer";
                 gameState.selectedCategory = null;
                 gameState.waitingForComputer = false;
-                hideResult();
+                // hideResult entfernt - Bug #15: Overlay soll erst nach Klick schliessen
                 
                 // Karten aus Server-Nachricht übernehmen (echte Karten-Objekte)
                 if (msg.cards) {
@@ -525,7 +526,7 @@
                 gameState.currentTurn = onlineState.isMyTurn ? "player" : "computer";
                 gameState.selectedCategory = null;
                 gameState.waitingForComputer = false;
-                hideResult();
+                // hideResult entfernt - Bug #15: Overlay soll erst nach Klick schliessen
                 if (msg.cards) {
                     if (onlineState.playerNumber === 1) {
                         gameState.playerHand = msg.cards.player1Hand || [];
@@ -585,15 +586,27 @@
     function handleOnlineRoundResult(result) {
         var isWinner = (result.winner === onlineState.playerNumber);
         var isDraw = (result.winner === 0);
+        var catName = result.category || '?';
+        var catLabel = {
+            'length': '📏 Laenge',
+            'weight': '⚖ Gewicht',
+            'speed': '💨 Geschwindigkeit',
+            'depth': '🌊 Tauchtiefe',
+            'lifespan': '❤ Lebenserwartung'
+        }[catName] || catName;
+        
+        var myVal = result.player1Card && result.player1Card[catName] || '?';
+        var oppVal = result.player2Card && result.player2Card[catName] || '?';
+        var myName = result.player1Card ? result.player1Card.name : '?';
+        var oppName = result.player2Card ? result.player2Card.name : '?';
+        
         if (isDraw) {
-            showResult("🤝", "Unentschieden!", "Die Karten gehen in den Jackpot.");
+            showResult("🤝", "Unentschieden!", catLabel + ": " + myName + " (" + myVal + ") vs " + oppName + " (" + oppVal + ")\n\nDie Karten gehen in den Jackpot.");
         } else if (isWinner) {
-            showResult("🏆", "Runde gewonnen!", "Du bekommst die Karten.");
+            showResult("🏆", "Runde gewonnen!", catLabel + ": " + myName + " (" + myVal + ") vs " + oppName + " (" + oppVal + ")\n\nDu bekommst die Karten!");
         } else {
-            showResult("😢", "Runde verloren...", onlineState.opponentName + " bekommt die Karten.");
+            showResult("😢", "Runde verloren...", catLabel + ": " + myName + " (" + myVal + ") vs " + oppName + " (" + oppVal + ")\n\n" + onlineState.opponentName + " bekommt die Karten.");
         }
-        // Karten-Staende werden in newRound (2s spaeter) mit echten Karten-Objekten aktualisiert.
-        // Null-Arrays hier wuerden renderSpielerCard() zerstoeren (Bug!).
     }
     // Patche playerSelectCategory fuer Online-Modus
     var _originalPlayerSelectCategory = playerSelectCategory;
@@ -633,6 +646,12 @@
 
 
 // === CHAT ===
+// Chat beim neuen Spiel leeren
+function clearChat() {
+    var container = document.getElementById('chat-messages');
+    if (container) container.innerHTML = '';
+}
+
 function toggleChat() {
     var panel = document.getElementById('chat-panel');
     var btn = document.getElementById('chat-float-btn');
