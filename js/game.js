@@ -27,6 +27,11 @@ function showScreen(screenId) {
 function showStart() {
     showScreen('start-screen');
     hideOverlays();
+    // Chat verstecken wenn zurueck zum Menue
+    var panel = document.getElementById('chat-panel');
+    var wrapper = document.getElementById('chat-float-wrapper');
+    if (panel) panel.style.display = 'none';
+    if (wrapper) wrapper.style.display = 'none';
 }
 
 function showDifficulty() {
