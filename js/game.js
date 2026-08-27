@@ -594,6 +594,11 @@ function nextRound() {
     gameState.waitingForComputer = false;
     gameState.selectedCategory = null;
     
+    // Im Online-Modus: Server steuert alles, nur Overlay schliessen
+    if (gameState.gameMode === 'online') {
+        return;
+    }
+    
     // Animation-Klassen entfernen
     document.querySelectorAll('.game-card, .card-back').forEach(el => {
         el.classList.remove('win-animation', 'lose-animation', 'draw-animation', 'card-deal-player', 'card-deal-computer');

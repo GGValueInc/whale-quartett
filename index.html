@@ -89,19 +89,42 @@
     font-weight: bold;
     color: #1a1a2e;
 }
-.chat-float-btn {
+.chat-float-wrapper {
     position: fixed;
     bottom: 20px;
     right: 20px;
     width: 50px;
     height: 50px;
-    background: #f0c040;
-    border: none;
-    border-radius: 50%;
-    font-size: 24px;
     cursor: pointer;
     z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.chat-float-img {
+    width: 50px;
+    height: 50px;
+    filter: invert(1) drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    transition: transform 0.2s;
+}
+.chat-float-wrapper:hover .chat-float-img {
+    transform: scale(1.1);
+}
+.chat-badge {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 18px;
+    height: 18px;
+    background: #f0c040;
+    border-radius: 50%;
+    border: 2px solid #1a1a2e;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
 }
 </style>
 
@@ -254,7 +277,7 @@
     <!-- Chat-Bereich -->
     <div class="chat-panel" id="chat-panel" style="display:none;">
         <div class="chat-header">
-            <span>💬 Chat</span>
+            <span><img src="images/chat-icon.png" style="width:20px;height:20px;vertical-align:middle;margin-right:6px;filter:invert(1);" alt=""> Chat</span>
             <button onclick="toggleChat()" class="chat-toggle">×</button>
         </div>
         <div class="chat-messages" id="chat-messages"></div>
@@ -264,7 +287,10 @@
         </div>
     </div>
     <!-- Chat-Float-Button -->
-    <button class="chat-float-btn" id="chat-float-btn" onclick="toggleChat()" style="display:none;">💬</button>
+    <div class="chat-float-wrapper" id="chat-float-wrapper" onclick="toggleChat()" style="display:none;">
+        <img src="images/chat-icon.png" class="chat-float-img" alt="Chat">
+        <div class="chat-badge" id="chat-badge" style="display:none;"></div>
+    </div>
 
 <!-- === ERGEBNIS-OVERLAY === -->
 <div class="result-overlay" id="result-overlay">
@@ -272,7 +298,8 @@
         <div class="result-emoji" id="result-emoji">🏆</div>
         <div class="result-title" id="result-title">Runde gewonnen!</div>
         <div class="result-text" id="result-text">Du bekommst die Karten.</div>
-        <button class="btn-primary" onclick="nextRound()">Weiter ➡️</button>
+        <!-- Im Online-Modus: Nur Overlay schliessen. Im Offline-Modus: nextRound() -->
+        <button class="btn-primary" onclick="if(gameState.gameMode==='online'){hideResult();}else{nextRound();}">Weiter ➡️</button>
     </div>
 </div>
 <!-- === SPIELENDE-OVERLAY === -->
@@ -657,13 +684,14 @@ function clearChat() {
 
 function toggleChat() {
     var panel = document.getElementById('chat-panel');
-    var btn = document.getElementById('chat-float-btn');
+    var wrapper = document.getElementById('chat-float-wrapper');
     if (panel.style.display === 'none') {
         panel.style.display = 'flex';
-        btn.style.display = 'none';
+        wrapper.style.display = 'none';
+        hideChatBadge();
     } else {
         panel.style.display = 'none';
-        btn.style.display = 'flex';
+        wrapper.style.display = 'flex';
     }
 }
 
@@ -688,6 +716,19 @@ function addChatMessage(sender, message, timestamp) {
         '</div>';
     container.innerHTML += html;
     container.scrollTop = container.scrollHeight;
+    // Badge anzeigen wenn Chat geschlossen und Nachricht nicht von mir
+    if (!isMe) showChatBadge();
+}
+
+function showChatBadge() {
+    var panel = document.getElementById('chat-panel');
+    if (panel.style.display === 'none') {
+        document.getElementById('chat-badge').style.display = 'block';
+    }
+}
+
+function hideChatBadge() {
+    document.getElementById('chat-badge').style.display = 'none';
 }
 
 function escapeHtml(text) {
@@ -698,13 +739,14 @@ function escapeHtml(text) {
 
 function showChat() {
     var panel = document.getElementById('chat-panel');
-    var btn = document.getElementById('chat-float-btn');
+    var wrapper = document.getElementById('chat-float-wrapper');
     if (gameState.gameMode === 'online') {
         panel.style.display = 'flex';
-        btn.style.display = 'none';
+        wrapper.style.display = 'none';
+        hideChatBadge();
     } else {
         panel.style.display = 'none';
-        btn.style.display = 'none';
+        wrapper.style.display = 'none';
     }
 }
 
