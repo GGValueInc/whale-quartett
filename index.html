@@ -211,7 +211,7 @@
             <!-- Name: Wird von beiden Spielern benötigt -->
             <label style="font-size: 0.9em; opacity: 0.8; display: block; margin-bottom: 5px;">👤 Dein Name:</label>
             <input type="text" id="online-player-name" value="" placeholder="Gib deinen Namen ein" maxlength="20" style="width: 100%; padding: 12px; margin-bottom: 10px; text-align: center; border-radius: 10px; border: 2px solid #4dabf7; background: rgba(255,255,255,0.1); color: #fff; font-size: 1em;">
-            <label style="font-size: 0.85em; opacity: 0.7; display: block; margin-bottom: 5px;">Wähle deinen Wal-Avatar:</label>
+            <label style="font-size: 0.85em; opacity: 0.7; display: block; margin-bottom: 5px;">Wähle deinen Avatar:</label>
             <div id="avatar-selector" style="display: flex; justify-content: center; gap: 8px; margin-bottom: 20px;">
                 <button onclick="selectAvatar('🐋')" class="avatar-btn selected" data-avatar="🐋" style="font-size: 2em; padding: 8px; border: 3px solid #4dabf7; border-radius: 12px; background: rgba(77,171,247,0.2); cursor: pointer; transition: all 0.2s;">🐋</button>
                 <button onclick="selectAvatar('🦈')" class="avatar-btn" data-avatar="🦈" style="font-size: 2em; padding: 8px; border: 2px solid rgba(255,255,255,0.3); border-radius: 12px; background: rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s;">🦈</button>
@@ -448,9 +448,9 @@
         ws.onopen = function() {
             console.log("WebSocket verbunden");
             if (mode === "create") {
-                ws.send(JSON.stringify({ type: "createRoom", playerName: onlineState.playerName }));
+                ws.send(JSON.stringify({ type: "createRoom", playerName: onlineState.playerName, avatar: onlineState.avatar }));
             } else {
-                ws.send(JSON.stringify({ type: "joinRoom", roomCode: roomCode, playerName: onlineState.playerName }));
+                ws.send(JSON.stringify({ type: "joinRoom", roomCode: roomCode, playerName: onlineState.playerName, avatar: onlineState.avatar }));
             }
         };
         ws.onmessage = function(event) {
