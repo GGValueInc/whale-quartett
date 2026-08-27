@@ -595,10 +595,13 @@
             'lifespan': '❤ Lebenserwartung'
         }[catName] || catName;
         
-        var myVal = result.player1Card && result.player1Card[catName] || '?';
-        var oppVal = result.player2Card && result.player2Card[catName] || '?';
-        var myName = result.player1Card ? result.player1Card.name : '?';
-        var oppName = result.player2Card ? result.player2Card.name : '?';
+        var isPlayer1 = (onlineState.playerNumber === 1);
+        var myCard = isPlayer1 ? result.player1Card : result.player2Card;
+        var oppCard = isPlayer1 ? result.player2Card : result.player1Card;
+        var myVal = myCard && myCard[catName] || '?';
+        var oppVal = oppCard && oppCard[catName] || '?';
+        var myName = myCard ? myCard.name : '?';
+        var oppName = oppCard ? oppCard.name : '?';
         
         if (isDraw) {
             showResult("🤝", "Unentschieden!", catLabel + ": " + myName + " (" + myVal + ") vs " + oppName + " (" + oppVal + ")\n\nDie Karten gehen in den Jackpot.");
