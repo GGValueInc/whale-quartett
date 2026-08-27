@@ -124,9 +124,11 @@ function startGame() {
     showScreen('game-screen');
     updateUI();
     
-    // Update names
-    document.getElementById('player-zone-name').textContent = '👤 ' + gameState.playerNames[0];
-    document.getElementById('computer-zone-name').textContent = '🤖 ' + gameState.playerNames[1];
+    // Update names with avatars
+    var p1Av = (gameState.playerAvatars && gameState.playerAvatars[0]) || '👤';
+    var p2Av = (gameState.playerAvatars && gameState.playerAvatars[1]) || '🤖';
+    document.getElementById('player-zone-name').textContent = p1Av + ' ' + gameState.playerNames[0];
+    document.getElementById('computer-zone-name').textContent = p2Av + ' ' + gameState.playerNames[1];
     
     // Start ambient sound
     startAmbient();
@@ -704,9 +706,11 @@ function startGame2P() {
     showScreen('game-screen');
     updateUI();
     
-    // Update names
-    document.getElementById('player-zone-name').textContent = '👤 ' + gameState.playerNames[0];
-    document.getElementById('computer-zone-name').textContent = '👤 ' + gameState.playerNames[1];
+    // Update names with avatars
+    var p1Av = (gameState.playerAvatars && gameState.playerAvatars[0]) || '👤';
+    var p2Av = (gameState.playerAvatars && gameState.playerAvatars[1]) || '👤';
+    document.getElementById('player-zone-name').textContent = p1Av + ' ' + gameState.playerNames[0];
+    document.getElementById('computer-zone-name').textContent = p2Av + ' ' + gameState.playerNames[1];
     
     // Start ambient sound
     startAmbient();
