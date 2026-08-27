@@ -534,7 +534,11 @@ function resolveRound(category) {
 // === RESULT / GAME OVER DISPLAY ===
 function showResult(emoji, title, text) {
     if (window._resultTimeout) clearTimeout(window._resultTimeout);
-    window._resultTimeout = setTimeout(function() { hideResult(); }, 1500);
+    if (gameState.gameMode !== 'online') {
+        window._resultTimeout = setTimeout(function() { hideResult(); }, 1500);
+    } else {
+        window._resultTimeout = null;
+    }
     document.getElementById('result-emoji').textContent = emoji;
     document.getElementById('result-title').textContent = title;
     document.getElementById('result-text').textContent = text;
