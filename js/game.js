@@ -551,6 +551,10 @@ function showResult(emoji, title, text) {
 
 function hideResult() {
     document.getElementById('result-overlay').classList.remove('active');
+    // Offline: Auto-start next round after overlay closes
+    if (gameState.gameMode !== 'online' && !gameState.gameOver) {
+        nextRound();
+    }
 }
 
 function showGameOver(playerWon) {
