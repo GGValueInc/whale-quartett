@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Wal-Quartett 🐋 – Digitales Spiel</title>
-    <link rel="stylesheet" href="css/game.css?v=37">
+    <link rel="stylesheet" href="css/game.css?v=55">
 
 <style>
 /* === CHAT === */
@@ -357,10 +357,10 @@
     </div>
 </div>
 <!-- === SCRIPTS === -->
-<script src="js/cards.js?v=37"></script>
-<script src="js/audio.js?v=37"></script>
-    <script src="js/feedback.js?v=37"></script>
-<script src="js/game.js?v=37"></script>
+<script src="js/cards.js?v=56"></script>
+<script src="js/audio.js?v=56"></script>
+    <script src="js/feedback.js?v=56"></script>
+<script src="js/game.js?v=56"></script>
 <!-- === ONLINE 1vs1 LOGIC === -->
 <script>
     // === ONLINE 1v1 MODE ===
@@ -436,7 +436,9 @@
         connectWebSocket("join", code);
     }
     function cancelOnlineRoom() {
-        if (ws) { ws.close(); ws = null; }
+        if (ws) { ws.onclose = null; ws.close(); ws = null; }
+        if (window._wsReconnectTimer) { clearInterval(window._wsReconnectTimer); window._wsReconnectTimer = null; }
+        try { localStorage.removeItem('walq_online'); } catch(e) {}
         showStart();
     }
     function connectWebSocket(mode, roomCode) {
@@ -470,16 +472,64 @@
             console.log("WebSocket geschlossen");
             if (onlineState.connected) {
                 onlineState.connected = false;
-                alert("Verbindung unterbrochen");
-                showStart();
+                // RUHEMODUS-RECONNECT: Nicht sofort aufgeben — der Server hält
+                // den Raum 10 min pausiert. Auto-Reconnect mit Backoff (max 3 min).
+                tryReconnectLoop();
             }
         };
     }
+    // === RUHEMODUS-AUTO-RECONNECT ===
+    function tryReconnectLoop() {
+        if (window._wsReconnectTimer) return;  // läuft schon
+        var attempts = 0;
+        var maxWindowMs = 3 * 60 * 1000;  // 3 Minuten aktives Retry-Fenster
+        var startedAt = Date.now();
+        // Nutzer-Hinweis statt harter Rückkehr ins Menü
+        updateTurnIndicator();
+        var hintEl = document.getElementById('turn-indicator');
+        if (hintEl) hintEl.innerHTML = '📡 Verbindung wird wiederhergestellt...<br><small>Spiel wird fortgesetzt</small>';
+        
+        window._wsReconnectTimer = setInterval(function() {
+            attempts++;
+            if (Date.now() - startedAt > maxWindowMs) {
+                clearInterval(window._wsReconnectTimer);
+                window._wsReconnectTimer = null;
+                try { localStorage.removeItem('walq_online'); } catch(e) {}
+                alert("Verbindung konnte nicht wiederhergestellt werden.");
+                showStart();
+                return;
+            }
+            try { if (ws) { ws.onclose = null; ws.close(); } } catch(e) {}
+            var saved = null;
+            try { saved = JSON.parse(localStorage.getItem('walq_online') || 'null'); } catch(e) {}
+            var code = (saved && saved.roomCode) || onlineState.roomCode;
+            var name = (saved && saved.playerName) || onlineState.playerName;
+            if (!code) {
+                clearInterval(window._wsReconnectTimer);
+                window._wsReconnectTimer = null;
+                return;
+            }
+            console.log("Reconnect-Versuch", attempts, "Raum", code);
+            onlineState.playerName = name;
+            connectWebSocket("join", code);
+        }, 5000);
+    }
+    // Sichtbarkeits-Trigger: Handy aus Ruhemodus -> sofortiger Reconnect-Versuch
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible'
+            && gameState.gameMode === 'online'
+            && onlineState.roomCode
+            && (!ws || ws.readyState !== WebSocket.OPEN)) {
+            tryReconnectLoop();
+        }
+    });
     function handleOnlineMessage(msg) {
         switch (msg.type) {
             case "roomCreated":
                 onlineState.roomCode = msg.roomCode;
                 onlineState.playerNumber = msg.playerNumber;
+                // Raum-Code persistieren — überlebt Seiten-Reload nach Ruhemodus
+                try { localStorage.setItem('walq_online', JSON.stringify({ roomCode: msg.roomCode, playerName: onlineState.playerName, t: Date.now() })); } catch(e) {}
                 document.getElementById("online-create-section").style.display = "none";
                 document.getElementById("online-wait-section").style.display = "block";
                 document.getElementById("online-display-code").textContent = msg.roomCode;
@@ -492,6 +542,8 @@
                 onlineState.opponentAvatar = msg.opponentAvatar || "🐋";
                 onlineState.isMyTurn = (msg.activePlayer === msg.playerNumber);
                 onlineState.playerNumber = msg.playerNumber;
+                // Session für Ruhemodus-Reconnect persistieren
+                try { localStorage.setItem('walq_online', JSON.stringify({ roomCode: onlineState.roomCode || msg.roomCode, playerName: onlineState.playerName, t: Date.now() })); } catch(e) {}
                 console.log("Spiel startet!");
                 console.log("Ich:", onlineState.playerName, "vs Gegner:", onlineState.opponentName);
                 console.log("Ich bin Spieler", onlineState.playerNumber, "— am Zug:", onlineState.isMyTurn);
@@ -569,6 +621,7 @@
                 gameState.currentTurn = onlineState.isMyTurn ? "player" : "computer";
                 gameState.selectedCategory = null;
                 gameState.waitingForComputer = false;
+                if (window._wsReconnectTimer) { clearInterval(window._wsReconnectTimer); window._wsReconnectTimer = null; }
                 // hideResult entfernt - Bug #15: Overlay soll erst nach Klick schliessen
                 if (msg.cards) {
                     if (onlineState.playerNumber === 1) {
@@ -583,7 +636,8 @@
                 updateTurnIndicator();
                 renderSpielerCard(true, true);
                 renderComputerCardBack(true);
-                alert("Du bist wieder verbunden! Das Spiel geht weiter.");
+                showChat();
+                hideResult();
                 break;
                         case "chat":
                 addChatMessage(msg.sender, msg.message, msg.timestamp, msg.avatar);
@@ -597,9 +651,11 @@
                 break;
             case "opponentDisconnected":
                 if (msg.canReconnect) {
-                    alert("Dein Gegenspieler hat die Verbindung verloren. Warte auf Wiederverbindung...\n\nDu kannst das Spiel weiterfuehren, wenn er sich wieder verbindet.");
+                    // Gegner im Ruhemodus — Spiel läuft weiter, Server hält Raum pausiert
+                    alert("Dein Gegenspieler hat die Verbindung verloren. Warte auf Wiederverbindung...");
                 } else {
                     alert("Dein Gegenspieler hat das Spiel verlassen.");
+                    try { localStorage.removeItem('walq_online'); } catch(e) {}
                     showStart();
                 }
                 break;

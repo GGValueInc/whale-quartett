@@ -134,6 +134,7 @@ function startGame() {
     startAmbient();
     
     // Zeige Karten mit Deal-Animation
+    saveGameStatePersist();
     if (gameState.currentTurn === 'computer') {
         renderSpielerCard(true, true);
         renderComputerCardBack(true);
@@ -525,10 +526,12 @@ function resolveRound(category) {
     }
     
     updateUI();
+    persistGameSnapshot();
     
     // Check game end
     if (gameState.playerHand.length === 0 || gameState.computerHand.length === 0) {
         gameState.gameOver = true;
+        clearGameStatePersist();
         setTimeout(() => showGameOver(), 1000);
         return;
     }
@@ -541,8 +544,16 @@ function resolveRound(category) {
 
 // === RESULT / GAME OVER DISPLAY ===
 function showResult(emoji, title, text) {
+    // B4-Fix: laufenden Timer IMMER killen bevor neuer gesetzt wird,
+    // sonst Doppel-Navigation wenn Spieler manuell weiterklickt
     if (window._resultTimeout) clearTimeout(window._resultTimeout);
-    window._resultTimeout = setTimeout(function() { hideResult(); }, 2000);
+    window._resultTimeout = setTimeout(function() {
+        if (gameState.gameMode === 'online') {
+            hideResult();
+        } else {
+            nextRound();
+        }
+    }, 2000);
     document.getElementById('result-emoji').textContent = emoji;
     document.getElementById('result-title').textContent = title;
     document.getElementById('result-text').textContent = text;
@@ -551,10 +562,6 @@ function showResult(emoji, title, text) {
 
 function hideResult() {
     document.getElementById('result-overlay').classList.remove('active');
-    // Offline: Auto-start next round after overlay closes
-    if (gameState.gameMode !== 'online' && !gameState.gameOver) {
-        nextRound();
-    }
 }
 
 function showGameOver(playerWon) {
@@ -603,6 +610,8 @@ function showGameOver(playerWon) {
 
 function nextRound() {
     hideResult();
+    // B4-Fix: Button-Klick entwertet den Auto-Weiter-Timer
+    if (window._resultTimeout) { clearTimeout(window._resultTimeout); window._resultTimeout = null; }
     gameState.waitingForComputer = false;
     gameState.selectedCategory = null;
     
@@ -650,6 +659,7 @@ function hideOverlays() {
 function quitGame() {
     if (confirm('Spiel beenden und zum Menü zurückkehren?')) {
         stopAmbient();
+        clearGameStatePersist();  // bewusstes Beenden löscht die Session
         showStart();
     }
 }
@@ -950,9 +960,11 @@ function resolveRound2P(category) {
     }
     
     updateUI();
+    persistGameSnapshot();
     
     if (gameState.playerHand.length === 0 || gameState.computerHand.length === 0) {
         gameState.gameOver = true;
+        clearGameStatePersist();
         setTimeout(() => showGameOver2P(), 1000);
         return;
     }
@@ -977,6 +989,124 @@ function showGameOver2P() {
     soundVictory();
     spawnConfetti();
 }
+
+// === SESSION-RESUME (Handy-Ruhemodus / Tab-Wechsel) ===
+// Spielstand wird bei JEDER Zustandsänderung in localStorage gesichert.
+// Max. 3 Minuten Unterbrechung: Beim Zurückkehren wird die Session automatisch
+// wiederhergestellt. Danach verfällt sie (verhindert "Zombie-Spiele" nach Tagen).
+var RESUME_KEY = 'walq_session';
+var RESUME_MAX_AGE_MS = 3 * 60 * 1000;  // 3 Minuten
+
+function persistGameSnapshot() {
+    try {
+        if (gameState.gameOver || gameState.gameMode === 'online') return;  // Online: Server ist Source of Truth
+        if (!gameState.playerHand.length && !gameState.computerHand.length) return;
+        var snap = {
+            t: Date.now(),
+            mode: gameState.gameMode,
+            diff: gameState.difficulty,
+            turn: gameState.currentTurn,
+            names: gameState.playerNames,
+            avatars: gameState.playerAvatars || null,
+            jackpotCount: gameState.jackpot.length,
+            playerHand: gameState.playerHand.map(c => c ? c.id : null),
+            computerHand: gameState.computerHand.map(c => c ? c.id : null)
+        };
+        localStorage.setItem(RESUME_KEY, JSON.stringify(snap));
+    } catch (e) { /* localStorage voll/blockiert — Resume nur nicht verfügbar */ }
+}
+
+// Alias für ältere Aufrufstelle in startGame()
+function saveGameStatePersist() { persistGameSnapshot(); }
+
+function clearGameStatePersist() {
+    try { localStorage.removeItem(RESUME_KEY); } catch (e) {}
+}
+
+function tryRestoreSession() {
+    try {
+        var raw = localStorage.getItem(RESUME_KEY);
+        if (!raw) return false;
+        var snap = JSON.parse(raw);
+        if (!snap || !snap.t || (Date.now() - snap.t) > RESUME_MAX_AGE_MS) {
+            clearGameStatePersist();
+            return false;
+        }
+        // Hände aus Karten-IDs rekonstruieren (whales-Array ist die Quelle)
+        var byId = {};
+        whales.forEach(w => byId[w.id] = w);
+        var pHand = (snap.playerHand || []).map(id => byId[id]).filter(Boolean);
+        var cHand = (snap.computerHand || []).map(id => byId[id]).filter(Boolean);
+        if (!pHand.length && !cHand.length) { clearGameStatePersist(); return false; }
+        
+        gameState.gameMode = snap.mode || '1p';
+        gameState.difficulty = snap.diff || 'medium';
+        gameState.currentTurn = snap.turn || 'player';
+        gameState.playerNames = snap.names || (gameState.gameMode === '2p' ? ['Spieler 1', 'Spieler 2'] : ['Du', 'Computer']);
+        gameState.playerAvatars = snap.avatars || null;
+        gameState.jackpot = new Array(snap.jackpotCount || 0).fill(null);
+        gameState.playerHand = pHand;
+        gameState.computerHand = cHand;
+        gameState.selectedCategory = null;
+        gameState.waitingForComputer = false;
+        gameState.gameOver = false;
+        
+        // Spielstand IST restauriert — ab hier nur noch Anzeige. DOM/Audio-Fehler
+        // dürfen die restaurierte Session NICHT mehr vernichten.
+        try {
+            showScreen('game-screen');
+            updateUI();
+            updateTurnIndicator();
+            renderSpielerCard(true, true);
+            renderComputerCardBack(true);
+            if (gameState.gameMode === '2p') hideInactiveSpielerCard();
+            startAmbient();
+        } catch (renderErr) {
+            console.warn('Resume: Anzeige-Fehler (Spielstand bleibt erhalten):', renderErr);
+        }
+
+        if (gameState.currentTurn === 'computer') {
+            setTimeout(() => computerPlaysTurn(), 1500);
+        }
+        return true;
+    } catch (e) {
+        // Nur Parsing/Struktur-Fehler verwerfen die Session
+        clearGameStatePersist();
+        return false;
+    }
+}
+
+// Auto-Resume: Seite wird wieder sichtbar ( Handy aus Ruhemodus zurück )
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible'
+        && !gameState.gameOver
+        && document.getElementById('game-screen')
+        && !document.getElementById('game-screen').classList.contains('active')
+        && !document.getElementById('gameover-overlay').classList.contains('active')) {
+        tryRestoreSession();
+    }
+});
+
+// Resume-Angebot beim Start: nur wenn frische Session existiert
+window.addEventListener('load', function() {
+    try {
+        var raw = localStorage.getItem(RESUME_KEY);
+        if (raw) {
+            var snap = JSON.parse(raw);
+            if (snap && snap.t && (Date.now() - snap.t) <= RESUME_MAX_AGE_MS) {
+                setTimeout(function() {
+                    if (confirm('Laufendes Spiel wieder fortsetzen?')) {
+                        tryRestoreSession();
+                    } else {
+                        clearGameStatePersist();
+                    }
+                }, 400);
+            } else {
+                clearGameStatePersist();
+            }
+        }
+    } catch (e) {}
+});
 
 // === INIT ===
 console.log('🐋 Wal-Quartett Spiel geladen. Klicke auf "Neues Spiel" um zu beginnen.');
