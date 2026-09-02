@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen am Wal-Quartett Projekt.
 
+## [v5.3.2] - 2026-09-02 (Server, nicht im Repo)
+
+### Fixed
+- **Bug: Kartenzahl von Spieler 1 und 2 nach Reconnect vertauscht (Online-1vs1)**
+  - Problem: Nach gleichzeitigem Disconnect beider Spieler (z.B. beide Handys im Ruhemodus) bekam der zuerst reconnectende Spieler den Slot des anderen — Hände, Kartenanzahl und Namen waren von Spieler 1 ↔ Spieler 2 getauscht
+  - Ursache: Server ordnete Reconnects per `room.players.find(p => p.disconnected)` der Ankunftsreihenfolge zu, nicht der Spieler-Identität
+  - Fix: Slot-Zuordnung jetzt per Spielername (+IP als Disambiguierung), Fallback auf altes Verhalten nur wenn Name nicht eindeutig
+  - Datei: `/opt/wal-quartett-server/server.js` (VPS, Backup: `server.js.v391.backup.swapfix`)
+  - Verifiziert: Simulation gegen echten Server-Code (Bug vorher reproduziert, nach Fix behoben) + Live-E2E-Test über wss://wal-quartett.valueinc.de/ws
+
 ## [v2.5] - 2026-08-25
 
 ### Fixed
