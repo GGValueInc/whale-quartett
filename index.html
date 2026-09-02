@@ -225,7 +225,7 @@
             <p style="font-size: 0.85em; opacity: 0.7; margin: 15px 0;">— oder —</p>
             <div style="margin-top: 10px;">
                 <label style="font-size: 0.9em; opacity: 0.8; display: block; margin-bottom: 5px;">🔑 Raum-Code:</label>
-                <input type="text" id="online-room-code" placeholder="z.B. A7B3" maxlength="6" style="width: 100%; padding: 12px; text-align: center; text-transform: uppercase; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #fff; font-size: 1.2em; letter-spacing: 4px;">
+                <input type="text" id="online-room-code" placeholder="z.B. A7B3C9" maxlength="6" style="width: 100%; padding: 12px; text-align: center; text-transform: uppercase; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #fff; font-size: 1.2em; letter-spacing: 4px;">
                 <button class="btn-primary" onclick="joinOnlineRoom()" style="width: 100%; margin-top: 10px;">🚪 Raum beitreten</button>
             </div>
         </div>
@@ -357,10 +357,10 @@
     </div>
 </div>
 <!-- === SCRIPTS === -->
-<script src="js/cards.js?v=56"></script>
-<script src="js/audio.js?v=56"></script>
-    <script src="js/feedback.js?v=56"></script>
-<script src="js/game.js?v=56"></script>
+<script src="js/cards.js?v=57"></script>
+<script src="js/audio.js?v=57"></script>
+    <script src="js/feedback.js?v=57"></script>
+<script src="js/game.js?v=57"></script>
 <!-- === ONLINE 1vs1 LOGIC === -->
 <script>
     // === ONLINE 1v1 MODE ===
@@ -428,8 +428,8 @@
         }
         var codeInput = document.getElementById("online-room-code");
         var code = codeInput ? codeInput.value.trim().toUpperCase() : "";
-        if (!code || code.length < 4) {
-            alert("Bitte gib einen Code ein!");
+        if (!code || code.length < 6) {
+            alert("Bitte gib einen 6-stelligen Code ein!");
             return;
         }
         onlineState.playerName = name;
@@ -689,11 +689,11 @@
         var catName = result.category || '?';
         var catLabel = {
             'length': '📏 Länge',
-            'weight': '⚖ Gewicht',
+            'weight': '⚖️ Gewicht',
             'speed': '💨 Geschwindigkeit',
-            'dive': '🌊 Tauchtiefe',
-            'depth': '🌊 Tauchtiefe',
-            'lifespan': '❤ Lebenserwartung'
+            'dive': '🤿 Tauchgang',
+            'depth': '🤿 Tauchgang',
+            'lifespan': '⏳ Lebenserwartung'
         }[catName] || catName;
         
         var isPlayer1 = (onlineState.playerNumber === 1);

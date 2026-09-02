@@ -19,7 +19,7 @@ Das ultimative Wal-Kartenspiel — direkt im Browser spielen, keine Installation
 ### 2. Online-Spiel starten
 
 1. **Raum erstellen:** Namen eingeben → auf „Raum erstellen" klicken
-2. **Code weitergeben:** Den 4-stelligen Code deinem Freund zeigen
+2. **Code weitergeben:** Den 6-stelligen Code deinem Freund zeigen
 3. **Freund tritt bei:** Er gibt den Code ein und seinen Namen
 4. **Los geht's!** Ihr bekommt je 16 Karten
 

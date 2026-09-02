@@ -12,6 +12,21 @@ Alle wichtigen Änderungen am Wal-Quartett Projekt.
   - Datei: `/opt/wal-quartett-server/server.js` (VPS, Backup: `server.js.v391.backup.swapfix`)
   - Verifiziert: Simulation gegen echten Server-Code (Bug vorher reproduziert, nach Fix behoben) + Live-E2E-Test über wss://wal-quartett.valueinc.de/ws
 
+## [v5.3.3] - 2026-09-02
+
+### Fixed
+- **Bug: Kategorie „Tauchgang" wurde im Online-Ergebnis-Overlay als „Tauchtiefe" angezeigt**
+  - Problem: Online-1vs1 nutzte eine eigene, veraltete Kategorie-Map im Overlay — `dive` wurde „🌊 Tauchtiefe" gelabelt statt „🤿 Tauchgang" (wie auf den Karten)
+  - Fix: Overlay-Labels an cards.js angeglichen (Tauchgang, Icons ⚖️/⏳ statt ⚖/❤)
+  - Datei: `index.html` (Inline-Online-Modul)
+
+### Changed
+- **Raum-Code-UX an Server angeglichen (Server generiert 6-stellige Codes)**
+  - README „4-stellig" → „6-stellig"
+  - Eingabe-Placeholder „z.B. A7B3" → „z.B. A7B3C9"
+  - Client-Validierung: Code muss jetzt 6 Zeichen lang sein (Server akzeptiert auch weiterhin beliebige Länge ≥1 — keine Breaking Change für laufende Räume)
+  - Cache-Buster v56 → v57
+
 ## [v2.5] - 2026-08-25
 
 ### Fixed
