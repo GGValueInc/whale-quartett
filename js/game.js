@@ -573,6 +573,9 @@ function hideResult() {
 }
 
 function showGameOver(playerWon) {
+    // Rematch-Button standardmäßig verstecken (nur Online-gameOver zeigt ihn)
+    var rbtn = document.getElementById('btn-rematch');
+    if (rbtn) rbtn.style.display = 'none';
     // Online-Modus: playerWon wird vom Server übergeben
     if (gameState.gameMode === 'online') {
         const emoji = playerWon ? '🎉' : '😢';
@@ -983,6 +986,9 @@ function resolveRound2P(category) {
 }
 
 function showGameOver2P() {
+    // Rematch-Button ist online-only: hier sicher verstecken
+    var rbtn = document.getElementById('btn-rematch');
+    if (rbtn) rbtn.style.display = 'none';
     const p1Won = gameState.playerHand.length > gameState.computerHand.length;
     const winnerName = p1Won ? gameState.playerNames[0] : gameState.playerNames[1];
     const emoji = '🎉';

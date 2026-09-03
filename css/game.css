@@ -448,6 +448,27 @@ body {
     margin-bottom: 25px;
 }
 
+/* === GAMEOVER ACTIONS (Rematch, Issue #20) === */
+.gameover-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.gameover-actions .btn-primary {
+    width: 100%;
+}
+
+.btn-gold {
+    background: linear-gradient(135deg, #f0c040, #d9a520);
+    box-shadow: 0 4px 15px rgba(240, 192, 64, 0.35);
+}
+
+.btn-gold:hover {
+    box-shadow: 0 6px 20px rgba(240, 192, 64, 0.55);
+}
+
 /* === ANIMATIONS === */
 @keyframes float {
     0%, 100% { transform: translateY(0); }

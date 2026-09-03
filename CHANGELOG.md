@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen am Wal-Quartett Projekt.
 
+## [v5.5.0] - 2026-09-03
+
+### Added
+- **Rematch: Online-1v1 sofort nochmal spielen (Issue #20)**
+  - Neu: „🔁 Rematch"-Button im Spielende-Overlay (nur Online-Modus, golden, über „Neues Spiel")
+  - Gleiche Lobby: frisch gemischtes Deck, gleicher Raum-Code, keine Neueingabe von Name/Code
+  - Flow: Anfrage → Gegner bekommt Bestätigungs-Dialog → Zustimmung startet neues Spiel für beide (Overlay schließt automatisch)
+  - Ablehnung/Timeout (30 s) → „rematchCancelled" mit Hinweistext, Button kommt zurück
+  - Server: neuer WS-Type `rematch` (handleRematch/startRematchGame), Decline-Flow, Guards (nur nach Spielende, Doppel-Anfragen ignoriert); `finished`-Rooms werden jetzt nach 3 min aufgeräumt (bisher nie — Leak)
+  - Server-Datei liegt auf VPS/Stage (`/opt/wal-quartett-server/server.js`), nicht im Repo; E2E-Test 15/15 auf Stage bestanden
+
 ## [v5.4.0] - 2026-09-03
 
 ### Added
