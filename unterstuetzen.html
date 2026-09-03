@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Wal-Quartett 🐋 – Projekt unterstützen</title>
+    <link rel="stylesheet" href="css/game.css?v=57">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+        .support-box {
+            background: linear-gradient(145deg, #1e3c72, #2a5298);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.2);
+            margin-top: 5vh;
+        }
+        .support-emoji { font-size: 4em; margin-bottom: 10px; }
+        .support-title { font-size: 1.8em; font-weight: bold; margin-bottom: 8px; }
+        .support-text { font-size: 1.05em; opacity: 0.9; line-height: 1.55; margin-bottom: 25px; }
+        .support-alt {
+            display: block;
+            margin-top: 12px;
+            color: #4ecdc4;
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+        .support-alt:hover { text-decoration: underline; }
+        .qr-wrap { margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); }
+        .qr-wrap {
+            background: #fff;
+            border-radius: 12px;
+            padding: 10px;
+            display: inline-block;
+        }
+        .qr-wrap img { width: 170px; height: 170px; display: block; }
+        .qr-hint { font-size: 0.85em; opacity: 0.7; margin-top: 8px; }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+        .back-link:hover { color: #fff; }
+        .fineprint { font-size: 0.78em; opacity: 0.65; margin-top: 18px; line-height: 1.5; }
+        @media (max-width: 480px) {
+            .support-box { padding: 28px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="support-box">
+        <div class="support-emoji">🐋</div>
+        <div class="support-title">Projekt unterstützen</div>
+        <p class="support-text">
+            Wal-Quartett ist kostenlos – keine Werbung, keine In-App-Käufe.
+            Wer das Projekt gern unterstützen möchte, kann hier einen Beitrag
+            für Server, Domain und neue Karten-Serien geben.
+        </p>
+
+        <div id="kofi-widget-wrap">
+            <a href="https://ko-fi.com/M6V626AC0T" target="_blank" rel="noopener" style="display:block;width:100%;background:#f5bb73;color:#1a1a2e;border-radius:25px;padding:15px;font-size:1.15em;font-weight:bold;text-decoration:none;">☕ Let's share a coffee</a>
+        </div>
+        <a class="support-alt" href="#" onclick="goPaypal(); return false;">Alternativ über PayPal</a>
+
+        <div class="qr-wrap">
+            <img src="images/qr-support.png" alt="QR-Code: Wal-Quartett unterstützen">
+        </div>
+        <p class="qr-hint">Zum Teilen: QR scannen → Unterstützen-Seite</p>
+
+        <p class="fineprint">
+            Freiwillige Zuwendung an eine Privatperson – kein Kauf, keine Spendenbescheinigung,
+            steuerlich nicht absetzbar. Es gibt keine Gegenleistung.
+        </p>
+
+        <a class="back-link" href="index.html">⬅️ Zurück zum Spiel</a>
+    </div>
+
+    <script>
+        // === SUPPORT-KONFIG ===
+        // Ko-fi: M6V626AC0T (Widget unten) | PayPal: Link sobald eingerichtet
+        var SUPPORT = {
+            kofi:   "https://ko-fi.com/M6V626AC0T",
+            paypal: "https://www.paypal.com/pool/9sl0lEcNr8?sr=wccr"
+        };
+
+        function goPaypal() {
+            window.open(SUPPORT.paypal, '_blank');
+            return false;
+        }
+    </script>
+    <!-- Ko-fi Widget -->
+    <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script>
+    <script type='text/javascript'>
+        kofiwidget2.init("Let's share a coffee", '#f5bb73', 'M6V626AC0T');
+        document.getElementById('kofi-widget-wrap').innerHTML = kofiwidget2.getHTML();
+    </script>
+</body>
+</html>

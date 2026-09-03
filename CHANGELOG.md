@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen am Wal-Quartett Projekt.
 
+## [v5.4.0] - 2026-09-03
+
+### Added
+- **Unterstützen-Funktion (Ko-fi + PayPal)**
+  - Neu: `unterstuetzen.html` — Support-Seite im Spiel-Design mit Ko-fi-Widget („Let's share a coffee", ID M6V626AC0T), PayPal-Pool-Link, Fallback-Button bei CDN-Block und QR-Code auf die Support-Seite
+  - Neu: „💛 Unterstützen"-Button auf dem Start-Screen + Overlay (`support-overlay`, gleiche Bauweise wie Spielanleitung) → leitet auf die Support-Seite
+  - Neu: `showSupport()`/`closeSupport()` in `js/game.js`, Cache-Buster game.js v57→v58
+  - Rechtstext: „Freiwillige Zuwendung, keine Spendenbescheinigung, nicht absetzbar" (Privatperson, keine Gegenleistung — Ko-fi-Content-Guidelines § 3.8/3.9 konform)
+  - QR-Code: `images/qr-support.png` → `https://wal-quartett.valueinc.de/unterstuetzen.html`
+
 ## [v5.3.2] - 2026-09-02 (Server, nicht im Repo)
 
 ### Fixed

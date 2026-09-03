@@ -48,6 +48,14 @@ function closeRules() {
     document.getElementById('rules-overlay').classList.remove('active');
 }
 
+function showSupport() {
+    document.getElementById('support-overlay').classList.add('active');
+}
+
+function closeSupport() {
+    document.getElementById('support-overlay').classList.remove('active');
+}
+
 function goToGallery() {
     document.getElementById('gallery-overlay').classList.add('active');
     renderGallery();

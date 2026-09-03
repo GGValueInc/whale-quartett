@@ -148,6 +148,7 @@
     </div>
     <div style="margin-top: 20px;">
         <button class="btn-small" onclick="showFeedbackForm()" style="background: rgba(78,205,196,0.2); color: #4ecdc4; border: 1px solid rgba(78,205,196,0.3); padding: 8px 20px; border-radius: 20px; font-size: 0.85rem; cursor: pointer;">💬 Feedback geben</button>
+        <button class="btn-small" onclick="showSupport()" style="background: rgba(240,192,64,0.2); color: #f0c040; border: 1px solid rgba(240,192,64,0.3); padding: 8px 20px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; margin-left: 8px;">💛 Unterstützen</button>
     </div>
     <p style="margin-top: 20px; opacity: 0.5; font-size: 0.85em;">
         Offline-fähig · Kein Server nötig · Spielstand wird gespeichert
@@ -344,6 +345,25 @@
         </div>
     </div>
 </div>
+<!-- === UNTERSTUETZEN-OVERLAY === -->
+<div class="result-overlay" id="support-overlay">
+    <div class="result-box" style="max-width: 420px;">
+        <div class="result-emoji">💛</div>
+        <div class="result-title">Projekt unterstützen</div>
+        <p style="opacity: 0.9; line-height: 1.5; margin: 10px 0 20px;">
+            Wal-Quartett ist kostenlos – ohne Werbung. Wer mag, kann
+            Server, Domain und neue Karten-Serien mit einem freiwilligen
+            Beitrag unterstützen.
+        </p>
+        <button class="btn-primary" onclick="window.open('unterstuetzen.html', '_blank')">💛 Unterstützen</button>
+        <p style="font-size: 0.78em; opacity: 0.65; margin-top: 15px;">
+            Freiwillige Zuwendung, keine Spendenbescheinigung, nicht absetzbar.
+        </p>
+        <div style="text-align: center; margin-top: 15px;">
+            <button class="btn-secondary" onclick="closeSupport()">Später</button>
+        </div>
+    </div>
+</div>
 <!-- === GALERIE-OVERLAY === -->
 <div class="result-overlay" id="gallery-overlay">
     <div class="result-box" style="max-width: 95vw; max-height: 90vh; overflow-y: auto; text-align: left;">
@@ -360,7 +380,7 @@
 <script src="js/cards.js?v=57"></script>
 <script src="js/audio.js?v=57"></script>
     <script src="js/feedback.js?v=57"></script>
-<script src="js/game.js?v=57"></script>
+<script src="js/game.js?v=58"></script>
 <!-- === ONLINE 1vs1 LOGIC === -->
 <script>
     // === ONLINE 1v1 MODE ===
