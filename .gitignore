@@ -1,0 +1,15 @@
+# Deploy-Interna & lokale Notizen (nie oeffentlich — Flo-Regel)
+docs/
+images/whales_sources/*.xlsx
+images/whales_sources/*.json
+images/whales_sources/missing
+.wiki_extracts.json
+*.bak
+*.bak-*
+
+# Node
+node_modules/
+
+# System
+.DS_Store
+Thumbs.db

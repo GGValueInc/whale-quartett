@@ -204,6 +204,56 @@ function updateTurnIndicator() {
     }
 }
 
+// === CARD INFO FLIP (Issue #24) ===
+function escapeAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function getWhaleInfo(cardId) {
+    return (typeof whaleWikiFacts !== 'undefined') ? whaleWikiFacts[String(cardId)] : null;
+}
+
+function buildInfoBack(card) {
+    const info = getWhaleInfo(card.id);
+    if (!info) return '';
+    const facts = (info.facts || []).map(f => {
+        if (typeof f === 'object' && f !== null && f.t) {
+            return '<li><span class="wq-fact-cat">' + f.c + '</span>' + f.t + '</li>';
+        }
+        return '<li>' + f + '</li>';
+    }).join('');
+    const title = escapeAttr(info.wikiTitle || card.name);
+    let srcLine = 'Quelle: <a href="' + info.wikiUrl + '" target="_blank" rel="noopener">' + title + '</a>';
+    if (info.wikiUrlEn) {
+        srcLine += ' &middot; <a href="' + info.wikiUrlEn + '" target="_blank" rel="noopener">EN: ' +
+                   escapeAttr(info.wikiTitleEn || '') + '</a>';
+    }
+    srcLine += ' (CC BY-SA 4.0)';
+    return `<div class="wq-info-back">
+        <button class="wq-info-close" onclick="unflipCard(this)" aria-label="Zur&uuml;ck zur Karte">&#10005; Schlie&szlig;en</button>
+        <div class="wq-info-head">
+            <h3>${card.emoji} ${card.name}</h3>
+            <span class="sci">${card.scientific}</span>
+        </div>
+        <ul class="wq-info-facts">${facts}</ul>
+        <div class="wq-info-src">${srcLine}</div>
+    </div>`;
+}
+
+function flipCard(el, event) {
+    if (event) event.stopPropagation();
+    const fl = el.closest('.wq-flipper');
+    if (fl) fl.classList.add('flipped');
+    if (typeof soundFlip === 'function') soundFlip();
+}
+
+function unflipCard(btnEl) {
+    const fl = btnEl.closest('.wq-flipper');
+    if (fl) fl.classList.remove('flipped');
+    if (typeof soundFlip === 'function') soundFlip();
+}
+
 // === CARD RENDERING ===
 function renderSpielerCard(active = true, animate = false) {
     const container = document.getElementById('player-card-container');
@@ -217,7 +267,9 @@ function renderSpielerCard(active = true, animate = false) {
     const animClass = animate ? 'card-deal-player' : '';
     
     container.innerHTML = `
-        <div class="game-card ${animClass}">
+        <div class="wq-flipper">
+            <div class="wq-card-inner">
+                <div class="game-card wq-card-front ${animClass}">
             <div class="card-header">
                 <h3>${card.emoji} ${card.name}</h3>
                 <div class="scientific">${card.scientific}</div>
@@ -247,7 +299,10 @@ function renderSpielerCard(active = true, animate = false) {
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
-            <div class="card-footer">${card.fact}</div>
+            <div class="card-footer wq-has-info"><span class="card-fact-text">${card.fact}</span><i class="wq-info-icon" onclick="flipCard(this, event)" role="button" tabindex="0" aria-label="Infos &uuml;ber diesen Wal" title="Infos &uuml;ber diesen Wal">&#9432;</i></div>
+            </div>
+            ${buildInfoBack(card)}
+            </div>
         </div>
     `;
 }
@@ -275,7 +330,9 @@ function renderComputerCardRevealed(highlightCat = null) {
     const card = gameState.computerHand[0];
     
     container.innerHTML = `
-        <div class="game-card slide-in">
+        <div class="wq-flipper">
+            <div class="wq-card-inner">
+                <div class="game-card wq-card-front slide-in">
             <div class="card-header">
                 <h3>${card.emoji} ${card.name}</h3>
                 <div class="scientific">${card.scientific}</div>
@@ -305,7 +362,10 @@ function renderComputerCardRevealed(highlightCat = null) {
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
-            <div class="card-footer">${card.fact}</div>
+            <div class="card-footer wq-has-info"><span class="card-fact-text">${card.fact}</span><i class="wq-info-icon" onclick="flipCard(this, event)" role="button" tabindex="0" aria-label="Infos &uuml;ber diesen Wal" title="Infos &uuml;ber diesen Wal">&#9432;</i></div>
+            </div>
+            ${buildInfoBack(card)}
+            </div>
         </div>
     `;
 }
@@ -800,7 +860,9 @@ function renderSpieler2Card(active = true, animate = false) {
     const animClass = animate ? 'card-deal-computer' : '';
     
     container.innerHTML = `
-        <div class="game-card ${animClass}">
+        <div class="wq-flipper">
+            <div class="wq-card-inner">
+                <div class="game-card wq-card-front ${animClass}">
             <div class="card-header">
                 <h3>${card.emoji} ${card.name}</h3>
                 <div class="scientific">${card.scientific}</div>
@@ -830,7 +892,10 @@ function renderSpieler2Card(active = true, animate = false) {
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
-            <div class="card-footer">${card.fact}</div>
+            <div class="card-footer wq-has-info"><span class="card-fact-text">${card.fact}</span><i class="wq-info-icon" onclick="flipCard(this, event)" role="button" tabindex="0" aria-label="Infos &uuml;ber diesen Wal" title="Infos &uuml;ber diesen Wal">&#9432;</i></div>
+            </div>
+            ${buildInfoBack(card)}
+            </div>
         </div>
     `;
 }
@@ -872,7 +937,9 @@ function renderSpielerCardRevealed(highlightCat = null) {
     const card = gameState.playerHand[0];
     
     container.innerHTML = `
-        <div class="game-card slide-in">
+        <div class="wq-flipper">
+            <div class="wq-card-inner">
+                <div class="game-card wq-card-front slide-in">
             <div class="card-header">
                 <h3>${card.emoji} ${card.name}</h3>
                 <div class="scientific">${card.scientific}</div>
@@ -902,7 +969,10 @@ function renderSpielerCardRevealed(highlightCat = null) {
                     <span class="stat-value">${card.speed} km/h</span>
                 </div>
             </div>
-            <div class="card-footer">${card.fact}</div>
+            <div class="card-footer wq-has-info"><span class="card-fact-text">${card.fact}</span><i class="wq-info-icon" onclick="flipCard(this, event)" role="button" tabindex="0" aria-label="Infos &uuml;ber diesen Wal" title="Infos &uuml;ber diesen Wal">&#9432;</i></div>
+            </div>
+            ${buildInfoBack(card)}
+            </div>
         </div>
     `;
 }

@@ -2,6 +2,34 @@
 
 Alle wichtigen Änderungen am Wal-Quartett Projekt.
 
+## [v5.6.0] - 2026-09-06
+
+### Refined (Flo-Review 3. Runde, Stage v67)
+- Info-Icon oben rechts bündig mit der ersten Fact-Zeile (statt vertikal mittig), pixel-verifiziert (Delta 0px, Desktop+Mobil)
+- Beluga-Steckbrief ohne kyrillische Originalschrift-Floskel („russisch белуха…"); globaler Sweep: keine kyrillischen/IPA-Zeichen mehr in den 96 Fakten (auch Brydewal-Lautschrift, #6-Satzglitch)
+
+### Changed (Issues #26–#28, Flo-Review 2. Runde)
+- **#26:** Info-Icon in den Fact-Bereich (card-footer) verschoben, hellgrau statt im Header; Header clean
+- **#27:** Alle 32 Kartenrücken konsequent Deutsch; Rice-Wal-Fakten übersetzt, Quelllink zeigt auf EN-Artikel („(en.)")
+- **#28:** Fakten wiederholen keine Karten-Statwerte mehr (Dedup-Filter inkl. ausgeschriebener Zahlbereiche + kg→t); Fakten mit Kategorie-Badges gruppiert (Steckbrief/Lebensraum/Merkmale/Verhalten/Bestand & Schutz/Entdeckung & Name), je Karte 3 Fakten, Kategorien pro Karte eindeutig
+
+### Added (v63–v64 Iterationen)
+
+### Added
+- **Karten-Wissensflip: „ℹ️ Info" auf jeder Wal-Karte (Issue #24, Feedback #66920ef4)**
+  - Kleines (i)-Icon oben rechts auf der Kartenfront → Klick dreht die Karte in 3D um (0,55 s)
+  - Rückseite: 2–3 kuratierte Fakten aus dem jeweiligen Wikipedia-Artikel + Direktlink zum Artikel (CC BY-SA 4.0)
+  - Daten: neu `js/whale_wiki_facts.js` (32/32 Wale; #8 Rice-Wal + #22 Pseudorca mit englischem Artikel ergänzt, da kein/kaum deutscher existiert)
+  - Neu `css/card_info_flip.css` (Flip-Pattern: `.wq-flipper` > `.wq-card-inner` rotiert, Front/Back `backface-visibility:hidden`)
+  - Flip in allen Spielmodi (1P/2P/Online — Gegnerkarte bleibt online verdeckt), kein Game-Flow-Eingriff (stat-row-Klicks unberührt)
+  - Schließen-Button auf der Rückseite dreht zurück; Icon zusätzlich per Tastatur fokussierbar (tabindex)
+- **Layout-Fix (2. Iteration, User-Feedback „Info Button neben der Karte"):**
+  - Icon war als `position:absolute` am Flip-Wrapper (fix 300px) hängen — Karte ist aber responsive (Media-Queries 240px/200px) und während der Deal-Animation transformiert → Button schwebte daneben
+  - Fix: Icon in den `.card-header` integriert (Header `position:relative`), Flip-Wrapper auf `width:fit-content` statt fix; Messung bestätigt `iconInCard: true` Desktop+Mobil
+- Stage: VM 111 „game-server" lief zum Deploy-Zeitpunkt nicht → via Proxmox-Host gestartet; Deploy + md5-Verifikation (4 Dateien identisch)
+- Verifikation: Playwright E2E lokal (11 Checks) + auf Stage via SSH-SOCKS — 32/32 Karten mit Flip+Facts+Link, Flip-Zyklus, Rückflip, Round-Resolution intakt, 0 JS-Fehler
+- Wikipedia-Rohdaten (.wiki_extracts.json) und Kuratierungsskripte liegen außerhalb des Repos (Arbeitsdateien)
+
 ## [v5.5.0] - 2026-09-03
 
 ### Added
