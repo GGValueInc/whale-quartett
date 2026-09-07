@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen am Wal-Quartett Projekt.
 
+## [Unreleased] - 2026-09-07 (Stage v68, uncommitted — wartet auf Freigabe)
+
+### Text-Qualitätsoffensive (Komplett-Review aller Spieltexte)
+- **Grammatik/Sprache:** „stundenlange" (Buckelwal), „Walschutz" (Südkaper), 2× „cards" → „Karten" (Spielende), Pottwal-Doppelsatz repariert
+- **Karten-Namen:** #30 Andenkajalvogelwal → Arnoux-Schnabelwal, #24 Nördlicher Bottlenose-Whale → Nördlicher Entenwal, #26 Blainville-Schnabelwal, #31 Baird-Wal, #29 Kleiner Pottwal (wie auf den Rückseiten)
+- **Front-Fakten korrigiert (16 Karten):** Orca „über 90 Jahre" → 80–90 (Wikipedia), Nordkaper-Eisbären-Fiktion entfernt (→ sowjetischer Walfang), „kleinster Wal" relativiert, Längen-Widersprüche (3,5→3,3 m, sieben Meter→ohne Zahl), Cuvier-Tauchzeit konsistent „knapp 4 Std.", Brydewal „Kiemenfalten" → „leistenartige Wülste", „Flügelflecken" → „Flipper-Vorderkanten", Pseudorca/Arnoux-Übertreibungen entfernt
+- **Stat-Duplikate aus Front-Texten entfernt (5):** Finnwal 47 km/h, Grönlandwal 200 Jahre, Orca 80 J., Kogia 2,7 m, Baird 12 m — Zahlen werden jetzt nur noch auf den Karten-Stats gezeigt
+- **Rückseiten-Kategorien:** Blauwal Längen-Fakt → Nahrungs-Verhalten; Labels korrigiert (Karten 1, 7, 10, 12, 20)
+- E2E lokal + Stage grün (32/32, Namen + Text-Stichproben, 0 JS-Fehler)
+
 ## [v5.6.0] - 2026-09-06
 
 ### Refined (Flo-Review 3. Runde, Stage v67)

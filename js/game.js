@@ -663,8 +663,8 @@ function showGameOver(playerWon) {
     const emoji = won ? '🎉' : '😢';
     const title = won ? 'Du hast gewonnen!' : (gameState.gameMode === '2p' ? gameState.playerNames[1] + ' gewinnt!' : 'Computer gewinnt!');
     const text = won
-        ? `Glückwunsch! Du hast alle ${gameState.playerHand.length} cards gesammelt.`
-        : (gameState.gameMode === '2p' ? gameState.playerNames[1] : 'Der Computer') + ` hat alle ${gameState.computerHand.length} cards gesammelt. Nochmal versuchen?`;
+        ? `Glückwunsch! Du hast alle ${gameState.playerHand.length} Karten gesammelt.`
+        : (gameState.gameMode === '2p' ? gameState.playerNames[1] : 'Der Computer') + ` hat alle ${gameState.computerHand.length} Karten gesammelt. Nochmal versuchen?`;
     
     document.getElementById('gameover-emoji').textContent = emoji;
     document.getElementById('gameover-title').textContent = title;
