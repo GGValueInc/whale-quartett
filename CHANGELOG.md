@@ -2,7 +2,7 @@
 
 Alle wichtigen Änderungen am Wal-Quartett Projekt.
 
-## [Unreleased] - 2026-09-07 (Stage v68, uncommitted — wartet auf Freigabe)
+## [v5.6.1] - 2026-09-07
 
 ### Text-Qualitätsoffensive (Komplett-Review aller Spieltexte)
 - **Grammatik/Sprache:** „stundenlange" (Buckelwal), „Walschutz" (Südkaper), 2× „cards" → „Karten" (Spielende), Pottwal-Doppelsatz repariert
