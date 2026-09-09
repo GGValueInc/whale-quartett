@@ -431,6 +431,25 @@ body {
     border: 2px solid rgba(255,255,255,0.2);
 }
 
+/* === SPIELSTATISTIK (Issue #30) === */
+.stats-table {
+    width: 100%;
+    margin-top: 15px;
+    border-collapse: collapse;
+    font-size: 0.85em;
+    text-align: left;
+}
+.stats-table td {
+    padding: 5px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    vertical-align: top;
+}
+.stats-table td:first-child {
+    color: #f0c040;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
 .result-emoji {
     font-size: 4em;
     margin-bottom: 15px;

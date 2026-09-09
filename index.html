@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Wal-Quartett 🐋 – Digitales Spiel</title>
-    <link rel="stylesheet" href="css/game.css?v=62">
+    <link rel="stylesheet" href="css/game.css?v=69">
     <link rel="stylesheet" href="css/card_info_flip.css?v=68">
 
 <style>
@@ -23,7 +23,9 @@
     border-radius: 12px;
     display: flex;
     flex-direction: column;
-    z-index: 1000;
+    /* Issue #31: Chat muss ueber den Overlays (z-index 1000) liegen,
+       damit er auch im Rund-/Win-Screen benutzbar bleibt */
+    z-index: 1100;
     overflow: hidden;
 }
 .chat-header {
@@ -101,7 +103,8 @@
     width: 50px;
     height: 50px;
     cursor: pointer;
-    z-index: 1000;
+    /* Issue #31: Float-Button ebenfalls ueber den Overlays */
+    z-index: 1100;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -385,7 +388,7 @@
 <script src="js/cards.js?v=68"></script>
 <script src="js/audio.js?v=57"></script>
     <script src="js/feedback.js?v=57"></script>
-<script src="js/game.js?v=68"></script>
+<script src="js/game.js?v=69"></script>
 <!-- === ONLINE 1vs1 LOGIC === -->
 <script>
     // === ONLINE 1v1 MODE ===

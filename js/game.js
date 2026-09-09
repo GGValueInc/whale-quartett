@@ -125,6 +125,7 @@ function startGame() {
     gameState.selectedCategory = null;
     gameState.waitingForComputer = false;
     gameState.gameOver = false;
+    resetStats(); // Issue #30
     
     // Random starting player
     gameState.currentTurn = Math.random() < 0.5 ? 'player' : 'computer';
@@ -507,6 +508,86 @@ function findBestCategory(card) {
     return bestCat;
 }
 
+// === STATISTIK-TRACKING (Issue #30) ===
+// Sammelt rundengenaue Stats im lokalen Spiel; Anzeige im GameOver-Overlay.
+gameState.stats = {
+    roundsPlayed: 0,
+    turnCounts: { player: 0, computer: 0 },
+    categoryWins: {},   // categoryKey -> { player: n, computer: n }
+    cardWins: {},       // cardName -> Anzahl gewonnener Runden
+    bestCard: null,     // { name, wins }
+    playerCardValues: {} // cardName -> Summe der eingesetzten Stat-Werte (Info)
+};
+
+function resetStats() {
+    gameState.stats = {
+        roundsPlayed: 0,
+        turnCounts: { player: 0, computer: 0 },
+        categoryWins: {},
+        cardWins: {},
+        bestCard: null,
+        playerCardValues: {}
+    };
+    // Overlay-Box verwerfen, damit das neue Spiel frische Stats bekommt
+    var old = document.getElementById('stats-box');
+    if (old) old.remove();
+}
+
+function trackRound(category, winner, playerCard, computerCard) {
+    const st = gameState.stats;
+    st.roundsPlayed++;
+    st.turnCounts.player++;
+    st.turnCounts.computer++;
+    if (!st.categoryWins[category]) st.categoryWins[category] = { player: 0, computer: 0 };
+    if (winner === 'player' || winner === 'computer') {
+        st.categoryWins[category][winner]++;
+        const winCard = winner === 'player' ? playerCard : computerCard;
+        st.cardWins[winCard.name] = (st.cardWins[winCard.name] || 0) + 1;
+        if (!st.bestCard || st.cardWins[winCard.name] > st.bestCard.wins) {
+            st.bestCard = { name: winCard.name, wins: st.cardWins[winCard.name] };
+        }
+    }
+}
+
+function buildStatsHtml() {
+    const st = gameState.stats;
+    if (!st.roundsPlayed) return '';
+    const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    let rows = '';
+    // Erfolgreichste Karte
+    if (st.bestCard) {
+        rows += `<tr><td>Erfolgreichste Karte</td><td>${esc(st.bestCard.name)} (${st.bestCard.wins} Siege)</td></tr>`;
+    }
+    // Kategorie-Gewinnquoten (nur gespielte Kategorien, sortiert nach Haeufigkeit)
+    const cats = Object.entries(st.categoryWins)
+        .sort((a, b) => (b[1].player + b[1].computer) - (a[1].player + a[1].computer));
+    const catLabelOf = (k) => (window.categories && categories[k] && categories[k].label) || k;
+    for (const [key, w] of cats) {
+        const total = w.player + w.computer;
+        const pct = Math.round(100 * w.player / total);
+        rows += `<tr><td>${esc(catLabelOf(key))}</td><td>${pct} % Spieler · ${100 - pct} % ${esc(gameState.gameMode === '2p' ? (gameState.playerNames[1] || 'Spieler 2') : 'Computer')} (${total} Runden)</td></tr>`;
+    }
+    // Wer war wie oft dran
+    const t = st.turnCounts;
+    rows += `<tr><td>Runden gespielt</td><td>${t.player}</td></tr>`;
+    return rows;
+}
+
+function showStatsOverlay() {
+    const html = buildStatsHtml();
+    if (!html) return;
+    let box = document.getElementById('stats-box');
+    if (!box) {
+        box = document.createElement('div');
+        box.id = 'stats-box';
+        box.innerHTML = '<div class="result-emoji">📊</div><div class="result-title">Spielstatistik</div>' +
+            '<table class="stats-table" id="stats-table"></table>';
+        document.getElementById('gameover-overlay').querySelector('.result-box').appendChild(box);
+    }
+    document.getElementById('stats-table').innerHTML = html;
+    box.style.display = 'block';
+}
+
 // === ROUND RESOLUTION (Phase 4 – mit Animationen) ===
 function resolveRound(category) {
     const playerCard = gameState.playerHand[0];
@@ -595,6 +676,7 @@ function resolveRound(category) {
     
     updateUI();
     persistGameSnapshot();
+    trackRound(category, winner, playerCard, computerCard); // Issue #30
     
     // Check game end
     if (gameState.playerHand.length === 0 || gameState.computerHand.length === 0) {
@@ -648,7 +730,8 @@ function showGameOver(playerWon) {
         document.getElementById('gameover-title').textContent = title;
         document.getElementById('gameover-text').textContent = text;
         document.getElementById('gameover-overlay').classList.add('active');
-        
+        showStatsOverlay(); // Issue #30
+
         if (playerWon) {
             soundVictory();
             spawnConfetti();
@@ -670,6 +753,7 @@ function showGameOver(playerWon) {
     document.getElementById('gameover-title').textContent = title;
     document.getElementById('gameover-text').textContent = text;
     document.getElementById('gameover-overlay').classList.add('active');
+    showStatsOverlay(); // Issue #30
     
     if (won) {
         soundVictory();
@@ -741,6 +825,14 @@ document.addEventListener('keydown', (e) => {
     const rulesOverlay = document.getElementById('rules-overlay');
     const gameScreen = document.getElementById('game-screen');
 
+    // Issue #31: Tippt der Nutzer im Chat-Input (oder einem anderen Textfeld),
+    // muessen Space/Enter/Escape dort ankommen und nicht als Shortcuts wirken.
+    const ae = document.activeElement;
+    if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) {
+        if (e.key === 'Escape') ae.blur(); // Escape verlassen, kein quitGame
+        return;
+    }
+
     if (e.key === 'Escape') {
         if (resultOverlay && resultOverlay.classList.contains('active')) {
             nextRound();
@@ -778,6 +870,7 @@ function startGame2P() {
         document.getElementById('p2-name-1').value || 'Spieler 1',
         document.getElementById('p2-name-2').value || 'Spieler 2'
     ];
+    resetStats(); // Issue #30
     
     const hands = dealCards(2);
     gameState.playerHand = hands[0];
