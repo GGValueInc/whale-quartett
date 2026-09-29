@@ -45,6 +45,42 @@ const categories = {
     speed: { label: "Geschwindigkeit", unit: "km/h", icon: "💨", iconText: "💨" }
 };
 
+// Photo-Credits (29.09.): inhaltsbasiert verifizierte Bildquellen (Commons-Datei per perceptual Match).
+// credit = Overlay-Text; fehlender Eintrag = kein Overlay (PD ohne Nennungspflicht ODER Fotograf unbekannt).
+const PHOTO_CREDITS = {
+    1:  "NOAA Photo Library",                              // Anim1754 (PD)
+    2:  "glynniqua · CC BY-SA 2.0",                        // St. Lawrence fin whale
+    3:  "NOAA, Right Whale Aerial Survey",                 // Balaenoptera borealis 3
+    4:  "Chainfoto · CC BY 4.0",                           // Bryde's whale 1
+    7:  "Charles J. Sharp · CC BY-SA 4.0",                 // Omura's breaching
+    8:  "NOAA Fisheries",                                  // Rice's whale close to surface
+    9:  "Dr. Louis M. Herman · NOAA (PD)",                 // singing position
+    10: "NOAA Photo Library (PD)",                         // Gray whale.jpg (anim0705)
+    11: "Charles J. Sharp · CC BY-SA 4.0",                 // humpback calf Moorea
+    13: "Mark Hoffman & Bruce Long · CC BY-SA 4.0",        // NPRW Kelping 13
+    14: "Hugo Hulsberg · CC0",                             // Südkaper breach
+    16: "Robert Pittman · NOAA (PD)",                      // Killerwhales jumping
+    17: "Cayambe · CC BY-SA 3.0",                          // Globicephala Tenerife
+    18: "USFWS Northeast Region (PD)",                     // RI pilot whales
+    19: "Dr. Kristin Laidre · NOAA (PD)",                  // Anim1108
+    20: "Gazprom Neft press · CC BY-SA 4.0",               // Нарвал
+    21: "NASA (PD)",                                       // Tursiops 01-cropped
+    24: "Saana Isojunno · CC BY-SA 4.0",                   // Hyperoodon amp. jumping
+    23: "Laurent Bouveret · CC BY-SA 4.0",                 // Dominica
+    27: "Gabriel Barathieu · CC BY-SA 2.0",                // Mother and baby sperm whale
+    29: "Robert Pitman · NOAA (PD)",                       // NOAA Pitman
+    30: "James G. Mead · CC0",                             // Arnoux spyhopping
+    31: "NOAA/NMFS (PD)",                                  // Berardius bairdii
+    32: "NOAA (PD)",                                       // Tropical bottlenose whale
+    6:  "J. Strzelecki · CC BY 3.0",                       // Antarctic minky whales (js) 13
+    12: "NOAA / Gray's Reef NMS (PD)",                     // GRNMS Right Whales
+    26: "NOAA Photo Library (PD)",                         // Beaked Whale.jpg
+    5:  "Douglas Croft · NOAA/MBNMS (PD)",                 // Albino-Risso
+    // ohne Overlay (PD, Fotograf nicht dokumentiert / User-Entscheid): 15, 22, 25, 28
+};
+
+function getPhotoCredit(id) { return PHOTO_CREDITS[id] || null; }
+
 // Fisher-Yates Shuffle
 function shuffle(array) {
     const arr = [...array];
