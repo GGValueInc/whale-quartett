@@ -49,15 +49,15 @@
   },
   {
     "id": 5,
-    "name": "Zwergwal",
-    "scientific": "Balaenoptera acutorostrata",
-    "weight": 10,
-    "length": 10,
-    "lifespan": 50,
-    "dive": 17,
-    "speed": 34,
-    "fact": "Kleinster Furchenwal Europas, aber neugierig und wendig. Taucht oft vor Walbeobachtungsbooten auf.",
-    "emoji": "🐳"
+    "name": "Rundkopfdelfin",
+    "scientific": "Grampus griseus",
+    "weight": 0.65,
+    "length": 4.0,
+    "lifespan": 35,
+    "dive": 30,
+    "speed": 37,
+    "fact": "Albino-Risso: fast weißer älterer Bull mit Narbenzeichnung. Frisst fast nur Kopffüßer – dafür nur wenige Zähne im Unterkiefer.",
+    "emoji": "🐬"
   },
   {
     "id": 6,
