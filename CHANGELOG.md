@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen am Wal-Quartett Projekt.
 
+## [v5.7.1] - 2026-09-29
+
+### Karte 5: Zwergwal (Minke) → Rundkopfdelfin (Albino)
+- **Kartenersatz:** Zwergwal (Balaenoptera acutorostrata) raus, Rundkopfdelfin / Risso-Delfin (Grampus griseus) rein — Albino-Exemplar aus Monterey Bay
+- **Daten:** cards.js + whale_facts.json (NOAA-Werte: 0,65 t · 4,0 m · 35 J · 30 min Tauchzeit · 37 km/h)
+- **Rückseiten-Fakten:** whale_wiki_facts.js id 5 (Steckbrief / Narben-Färbung / Teutophagie), Wiki-Link de.wikipedia „Rundkopfdelfin"
+- **Bild:** whale_images/5.jpg = NOAA-Foto Douglas Croft (Public Domain, Bottom-Crop 1080×830, Pin-Overlay der Quelle durch Zuschnitt entfernt, keine Pixel bearbeitet)
+- **Cache-Buster:** v68 → v69 (index.html)
+- E2E live: Galerie zeigen Karte 5 vollständig + korrekte Werte, 0 JS-Fehler
+- Lizenz-Doku: images/whales_commons/Wal_Quartett_Bildlizenzen.xlsx Zeile 33 + ~/wq-bilder/alternative_wal
+
 ## [v5.6.1] - 2026-09-07
 
 ### Text-Qualitätsoffensive (Komplett-Review aller Spieltexte)
