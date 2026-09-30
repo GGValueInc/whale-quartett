@@ -62,6 +62,7 @@ const PHOTOS = {
     23: { name: "L. Bouveret", lic: "CC BY-SA 4.0", src: "https://commons.wikimedia.org/wiki/File:Cuvier%27s_beaked_whale.png" },
     24: { name: "S. Isojunno", lic: "CC BY-SA 4.0", src: "https://commons.wikimedia.org/wiki/File:Hyperoodon_jumping.jpg" },
     27: { name: "G. Barathieu", lic: "CC BY-SA 2.0", src: "https://commons.wikimedia.org/wiki/File:Sperm_whale_mother_and_baby.jpg" },
+    31: { name: "W. St. John",  lic: "CC BY-SA 4.0", src: "https://www.inaturalist.org/observations/9624161" },
 };
 function getPhotoInfo(id) { return PHOTOS[id] || null; }
 function getPhotoCredit(id) { const p = PHOTOS[id]; return p ? p.name : null; }

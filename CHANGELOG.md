@@ -1,3 +1,11 @@
+## [v5.7.4] - 2026-09-30
+### Karte 31: Baird-Wal — Zeichnung → lebend-Pod-Foto
+- **Bildtausch:** File:Berardius bairdii.jpg (NOAA-Zeichnung/Schema) raus, neu = Pod-Foto Monterey 2003 (Wendy St. John, CC BY-SA 4.0, via iNaturalist) — User: „nur ein gezeichnetes Schema"
+- Suche: Commons-Kategorien + iNat-CC-Filte (nur obs 9624161 = CC BY-SA unter allen Baird-Obs), NOAA-S3-Referer-Block → iNat-Route
+- Bearbeitung: Crop 1150×718 (16:10) + Kontrast/Farbe/Sharpness
+- js/cards.js: PHOTOS-Entry 31 = „W. St. John" (CC BY-SA 4.0, iNat-Quelle); Badge = 11 CC-Karten
+- Cache-Buster: v74 → v75
+
 ## [v5.7.3] - 2026-09-30
 ### Karte 29: Kleiner Pottwal → Südlicher Entenwal
 - **Kartenersatz:** Kleiner Pottwal (Kogia sima) raus — User: zu nah an Zwergpottwal (beide Gattung Kogia, Fasskopf, Tiefsee, fast identische Spielwerte)
