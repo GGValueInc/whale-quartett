@@ -46,36 +46,38 @@ const categories = {
 };
 
 // Photo-Credits (29.09.): inhaltsbasiert verifizierte Bildquellen (Commons-Datei per perceptual Match).
-// credit = Overlay-Text; fehlender Eintrag = kein Overlay (PD ohne Nennungspflicht ODER Fotograf unbekannt).
+// Format: NUR Fotografenname, Vorname als Initial mit Punkt (z. B. "H. Hulsberg"); KEINE Lizenzangabe
+// (steht in Excel/LIZENZ.md). Organisationen (NOAA…) und Usernames bleiben ganz.
+// fehlender Eintrag = kein Overlay (PD ohne Nennungspflicht ODER Fotograf unbekannt).
 const PHOTO_CREDITS = {
     1:  "NOAA Photo Library",                              // Anim1754 (PD)
-    2:  "glynniqua · CC BY-SA 2.0",                        // St. Lawrence fin whale
+    2:  "glynniqua",                                       // St. Lawrence fin whale (CC BY-SA 2.0)
     3:  "NOAA, Right Whale Aerial Survey",                 // Balaenoptera borealis 3
-    4:  "Chainfoto · CC BY 4.0",                           // Bryde's whale 1
-    7:  "Charles J. Sharp · CC BY-SA 4.0",                 // Omura's breaching
+    4:  "Chainfoto",                                       // Bryde's whale 1 (CC BY 4.0)
+    7:  "C. J. Sharp",                                     // Omura's breaching (CC BY-SA 4.0)
     8:  "NOAA Fisheries",                                  // Rice's whale close to surface
-    9:  "Dr. Louis M. Herman · NOAA (PD)",                 // singing position
-    10: "NOAA Photo Library (PD)",                         // Gray whale.jpg (anim0705)
-    11: "Charles J. Sharp · CC BY-SA 4.0",                 // humpback calf Moorea
-    13: "Mark Hoffman & Bruce Long · CC BY-SA 4.0",        // NPRW Kelping 13
-    14: "Hugo Hulsberg · CC0",                             // Südkaper breach
-    16: "Robert Pittman · NOAA (PD)",                      // Killerwhales jumping
-    17: "Cayambe · CC BY-SA 3.0",                          // Globicephala Tenerife
-    18: "USFWS Northeast Region (PD)",                     // RI pilot whales
-    19: "Dr. Kristin Laidre · NOAA (PD)",                  // Anim1108
-    20: "Gazprom Neft press · CC BY-SA 4.0",               // Нарвал
-    21: "NASA (PD)",                                       // Tursiops 01-cropped
-    24: "Saana Isojunno · CC BY-SA 4.0",                   // Hyperoodon amp. jumping
-    23: "Laurent Bouveret · CC BY-SA 4.0",                 // Dominica
-    27: "Gabriel Barathieu · CC BY-SA 2.0",                // Mother and baby sperm whale
-    29: "Robert Pitman · NOAA (PD)",                       // NOAA Pitman
-    30: "James G. Mead · CC0",                             // Arnoux spyhopping
-    31: "NOAA/NMFS (PD)",                                  // Berardius bairdii
-    32: "NOAA (PD)",                                       // Tropical bottlenose whale
-    6:  "J. Strzelecki · CC BY 3.0",                       // Antarctic minky whales (js) 13
-    12: "NOAA / Gray's Reef NMS (PD)",                     // GRNMS Right Whales
-    26: "NOAA Photo Library (PD)",                         // Beaked Whale.jpg
-    5:  "Douglas Croft · NOAA/MBNMS (PD)",                 // Albino-Risso
+    9:  "L. M. Herman (NOAA)",                             // singing position
+    10: "NOAA Photo Library",                              // Gray whale.jpg (anim0705)
+    11: "C. J. Sharp",                                     // humpback calf Moorea (CC BY-SA 4.0)
+    13: "M. Hoffman & B. Long",                            // NPRW Kelping 13 (CC BY-SA 4.0)
+    14: "H. Hulsberg",                                     // Südkaper breach (CC0)
+    16: "R. Pittman (NOAA)",                               // Killerwhales jumping
+    17: "Cayambe",                                         // Globicephala Tenerife (CC BY-SA 3.0)
+    18: "USFWS Northeast Region",                          // RI pilot whales
+    19: "K. Laidre (NOAA)",                                // Anim1108
+    20: "Gazprom Neft press",                              // Нарвал (CC BY-SA 4.0)
+    21: "NASA",                                            // Tursiops 01-cropped
+    24: "S. Isojunno",                                     // Hyperoodon amp. jumping (CC BY-SA 4.0)
+    23: "L. Bouveret",                                     // Dominica (CC BY-SA 4.0)
+    27: "G. Barathieu",                                    // Mother and baby sperm whale (CC BY-SA 2.0)
+    29: "R. Pitman (NOAA)",                                // NOAA Pitman
+    30: "J. G. Mead",                                      // Arnoux spyhopping (CC0)
+    31: "NOAA/NMFS",                                       // Berardius bairdii
+    32: "NOAA",                                            // Tropical bottlenose whale
+    6:  "J. Strzelecki",                                   // Antarctic minky whales (js) 13 (CC BY 3.0)
+    12: "NOAA / Gray's Reef NMS",                          // GRNMS Right Whales
+    26: "NOAA Photo Library",                              // Beaked Whale.jpg
+    5:  "D. Croft (NOAA/MBNMS)",                           // Albino-Risso
     // ohne Overlay (PD, Fotograf nicht dokumentiert / User-Entscheid): 15, 22, 25, 28
 };
 

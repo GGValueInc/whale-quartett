@@ -74,7 +74,7 @@ function renderGallery() {
             <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 8px;">${card.emoji} ${card.name}</div>
             <div style="font-size: 0.7em; opacity: 0.7; margin-bottom: 10px;">${card.scientific}</div>
             <div style="position:relative; width:100%; margin-bottom:10px;">
-                <img src="./whale_images/${card.id}.jpg" alt="${card.name}" style="display:block; width: 100%; height: 120px; object-fit: cover; border-radius: 8px; background: #0d2137;">${getPhotoCredit(card.id) ? `<span class="photocredit" style="right:6px;bottom:4px;">📷 ${escapeAttr(getPhotoCredit(card.id))}</span>` : ''}
+                <img src="./whale_images/${card.id}.jpg" alt="${card.name}" style="display:block; width: 100%; height: 120px; object-fit: cover; border-radius: 8px; background: #0d2137;">${getPhotoCredit(card.id) ? `<span class="photocredit" style="right:6px;bottom:4px;">${escapeAttr(getPhotoCredit(card.id))}</span>` : ''}
             </div>
             <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.85em;">
                 <div style="display: flex; justify-content: space-between;">
@@ -279,7 +279,7 @@ function renderSpielerCard(active = true, animate = false) {
             </div>
             <div class="card-image">
                 <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
-                ${getPhotoCredit(card.id) ? `<span class="photocredit">📷 ${escapeAttr(getPhotoCredit(card.id))}</span>` : ''}
+                ${getPhotoCredit(card.id) ? `<span class="photocredit">${escapeAttr(getPhotoCredit(card.id))}</span>` : ''}
             </div>
             <div class="card-stats">
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="weight" onclick="playerSelectCategory('weight')">
@@ -343,7 +343,7 @@ function renderComputerCardRevealed(highlightCat = null) {
             </div>
             <div class="card-image">
                 <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
-                ${getPhotoCredit(card.id) ? `<span class="photocredit">📷 ${escapeAttr(getPhotoCredit(card.id))}</span>` : ''}
+                ${getPhotoCredit(card.id) ? `<span class="photocredit">${escapeAttr(getPhotoCredit(card.id))}</span>` : ''}
             </div>
             <div class="card-stats">
                 <div class="stat-row ${highlightCat === 'weight' ? 'selected' : ''}">
@@ -966,7 +966,7 @@ function renderSpieler2Card(active = true, animate = false) {
             </div>
             <div class="card-image">
                 <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
-                ${getPhotoCredit(card.id) ? `<span class="photocredit">📷 ${escapeAttr(getPhotoCredit(card.id))}</span>` : ''}
+                ${getPhotoCredit(card.id) ? `<span class="photocredit">${escapeAttr(getPhotoCredit(card.id))}</span>` : ''}
             </div>
             <div class="card-stats">
                 <div class="stat-row ${isActive ? '' : 'disabled'}" data-cat="weight" onclick="player2SelectCategory('weight')">
@@ -1044,7 +1044,7 @@ function renderSpielerCardRevealed(highlightCat = null) {
             </div>
             <div class="card-image">
                 <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
-                ${getPhotoCredit(card.id) ? `<span class="photocredit">📷 ${escapeAttr(getPhotoCredit(card.id))}</span>` : ''}
+                ${getPhotoCredit(card.id) ? `<span class="photocredit">${escapeAttr(getPhotoCredit(card.id))}</span>` : ''}
             </div>
             <div class="card-stats">
                 <div class="stat-row ${highlightCat === 'weight' ? 'selected' : ''}">
