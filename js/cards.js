@@ -47,41 +47,24 @@ const categories = {
 
 // Photo-Credits (29.09.): inhaltsbasiert verifizierte Bildquellen (Commons-Datei per perceptual Match).
 // Format: NUR Fotografenname, Vorname als Initial mit Punkt (z. B. "H. Hulsberg"); KEINE Lizenzangabe
-// (steht in Excel/LIZENZ.md). Organisationen (NOAA…) und Usernames bleiben ganz.
+// Regeln: NUR Fotografen-Personen (Vorname als Initial), keine Orgs/Lizenzen im Overlay.
+// Username-Credits (glynniqua/Chainfoto/Cayambe) = Lizenz-Urheber, Nennungspflicht CC BY(-SA).
+// Org-Karten PD ohne Person -> kein Overlay.
 // fehlender Eintrag = kein Overlay (PD ohne Nennungspflicht ODER Fotograf unbekannt).
-const PHOTO_CREDITS = {
-    1:  "NOAA Photo Library",                              // Anim1754 (PD)
-    2:  "glynniqua",                                       // St. Lawrence fin whale (CC BY-SA 2.0)
-    3:  "NOAA, Right Whale Aerial Survey",                 // Balaenoptera borealis 3
-    4:  "Chainfoto",                                       // Bryde's whale 1 (CC BY 4.0)
-    7:  "C. J. Sharp",                                     // Omura's breaching (CC BY-SA 4.0)
-    8:  "NOAA Fisheries",                                  // Rice's whale close to surface
-    9:  "L. M. Herman (NOAA)",                             // singing position
-    10: "NOAA Photo Library",                              // Gray whale.jpg (anim0705)
-    11: "C. J. Sharp",                                     // humpback calf Moorea (CC BY-SA 4.0)
-    13: "M. Hoffman & B. Long",                            // NPRW Kelping 13 (CC BY-SA 4.0)
-    14: "H. Hulsberg",                                     // Südkaper breach (CC0)
-    16: "R. Pittman (NOAA)",                               // Killerwhales jumping
-    17: "Cayambe",                                         // Globicephala Tenerife (CC BY-SA 3.0)
-    18: "USFWS Northeast Region",                          // RI pilot whales
-    19: "K. Laidre (NOAA)",                                // Anim1108
-    20: "Gazprom Neft press",                              // Нарвал (CC BY-SA 4.0)
-    21: "NASA",                                            // Tursiops 01-cropped
-    24: "S. Isojunno",                                     // Hyperoodon amp. jumping (CC BY-SA 4.0)
-    23: "L. Bouveret",                                     // Dominica (CC BY-SA 4.0)
-    27: "G. Barathieu",                                    // Mother and baby sperm whale (CC BY-SA 2.0)
-    29: "R. Pitman (NOAA)",                                // NOAA Pitman
-    30: "J. G. Mead",                                      // Arnoux spyhopping (CC0)
-    31: "NOAA/NMFS",                                       // Berardius bairdii
-    32: "NOAA",                                            // Tropical bottlenose whale
-    6:  "J. Strzelecki",                                   // Antarctic minky whales (js) 13 (CC BY 3.0)
-    12: "NOAA / Gray's Reef NMS",                          // GRNMS Right Whales
-    26: "NOAA Photo Library",                              // Beaked Whale.jpg
-    5:  "D. Croft (NOAA/MBNMS)",                           // Albino-Risso
-    // ohne Overlay (PD, Fotograf nicht dokumentiert / User-Entscheid): 15, 22, 25, 28
+const PHOTOS = {
+    2:  { name: "glynniqua",   lic: "CC BY-SA 2.0", src: "https://commons.wikimedia.org/wiki/File:A_fin_whale_(Balaenoptera_physalus)_in_St._Lawrence_River,_North_America.jpg" },
+    4:  { name: "Chainfoto",   lic: "CC BY 4.0",    src: "https://commons.wikimedia.org/wiki/File:Bryde%27s_whale_1.jpg" },
+    6:  { name: "J. Strzelecki", lic: "CC BY 3.0",  src: "https://commons.wikimedia.org/wiki/File:07_Antarctic_Minke_Whales.jpg" },
+    7:  { name: "C. J. Sharp", lic: "CC BY-SA 4.0", src: "https://commons.wikimedia.org/wiki/File:Omura%27s_whale_(Balaenoptera_omurai).jpg" },
+    11: { name: "C. J. Sharp", lic: "CC BY-SA 4.0", src: "https://commons.wikimedia.org/wiki/File:Humpback_calf_(Megaptera_novaeangliae)_swimming_above_mother.jpg" },
+    13: { name: "M. Hoffman & B. Long", lic: "CC BY-SA 4.0", src: "https://commons.wikimedia.org/wiki/File:NPRW_Kelping_13.jpg" },
+    17: { name: "Cayambe",     lic: "CC BY-SA 3.0", src: "https://commons.wikimedia.org/wiki/File:Globicephala_macrorhynchus_Tenerife_2012.jpg" },
+    23: { name: "L. Bouveret", lic: "CC BY-SA 4.0", src: "https://commons.wikimedia.org/wiki/File:Cuvier%27s_beaked_whale.png" },
+    24: { name: "S. Isojunno", lic: "CC BY-SA 4.0", src: "https://commons.wikimedia.org/wiki/File:Hyperoodon_jumping.jpg" },
+    27: { name: "G. Barathieu", lic: "CC BY-SA 2.0", src: "https://commons.wikimedia.org/wiki/File:Sperm_whale_mother_and_baby.jpg" },
 };
-
-function getPhotoCredit(id) { return PHOTO_CREDITS[id] || null; }
+function getPhotoInfo(id) { return PHOTOS[id] || null; }
+function getPhotoCredit(id) { const p = PHOTOS[id]; return p ? p.name : null; }
 
 // Fisher-Yates Shuffle
 function shuffle(array) {
