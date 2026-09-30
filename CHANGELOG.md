@@ -3,7 +3,7 @@
 - Overlay-Regeln: NUR Fotografen-Personen (Vorname als Initial), keine Orgs, keine Lizenzen, kein Emoji im Ruhezustand
 - CC BY/BY-SA-Karten (10) = winziges "CC"-Pill-Icon unten rechts; Tap/Hover expandiert zu "Fotograf · Lizenz · Quelle-Link" (Commons-Dateiseite)
 - PD/CC0-Karten (22) = kein Overlay mehr (keine Nennungspflicht); USFWS-Karte 18 als "B. Thompson" recherchiert, fällt trotzdem weg (PD)
-- Karte 20 (Narwal, Gazprom-Pressefoto CC BY-SA): Bildtausch vorbereitet (siehe folgender Commit)
+- Karte 20: Bild getauscht — Gazprom-Pressefoto (CC BY-SA 4.0) raus, neu = "Pod Monodon monoceros" (Kristin Laidre/NOAA, PD), 16:10-Crop + Aufhellung; Deck damit 100 % org-frei
 - js/cards.js: PHOTO_CREDITS -> PHOTOS-Objekt (name/lic/src); js/game.js: photoBadgeHtml() an 5 Renderstellen; css/game.css: .ccbadge/.ccfull
 # Changelog
 
