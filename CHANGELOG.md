@@ -1,3 +1,11 @@
+## [v5.7.5] - 2026-09-30
+### Fix: Kartennamen/Bild-Zuordnung nach Tauschen + Bild-Cache-Busting
+- **User-Report:** „beim südlichen entwal stimmt zumindest in der galerie das foto nicht. bitte alle zuteilungen prüfen"
+- **Abgleich alle 32:** Server vs. lokale Dateien md5/dPixel-Hash — Server-Befund: 31.jpg war Fragment (400×105, Deploy-Lücke aus abgebrochener scp-Runde) → nachgeschoben; 29/20/24 sync; Kleinbild-400px-Optimierungen = Server-normal
+- **Root cause User-Report:** Bilder wurden OHNE Cache-Buster geladen → Browser zeigte gecachtes altes Kogia-Foto weiterhin
+- **Fix:** game.js 5 Renderstellen → `${card.id}.jpg?v=${window.ASSET_V||76}`; index.html: `window.ASSET_V` vor Script-Load (v76)
+- dHash-Verifikation: live29 ≡ lokal29 (Rückenmotiv sauber), live31 ≡ lokal31 (Pod+Blow)
+
 ## [v5.7.4] - 2026-09-30
 ### Karte 31: Baird-Wal — Zeichnung → lebend-Pod-Foto
 - **Bildtausch:** File:Berardius bairdii.jpg (NOAA-Zeichnung/Schema) raus, neu = Pod-Foto Monterey 2003 (Wendy St. John, CC BY-SA 4.0, via iNaturalist) — User: „nur ein gezeichnetes Schema"

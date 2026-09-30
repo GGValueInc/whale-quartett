@@ -74,7 +74,7 @@ function renderGallery() {
             <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 8px;">${card.emoji} ${card.name}</div>
             <div style="font-size: 0.7em; opacity: 0.7; margin-bottom: 10px;">${card.scientific}</div>
             <div style="position:relative; width:100%; margin-bottom:10px;">
-                <img src="./whale_images/${card.id}.jpg" alt="${card.name}" style="display:block; width: 100%; height: 120px; object-fit: cover; border-radius: 8px; background: #0d2137;">${photoBadgeHtml(card.id)}
+                <img src="./whale_images/${card.id}.jpg?v=${window.ASSET_V||75}" alt="${card.name}" style="display:block; width: 100%; height: 120px; object-fit: cover; border-radius: 8px; background: #0d2137;">${photoBadgeHtml(card.id)}
             </div>
             <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.85em;">
                 ${Object.entries(categories).map(([key, cat]) => `
@@ -275,7 +275,7 @@ function renderSpielerCard(active = true, animate = false) {
                 <div class="scientific">${card.scientific}</div>
             </div>
             <div class="card-image">
-                <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
+                <img src="./whale_images/${card.id}.jpg?v=${window.ASSET_V||75}" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
                 ${photoBadgeHtml(card.id)}
             </div>
             <div class="card-stats">
@@ -339,7 +339,7 @@ function renderComputerCardRevealed(highlightCat = null) {
                 <div class="scientific">${card.scientific}</div>
             </div>
             <div class="card-image">
-                <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
+                <img src="./whale_images/${card.id}.jpg?v=${window.ASSET_V||75}" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
                 ${photoBadgeHtml(card.id)}
             </div>
             <div class="card-stats">
@@ -962,7 +962,7 @@ function renderSpieler2Card(active = true, animate = false) {
                 <div class="scientific">${card.scientific}</div>
             </div>
             <div class="card-image">
-                <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
+                <img src="./whale_images/${card.id}.jpg?v=${window.ASSET_V||75}" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
                 ${photoBadgeHtml(card.id)}
             </div>
             <div class="card-stats">
@@ -1040,7 +1040,7 @@ function renderSpielerCardRevealed(highlightCat = null) {
                 <div class="scientific">${card.scientific}</div>
             </div>
             <div class="card-image">
-                <img src="./whale_images/${card.id}.jpg" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
+                <img src="./whale_images/${card.id}.jpg?v=${window.ASSET_V||75}" alt="${card.name}" onerror="this.style.display='none';this.parentElement.textContent='${card.emoji}'">
                 ${photoBadgeHtml(card.id)}
             </div>
             <div class="card-stats">
