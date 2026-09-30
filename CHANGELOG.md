@@ -1,3 +1,11 @@
+## [v5.7.3] - 2026-09-30
+### Karte 29: Kleiner Pottwal → Südlicher Entenwal
+- **Kartenersatz:** Kleiner Pottwal (Kogia sima) raus — User: zu nah an Zwergpottwal (beide Gattung Kogia, Fasskopf, Tiefsee, fast identische Spielwerte)
+- **Abgleich:** WDC-Artenführer (93 Arten) ↔ Deck; Kandidaten-Screening (Zwergglattwal scheiterte an freien Lebend-Fotos, Minke/Camperdown zu nah an Karten 6/4); Wahl fiel auf Südlicher Entenwal → Schwesterart der Karte 24 (Hemisphären-Artenpaar), klarer Wal, keine Delfin-Annäherung
+- **Daten:** cards.js Karte 29 (7,35 t · 7,5 m · 40 J · 70 min · 22 km/h, WDC-Artenseite), Rückseiten-Fakten whale_wiki_facts.js id 29 (Steckbrief / Lebensraum / Merkmale), Wiki-Link de.wikipedia „Südlicher Entenwal"
+- **Bild:** whale_images/29.jpg = „Adult southern bottlenose whale back" (Steve B, CC0, via iNaturalist) — lebendes Männchen mit weißer Sozialnarbung, Süd-Atlantik 2024; CC0 → kein Overlay, keine Nennungspflicht
+- **Cache-Buster:** v73 → v74 (index.html)
+
 ## [v5.7.2] - 2026-09-30
 ### Photocredit-Overlay: CC-Mini-Icon mit Tap-Expand
 - Overlay-Regeln: NUR Fotografen-Personen (Vorname als Initial), keine Orgs, keine Lizenzen, kein Emoji im Ruhezustand
