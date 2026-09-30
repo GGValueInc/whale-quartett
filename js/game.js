@@ -77,22 +77,11 @@ function renderGallery() {
                 <img src="./whale_images/${card.id}.jpg" alt="${card.name}" style="display:block; width: 100%; height: 120px; object-fit: cover; border-radius: 8px; background: #0d2137;">${photoBadgeHtml(card.id)}
             </div>
             <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.85em;">
+                ${Object.entries(categories).map(([key, cat]) => `
                 <div style="display: flex; justify-content: space-between;">
-                    <span>⚖️</span>
-                    <span>${card.weight} t</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span>📏</span>
-                    <span>${card.length} m</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span>⏳</span>
-                    <span>${card.lifespan} J</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span>🤿</span>
-                    <span>${card.dive} min</span>
-                </div>
+                    <span>${cat.icon} ${cat.label}</span>
+                    <span>${card[key]} ${cat.unit}</span>
+                </div>`).join('')}
             </div>
             <div style="margin-top: 8px; font-size: 0.75em; opacity: 0.7; line-height: 1.3;">${card.fact}</div>
         </div>
