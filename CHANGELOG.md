@@ -3,8 +3,9 @@
 - **User-Report:** „beim südlichen entwal stimmt zumindest in der galerie das foto nicht. bitte alle zuteilungen prüfen"
 - **Abgleich alle 32:** Server vs. lokale Dateien md5/dPixel-Hash — Server-Befund: 31.jpg war Fragment (400×105, Deploy-Lücke aus abgebrochener scp-Runde) → nachgeschoben; 29/20/24 sync; Kleinbild-400px-Optimierungen = Server-normal
 - **Root cause User-Report:** Bilder wurden OHNE Cache-Buster geladen → Browser zeigte gecachtes altes Kogia-Foto weiterhin
-- **Fix:** game.js 5 Renderstellen → `${card.id}.jpg?v=${window.ASSET_V||76}`; index.html: `window.ASSET_V` vor Script-Load (v76)
+- **Fix:** game.js 5 Renderstellen → `${card.id}.jpg?v=${window.ASSET_V||76}`; index.html: `window.ASSET_V` vor Script-Load (v77)
 - dHash-Verifikation: live29 ≡ lokal29 (Rückenmotiv sauber), live31 ≡ lokal31 (Pod+Blow)
+- **Root cause tiefer:** Shadow-nginx-Config (`wal-quartett.bak_files_20260917` aktiv im sites-enabled, gewinnt alphabetisch) forcierte `immutable 7d/30d` auf js/css/jpg — Asset-Updates klebten bis 30 Tage. Archiviert + aktive Site: js/css no-cache, jpg max-age=3600, index no-cache
 
 ## [v5.7.4] - 2026-09-30
 ### Karte 31: Baird-Wal — Zeichnung → lebend-Pod-Foto
