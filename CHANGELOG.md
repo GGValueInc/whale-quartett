@@ -1,3 +1,13 @@
+## [v5.8.0] - 2026-10-06
+### Feature: Spouting-Whale-Logo (Ticket #22 + #29)
+- **Spec #22:** Wal bläst alle 7 s; **Feedback #29 (07.09.):** „kleinere Animationen vom Wal wären gut" → kombiniert umgesetzt
+- **Implementierung (reines CSS, kein JS):** 3 SVG-Tropfen (Tränenform, Pastellblau #b7d9ea + Outline #3d6f88) starten am Blasloch, fächern links/mitte/rechts (kleine außen ~⅓ kleiner), skalieren+rotieren beim Aufstieg, Spitze zeigt zum Spawnpunkt, 7-s-Zyklus mit ~15 % Aktivfenster
+- **Kalibrierung:** Quelle auf Rückenmitte (~55 % Körperlänge, User-X-Markierung); Blasloch-Position per Vision-Feedback in 4 Runden (Position → Richtung → Achsenspiegelung → SVG-Sweep-Flag-Fix)
+- **Pitfall dokumentiert:** beim vertikalen Spiegeln eines SVG-Arcs den Sweep-Flag mitdrehen (1 1 → 1 0), sonst Doppel-Spitzen-Deformation
+- prefers-reduced-motion respektiert; transform/opacity-only
+- **Deploy:** Stage CT113 + LIVE wal-quartett.valueinc.de (v79, MD5-verifiziert, cache-bust ?v=77→?v=79, ASSET_V=79)
+- Commits: 85bce04 (Feature) + 59aec91 (Cache-Bust), Tag v79
+
 ## [v5.7.5] - 2026-09-30
 ### Fix: Kartennamen/Bild-Zuordnung nach Tauschen + Bild-Cache-Busting
 - **User-Report:** „beim südlichen entwal stimmt zumindest in der galerie das foto nicht. bitte alle zuteilungen prüfen"
