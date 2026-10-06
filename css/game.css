@@ -39,6 +39,45 @@ body {
     font-size: 5em;
     margin-bottom: -20px;
     animation: float 3s ease-in-out infinite;
+    position: relative;
+    display: inline-block;
+}
+
+/* === #22 + #29: Wal bläst alle 7 s Wasser aus dem Blasloch (reines CSS) ===
+   ANIMIERTE TROPFEN (Flo-Vorlage Splash-Icon): echte Tränenform mit Outline als
+   SVG-Background, 3 Stück; Startpunkt = Blasloch (Noto-Glyph-Kalibrierung:
+   0.18em / 0.42em von der Em-Box-Ecke — Wal schwimmt links, taucht leicht).
+   Aktivfenster nur 0-15 % im 7-s-Zyklus. transform/opacity-only -> GPU-guenstig. */
+.logo .spout {
+    position: absolute;
+    left: 0.42em;
+    top: 0.38em;
+    width: 0.24em;
+    height: 0.3em;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 40'%3E%3Cpath d='M16 38 C20 30 27 23 27 14 a11 11 0 1 0 -22 0 C5 23 12 30 16 38 Z' fill='%23b7d9ea' stroke='%233d6f88' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: 50% 88%;
+    animation: whaleSpout 7s ease-out infinite;
+    will-change: transform, opacity;
+}
+
+/* Fächer: großer Tropfen steil hoch, zwei kleine fliegen seitlich weg + taumeln (Delays 0/70/140 ms) */
+.logo .spout-mid   { width: 0.3em;  height: 0.38em;  --tx: 0.02em;  --ty: -0.78em; --rr: 0deg;   }
+.logo .spout-left  { width: 0.19em; height: 0.245em; --tx: -0.34em; --ty: -0.52em; --rr: -55deg; animation-delay: 60ms; }
+.logo .spout-right { width: 0.19em; height: 0.245em; --tx: 0.32em;  --ty: -0.56em; --rr: 55deg;  animation-delay: 60ms; }
+
+@keyframes whaleSpout {
+    0%     { left: 0.42em; top: 0.42em; opacity: 0; transform: translate(0, 0) rotate(0deg) scale(0.25); }
+    1.5%   { opacity: 1; }
+    9%     { opacity: 0.95; }
+    14%    { left: calc(0.42em + var(--tx, 0em)); top: calc(0.42em + var(--ty, -0.55em)); opacity: 0; transform: translate(0, 0) rotate(var(--rr, 0deg)) scale(0.95); }
+    15%    { opacity: 0; }
+    100%   { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .logo .spout { animation: none; opacity: 0; }
 }
 
 .title {
