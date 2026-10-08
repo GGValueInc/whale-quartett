@@ -6,9 +6,16 @@
     box-sizing: border-box;
 }
 
+/* 07.10.: ohne fixe Hintergrund-Farbe zeigt Chrome-Android beim Overscroll-
+   Stretch am Seitenende WEISS (Systemfarbe) — Flo-Report. Root-BG = Stretch-Farbe. */
+html {
+    background-color: #0a1628;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #0a1628 0%, #1e3c72 50%, #0d2137 100%);
+    background-color: #0a1628;
     min-height: 100vh;
     color: #fff;
     overflow-x: hidden;
