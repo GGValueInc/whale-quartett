@@ -1,3 +1,11 @@
+## [v5.8.1] - 2026-10-08
+### Fix: Weißer Balken unten (Mobile, Flo 07.10.)
+- **User-Report:** ganz unten gescrollt = weißer Balken (~176 px) über der Nav-Leiste (Chrome-Android)
+- **Root cause:** Chrome-Android stretcht beim Overscroll-Anschlag die Seite und füllt den Stretch-Bereich mit der Root-Element-Background-Farbe — `html` hatte KEINE (nur body-Gradient) → System-Weiß sichtbar
+- **Fix:** `html { background-color: #0a1628 }` + body `background-color` (#0a1628) als Fallback unterm Gradient — 7 Zeilen in `css/game.css`, sonst NICHTS
+- **Rollback-Kontext:** v80-Versuch mit breiteren Karten/Header-Decko zeigte Flo die Originale als Quartett-Format-Gewollt — ALLES zurückgerollt auf v79, nur der BG-Fix blieb (deployed + MD5-verifiziert vor Commit)
+- Commits: 6769b82 (Fix)
+
 ## [v5.8.0] - 2026-10-06
 ### Feature: Spouting-Whale-Logo (Ticket #22 + #29)
 - **Spec #22:** Wal bläst alle 7 s; **Feedback #29 (07.09.):** „kleinere Animationen vom Wal wären gut" → kombiniert umgesetzt
