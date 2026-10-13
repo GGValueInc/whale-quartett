@@ -199,7 +199,7 @@ function updateTurnIndicator() {
 // === CARD INFO FLIP (Issue #24) ===
 function escapeAttr(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 // CC-Mini-Icon mit Tap/Hover-Expand (CC-by/CC-by-SA-Karten): Ruhe "CC", expandiert zu Name + Lizenz + Link.
@@ -516,8 +516,7 @@ gameState.stats = {
     turnCounts: { player: 0, computer: 0 },
     categoryWins: {},   // categoryKey -> { player: n, computer: n }
     cardWins: {},       // cardName -> Anzahl gewonnener Runden
-    bestCard: null,     // { name, wins }
-    playerCardValues: {} // cardName -> Summe der eingesetzten Stat-Werte (Info)
+    bestCard: null     // { name, wins }
 };
 
 function resetStats() {
@@ -526,8 +525,7 @@ function resetStats() {
         turnCounts: { player: 0, computer: 0 },
         categoryWins: {},
         cardWins: {},
-        bestCard: null,
-        playerCardValues: {}
+        bestCard: null
     };
     // Overlay-Box verwerfen, damit das neue Spiel frische Stats bekommt
     var old = document.getElementById('stats-box');

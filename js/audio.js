@@ -176,10 +176,14 @@ function setAmbientVolume(vol) {
 }
 
 // === TOGGLE SOUND (overrides the old function) ===
-function toggleSoundUI() {
+// Toggle via Inline-Button uebergibt `this` (toggleSoundUI(this)); Aufrufe ohne
+// Argument nutzen optional das globale `event` (Legacy-Fallback) und crashen
+// nicht mehr, wenn programmatisch ohne Event-Kontext aufgerufen wird.
+function toggleSoundUI(btn) {
     gameState.soundEnabled = !gameState.soundEnabled;
-    const btn = event.target;
-    btn.textContent = gameState.soundEnabled ? '🔊' : '🔇';
+    var target = btn;
+    try { if (!target && typeof event !== 'undefined' && event) target = event.currentTarget || event.target; } catch (e) {}
+    if (target) target.textContent = gameState.soundEnabled ? '🔊' : '🔇';
     if (gameState.soundEnabled) {
         startAmbient();
     } else {

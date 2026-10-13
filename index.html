@@ -255,7 +255,7 @@
         <div class="game-title">🐋 Wal-Quartett</div>
         <div class="game-info">
             <span class="score-display" id="score-display">Du: 16 · Computer: 16</span>
-            <button class="btn-small" onclick="toggleSoundUI()">🔊</button><button class="btn-small" onclick="showFeedbackForm()">💬 Feedback</button><button class="btn-small" onclick="quitGame()">🏠 Menü</button>
+            <button class="btn-small" onclick="toggleSoundUI(this)">🔊</button><button class="btn-small" onclick="showFeedbackForm()">💬 Feedback</button><button class="btn-small" onclick="quitGame()">🏠 Menü</button>
         </div>
     </div>
     <div class="playing-area">
@@ -400,7 +400,8 @@
         playerNumber: null,
         opponentName: "Gegenspieler",
         isMyTurn: false,
-        playerName: "Spieler"
+        playerName: "Spieler",
+        avatar: "🐋"  // Default: sonst ist das Feld im createRoom/joinRoom-Frame undefined
     };
     function showOnlineSetup() {
         console.log("showOnlineSetup aufgerufen!");
