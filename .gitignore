@@ -13,3 +13,7 @@ node_modules/
 # System
 .DS_Store
 Thumbs.db
+# 267 MB Roh-Bildmaterial: nur lokal halten, NIE ins Repo (Review-Empfehlung 13.10.)
+images/whales_commons/
+images/whales_sources/
+swap_orig/
