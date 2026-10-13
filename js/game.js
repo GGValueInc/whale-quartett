@@ -374,6 +374,12 @@ function renderComputerCardRevealed(highlightCat = null) {
 
 // === PLAYER TURN ===
 function playerSelectCategory(category) {
+    // Dispatcher: Online-Logik lebt in js/online.js (frueher wurde die Funktion
+    // zur Laufzeit global ueberschrieben — so ist sie refactorfest).
+    if (gameState.gameMode === 'online') {
+        if (typeof onlinePlayerSelectCategory === 'function') onlinePlayerSelectCategory(category);
+        return;
+    }
     if (gameState.currentTurn !== 'player' || gameState.waitingForComputer || gameState.gameOver) return;
     if (gameState.playerHand.length === 0 || gameState.computerHand.length === 0) return;
     
