@@ -15,8 +15,10 @@
 .chat-panel {
     position: fixed;
     bottom: 20px;
-    right: 20px;
-    width: 280px;
+    right: max(8px, 2vw);
+    width: min(280px, 92vw);
+    max-width: 92vw;
+    box-sizing: border-box;
     max-height: 350px;
     background: rgba(0,0,0,0.85);
     border: 2px solid #f0c040;
@@ -99,7 +101,7 @@
 .chat-float-wrapper {
     position: fixed;
     bottom: 20px;
-    right: 20px;
+    right: max(8px, 2vw);
     width: 50px;
     height: 50px;
     cursor: pointer;
@@ -295,16 +297,16 @@
     <div class="chat-panel" id="chat-panel" style="display:none;">
         <div class="chat-header">
             <span><img src="images/chat-icon.png" style="width:20px;height:20px;vertical-align:middle;margin-right:6px;filter:invert(1);" alt=""> Chat</span>
-            <button onclick="toggleChat()" class="chat-toggle">×</button>
+            <button onclick="toggleChat()" class="chat-toggle" aria-label="Chat schliessen" title="Chat schliessen">×</button>
         </div>
         <div class="chat-messages" id="chat-messages"></div>
         <div class="chat-input-row">
             <input type="text" id="chat-input" placeholder="Nachricht..." maxlength="200" onkeypress="if(event.key==='Enter')sendChatMessage()">
-            <button onclick="sendChatMessage()">➤</button>
+            <button onclick="sendChatMessage()" aria-label="Nachricht senden">➤</button>
         </div>
     </div>
     <!-- Chat-Float-Button -->
-    <div class="chat-float-wrapper" id="chat-float-wrapper" onclick="toggleChat()" style="display:none;">
+    <div class="chat-float-wrapper" id="chat-float-wrapper" onclick="toggleChat()" role="button" aria-label="Chat ein- und ausblenden" style="display:none;">
         <img src="images/chat-icon.png" class="chat-float-img" alt="Chat">
         <div class="chat-badge" id="chat-badge" style="display:none;"></div>
     </div>
