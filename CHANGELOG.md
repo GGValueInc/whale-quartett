@@ -7,7 +7,8 @@
 - **Robustheit (XS):** escapeAttr escapt auch `'`; totes Feld playerCardValues entfernt; toggleSoundUI(btn) ohne globales `event`; onlineState.avatar mit Default (createRoom-Frames senden Feld); doppeltes position:relative in .card-image entfernt (e2da14d)
 - **Refactor (M):** Online-Modul (520 Zeilen Inline-Script) nach js/online.js ausgelagert; Runtime-Global-Patching von playerSelectCategory/nextRound durch sauberen Dispatcher ersetzt (d8f7810)
 - **Repo-Hygiene:** .gitignore ignoriert Roh-Bild-Verzeichnisse (whales_commons/whales_sources/swap_orig, ~267 MB) (siehe c6)
-- Nicht umgesetzt (Flo-Entscheid zeigen): showResult-Auto-Weiter nach 2s (UX-Verhalten), Feedback-Review-Token hard-coded in server.js (env-Move = Server-Doku)
+- **Server (Feedback):** /api/feedback + WS-`feedback` jetzt serverseitig gehaertet — Rate-Limit 5/Min je IP (200 ok / 429 zu viel) + 16-KB-Body-Cap (413) — in /opt/wal-quartett-server/server.js (nicht im Repo; Backup direkt am Server: server.js.bak-v79-20261013)
+- Nicht umgesetzt (Flo-Entscheid zeigen): showResult-Auto-Weiter nach 2s (UX-Verhalten), Feedback-Review-Token hard-coded in server.js (env-Move Empfehlung)
 ## [v5.8.1] - 2026-10-08
 ### Fix: Weißer Balken unten (Mobile, Flo 07.10.)
 - **User-Report:** ganz unten gescrollt = weißer Balken (~176 px) über der Nav-Leiste (Chrome-Android)
