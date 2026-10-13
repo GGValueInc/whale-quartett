@@ -534,11 +534,14 @@ function resetStats() {
     if (old) old.remove();
 }
 
-function trackRound(category, winner, playerCard, computerCard) {
+function trackRound(category, winner, playerCard, computerCard, actingTurn) {
     const st = gameState.stats;
     st.roundsPlayed++;
-    st.turnCounts.player++;
-    st.turnCounts.computer++;
+    // Turn-Count-Fix: nur der Spieler wird gezaehlt, der diese Runde
+    // tatsaechlich auf dem Tisch hatte (vorher: beide pro Runde -> inhaltslos).
+    if (actingTurn === 'player' || actingTurn === 'computer') {
+        st.turnCounts[actingTurn]++;
+    }
     if (!st.categoryWins[category]) st.categoryWins[category] = { player: 0, computer: 0 };
     if (winner === 'player' || winner === 'computer') {
         st.categoryWins[category][winner]++;
@@ -568,9 +571,9 @@ function buildStatsHtml() {
         const pct = Math.round(100 * w.player / total);
         rows += `<tr><td>${esc(catLabelOf(key))}</td><td>${pct} % Spieler · ${100 - pct} % ${esc(gameState.gameMode === '2p' ? (gameState.playerNames[1] || 'Spieler 2') : 'Computer')} (${total} Runden)</td></tr>`;
     }
-    // Wer war wie oft dran
+    // Wer war wie oft dran (aktiver Spieler je Runde — Turn-Count-Fix)
     const t = st.turnCounts;
-    rows += `<tr><td>Runden gespielt</td><td>${t.player}</td></tr>`;
+    rows += `<tr><td>Runden gespielt</td><td>${st.roundsPlayed} — ${esc(gameState.playerNames[0] || 'Spieler 1')} ${t.player}x · ${esc(gameState.gameMode === '2p' ? (gameState.playerNames[1] || 'Spieler 2') : 'Computer')} ${t.computer}x</td></tr>`;
     return rows;
 }
 
@@ -591,6 +594,8 @@ function showStatsOverlay() {
 
 // === ROUND RESOLUTION (Phase 4 – mit Animationen) ===
 function resolveRound(category) {
+    // Wer war diese Runde auf dem Tisch — vor der Gewinner-Verteilung greifen
+    const actingTurn = gameState.currentTurn;
     const playerCard = gameState.playerHand[0];
     const computerCard = gameState.computerHand[0];
     const playerValue = playerCard[category];
@@ -677,7 +682,7 @@ function resolveRound(category) {
     
     updateUI();
     persistGameSnapshot();
-    trackRound(category, winner, playerCard, computerCard); // Issue #30
+    trackRound(category, winner, playerCard, computerCard, actingTurn); // Issue #30
     
     // Check game end
     if (gameState.playerHand.length === 0 || gameState.computerHand.length === 0) {
@@ -1075,6 +1080,8 @@ function renderSpielerCardRevealed(highlightCat = null) {
 
 // 2-Spieler Rundenauflösung
 function resolveRound2P(category) {
+    // Wer war diese Runde auf dem Tisch — vor der Gewinner-Verteilung greifen
+    const actingTurn = gameState.currentTurn;
     const p1Card = gameState.playerHand[0];
     const p2Card = gameState.computerHand[0];
     const p1Value = p1Card[category];
@@ -1138,6 +1145,7 @@ function resolveRound2P(category) {
     
     updateUI();
     persistGameSnapshot();
+    trackRound(category, winner, p1Card, p2Card, actingTurn); // Issue #30: 2P-Statistik war komplett tot
     
     if (gameState.playerHand.length === 0 || gameState.computerHand.length === 0) {
         gameState.gameOver = true;
@@ -1165,9 +1173,14 @@ function showGameOver2P() {
     document.getElementById('gameover-title').textContent = title;
     document.getElementById('gameover-text').textContent = text;
     document.getElementById('gameover-overlay').classList.add('active');
-    
-    soundVictory();
-    spawnConfetti();
+    showStatsOverlay(); // Issue #30: Statistik auch im 2P-Modus zeigen
+    // Fanfare + Konfetti nur, wenn Spieler 1 (lokaler Betrachter) gewinnt
+    if (p1Won) {
+        soundVictory();
+        spawnConfetti();
+    } else {
+        soundDefeat();
+    }
 }
 
 // === SESSION-RESUME (Handy-Ruhemodus / Tab-Wechsel) ===
