@@ -1,3 +1,13 @@
+## [v5.9.0] - 2026-10-13
+### Wartung: Code-Qualitaets-Review (Neo, 13.10.) — P0/P1/XS + Refactor umgesetzt
+- **P0 Jackpot-Resume:** Jackpot-Karten-IDs werden persistiert und beim Resume ueber byId rekonstruiert; Legacy-Snapshots (nur jackpotCount) holen die fehlenden Karten aus dem 32er-Deck — null-Platzhalter-Deck damit ausgeschlossen (0093ac9)
+- **2P-Statistik aktiv:** resolveRound2P() ruft trackRound(); showGameOver2P() zeigt Statistik-Overlay, Fanfare/Konfetti nur bei Sieg von Spieler 1 (98364a5)
+- **Turn-Counts korrekt:** nur der Spieler wird gezaehlt, der die Runde tatsaechlich auf dem Tisch hatte; Stats-Zeile zeigt jetzt echte Zahlen statt Doppel-Zuweisung (98364a5)
+- **Chat-Panel mobil:** width min(280px,92vw) + box-sizing + right max(8px,2vw); Aria-Labels an Chat-Buttons (6389628)
+- **Robustheit (XS):** escapeAttr escapt auch `'`; totes Feld playerCardValues entfernt; toggleSoundUI(btn) ohne globales `event`; onlineState.avatar mit Default (createRoom-Frames senden Feld); doppeltes position:relative in .card-image entfernt (e2da14d)
+- **Refactor (M):** Online-Modul (520 Zeilen Inline-Script) nach js/online.js ausgelagert; Runtime-Global-Patching von playerSelectCategory/nextRound durch sauberen Dispatcher ersetzt (d8f7810)
+- **Repo-Hygiene:** .gitignore ignoriert Roh-Bild-Verzeichnisse (whales_commons/whales_sources/swap_orig, ~267 MB) (siehe c6)
+- Nicht umgesetzt (Flo-Entscheid zeigen): showResult-Auto-Weiter nach 2s (UX-Verhalten), Feedback-Review-Token hard-coded in server.js (env-Move = Server-Doku)
 ## [v5.8.1] - 2026-10-08
 ### Fix: Weißer Balken unten (Mobile, Flo 07.10.)
 - **User-Report:** ganz unten gescrollt = weißer Balken (~176 px) über der Nav-Leiste (Chrome-Android)
