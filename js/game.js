@@ -1189,6 +1189,7 @@ function persistGameSnapshot() {
             names: gameState.playerNames,
             avatars: gameState.playerAvatars || null,
             jackpotCount: gameState.jackpot.length,
+            jackpotIds: gameState.jackpot.map(c => c ? c.id : null),
             playerHand: gameState.playerHand.map(c => c ? c.id : null),
             computerHand: gameState.computerHand.map(c => c ? c.id : null)
         };
@@ -1218,13 +1219,27 @@ function tryRestoreSession() {
         var pHand = (snap.playerHand || []).map(id => byId[id]).filter(Boolean);
         var cHand = (snap.computerHand || []).map(id => byId[id]).filter(Boolean);
         if (!pHand.length && !cHand.length) { clearGameStatePersist(); return false; }
+        // Jackpot-Resume-Fix (P0): Jackpot-Karten als IDs persistieren und hier
+        // rekonstruieren — sonst landeten null-Platzhalter im Jackpot und der
+        // naechste Spielzug konnte crashen.
+        var usedIds = {};
+        pHand.forEach(c => usedIds[c.id] = true);
+        cHand.forEach(c => usedIds[c.id] = true);
+        var jackpot = [];
+        if (Array.isArray(snap.jackpotIds)) {
+            jackpot = snap.jackpotIds.map(id => (id != null && byId[id]) ? byId[id] : null).filter(Boolean);
+        } else if (snap.jackpotCount && snap.jackpotCount > 0) {
+            // Legacy-Snapshot (nur jackpotCount): die fehlenden Karten aus dem
+            // 32er-Deck rekonstruieren statt null-Platzhalter zu bauen.
+            jackpot = whales.filter(w => !usedIds[w.id]).slice(0, snap.jackpotCount);
+        }
         
         gameState.gameMode = snap.mode || '1p';
         gameState.difficulty = snap.diff || 'medium';
         gameState.currentTurn = snap.turn || 'player';
         gameState.playerNames = snap.names || (gameState.gameMode === '2p' ? ['Spieler 1', 'Spieler 2'] : ['Du', 'Computer']);
         gameState.playerAvatars = snap.avatars || null;
-        gameState.jackpot = new Array(snap.jackpotCount || 0).fill(null);
+        gameState.jackpot = jackpot;
         gameState.playerHand = pHand;
         gameState.computerHand = cHand;
         gameState.selectedCategory = null;
