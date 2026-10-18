@@ -1,22 +1,22 @@
 ---
 name: User Feedback
-about: Feedback aus dem Website-Formular als GitHub Issue tracken
+about: Track feedback from the website form as a GitHub issue
 title: "[FEEDBACK] "
 labels: ["user-feedback"]
 assignees: []
 ---
 
-**Quelle:** Website-Formular
-**Datum:** <!-- YYYY-MM-DD -->
-**Absender:** <!-- Name oder anonym -->
+**Source:** Website form
+**Date:** <!-- YYYY-MM-DD -->
+**Sender:** <!-- Name or anonymous -->
 
-**Original-Nachricht:**
-<!-- Feedback-Text hier einfügen -->
+**Original message:**
+<!-- Insert feedback text here -->
 
-**Bewertung:**
-- [ ] In Issue umwandeln
-- [ ] Ignorieren / Spam
-- [ ] Bereits bekannt / Duplikat
+**Assessment:**
+- [ ] Turn into an issue
+- [ ] Ignore / spam
+- [ ] Already known / duplicate
 
-**Kommentar:**
-<!-- Interne Notizen -->
+**Comment:**
+<!-- Internal notes -->

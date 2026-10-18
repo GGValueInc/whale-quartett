@@ -1,88 +1,88 @@
 # 🐋 Wal-Quartett
 
-Das ultimative Wal-Kartenspiel — direkt im Browser spielen, keine Installation nötig!
+The ultimate whale card game — play it right in the browser, no installation needed!
 
-🎮 **[Jetzt spielen](https://wal-quartett.valueinc.de)**
+🎮 **[Play now](https://wal-quartett.valueinc.de)**
 
 ---
 
-## Wie spiele ich?
+## How do I play?
 
-### 1. Spielmodus wählen
+### 1. Choose a game mode
 
-| Modus | Für wen? |
+| Mode | For whom? |
 |-------|----------|
-| 🎮 **1 Spieler vs. Computer** | Du allein gegen den Computer |
-| 👥 **2 Spieler (lokal)** | Zwei Spieler an einem Gerät |
-| 🌐 **Online 1vs1** | Gegen einen Freund übers Internet spielen |
+| 🎮 **1 player vs. Computer** | You alone against the computer |
+| 👥 **2 players (local)** | Two players on one device |
+| 🌐 **Online 1vs1** | Play against a friend over the internet |
 
-### 2. Online-Spiel starten
+### 2. Start an online game
 
-1. **Raum erstellen:** Namen eingeben → auf „Raum erstellen" klicken
-2. **Code weitergeben:** Den 6-stelligen Code deinem Freund zeigen
-3. **Freund tritt bei:** Er gibt den Code ein und seinen Namen
-4. **Los geht's!** Ihr bekommt je 16 Karten
+1. **Create a room:** enter your name → hit "Create a room"
+2. **Share the code:** show the 6-character code to your friend
+3. **Friend joins:** they enter the code and their name
+4. **Off you go!** You each get 16 cards
 
-### 3. So läuft eine Runde
+### 3. How a round works
 
-1. **Du bist dran?** Wähle eine Kategorie auf deiner obersten Karte:
-   - ⚖️ **Gewicht** (Tonnen)
-   - 📏 **Länge** (Meter)
-   - ⏳ **Lebenserwartung** (Jahre)
-   - 🤿 **Tauchzeit** (Minuten)
-   - 💨 **Geschwindigkeit** (km/h)
+1. **Your turn?** Pick a category on your top card:
+   - ⚖️ **Weight** (tonnes)
+   - 📏 **Length** (metres)
+   - ⏳ **Lifespan** (years)
+   - 🤿 **Dive time** (minutes)
+   - 💨 **Speed** (km/h)
 
-2. **Karten vergleichen:** Der höhere Wert gewinnt beide Karten
+2. **Compare the cards:** the higher value wins both cards
 
-3. **Unentschieden?** Die Karten gehen in den **Jackpot** — der nächste Gewinner bekommt alles!
+3. **A tie?** The cards go into the **jackpot** — the next winner takes everything!
 
-4. **Ziel:** Sammle alle 32 Karten!
-
----
-
-## Tipps & Tricks
-
-- 🧠 **Schwierigkeitsstufen:** Im Einzelspieler-Modus kannst du zwischen Einfach, Mittel und Schwer wählen
-- 🎴 **Kategorien vergleichen:** Schau dir die Werte deiner Karte gut an — manchmal ist Tauchzeit stärker als Gewicht!
-- 🏆 **Jackpot beachten:** Bei Unentschieden wachsen die Gewinne — der nächste Gewinner kassiert alles
-- 📵 **Offline spielbar:** Der Einzelspieler-Modus funktioniert auch ohne Internet
+4. **Goal:** collect all 32 cards!
 
 ---
 
-## Die Karten
+## Tips & tricks
 
-Jede der **32 Wal-Karten** zeigt:
-- 🐋 **Name** (deutsch + wissenschaftlich)
-- ⚖️ Gewicht in Tonnen
-- 📏 Länge in Metern
-- ⏳ Lebenserwartung in Jahren
-- 🤿 Maximale Tauchzeit in Minuten
-- 💡 Ein kurzer spannender Fakt
+- 🧠 **Difficulty levels:** in single player you can choose between Easy, Medium and Hard
+- 🎴 **Compare categories:** take a good look at your card's values — sometimes dive time beats weight!
+- 🏆 **Watch the jackpot:** ties grow the pot — the next winner scoops up everything
+- 📵 **Playable offline:** the single player mode also works without internet
 
 ---
 
-## Häufige Fragen (FAQ)
+## The cards
 
-**Muss ich mich registrieren?**
-→ Nein. Einfach Namen eingeben und los spielen.
-
-**Funktioniert das auf dem Handy?**
-→ Ja! Das Spiel ist für alle Bildschirmgrößen optimiert.
-
-**Mein Gegner sieht nichts / das Spiel hängt — was tun?**
-→ Browser-Cache leeren (Ctrl+Shift+Del) und Seite neu laden.
-
-**Kann ich das auch offline spielen?**
-→ Der Einzelspieler-Modus gegen den Computer funktioniert offline.
-
-**Wo sind die Wal-Bilder her?**
-→ Von Wikimedia Commons — alle unter freien Lizenzen.
+Each of the **32 whale cards** shows:
+- 🐋 **Name** (English + scientific)
+- ⚖️ Weight in tonnes
+- 📏 Length in metres
+- ⏳ Lifespan in years
+- 🤿 Maximum dive time in minutes
+- 💡 A short, exciting fact
 
 ---
 
-## Über das Spiel
+## FAQ
 
-Wal-Quartett ist ein digitales Kartenspiel im Browser.
-32 Wal-Arten, 5 Kategorien, unendlich viele Runden.
+**Do I have to register?**
+→ No. Just type a name and start playing.
 
-🐋 Viel Spaß beim Spielen!
+**Does it work on mobile?**
+→ Yes! The game is optimised for every screen size.
+
+**My opponent sees nothing / the game is stuck — what now?**
+→ Clear your browser cache (Ctrl+Shift+Del) and reload the page.
+
+**Can I play offline?**
+→ The single player mode against the computer works offline.
+
+**Where are the whale pictures from?**
+→ From Wikimedia Commons — all under free licenses.
+
+---
+
+## About the game
+
+Wal-Quartett is a digital card game in the browser.
+32 whale species, 5 categories, endless rounds.
+
+🐋 Have fun playing!

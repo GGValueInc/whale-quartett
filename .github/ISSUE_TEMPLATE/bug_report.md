@@ -1,30 +1,30 @@
 ---
 name: Bug Report
-about: Ein Fehler im Spiel melden
+about: Report a bug in the game
 title: "[BUG] "
 labels: ["bug"]
 assignees: []
 ---
 
-**Beschreibung**
-Kurze Beschreibung des Fehlers.
+**Description**
+A brief description of the bug.
 
-**Reproduktion**
-Schritte, um den Fehler zu reproduzieren:
-1. Gehe zu '...'
-2. Klicke auf '...'
-3. Fehler tritt auf
+**To reproduce**
+Steps to reproduce the behaviour:
+1. Go to '...'
+2. Click on '...'
+3. The bug appears
 
-**Erwartetes Verhalten**
-Was sollte stattdessen passieren?
+**Expected behaviour**
+What should happen instead?
 
 **Screenshots**
-Falls möglich, Screenshots anhängen.
+If possible, attach screenshots.
 
-**Umgebung**
-- Gerät: [z.B. iPhone, Desktop]
-- Browser: [z.B. Chrome, Safari]
-- Spielmodus: [1-Spieler, Online 1vs1, Lokal 1vs1]
+**Environment**
+- Device: [e.g. iPhone, desktop]
+- Browser: [e.g. Chrome, Safari]
+- Game mode: [single player, online 1vs1, local 1vs1]
 
-**Zusätzliche Informationen**
-Weitere Details, die helfen könnten.
+**Additional information**
+Any other details that might help.

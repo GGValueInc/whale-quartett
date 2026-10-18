@@ -1,25 +1,25 @@
 ---
 name: Feature Request
-about: Ein neues Feature oder eine Erweiterung vorschlagen
+about: Suggest a new feature or an improvement
 title: "[FEATURE] "
 labels: ["enhancement"]
 assignees: []
 ---
 
-**Beschreibung**
-Was soll hinzugefügt oder geändert werden?
+**Description**
+What should be added or changed?
 
-**Kategorie**
-- [ ] Neue Spielmechanik
-- [ ] Neues Kartendeck / neue Karten
-- [ ] Game Metriken / Statistiken
-- [ ] UI/UX Verbesserung
-- [ ] Sound / Musik
-- [ ] Multiplayer / Online
-- [ ] Sonstiges
+**Category**
+- [ ] New game mechanic
+- [ ] New deck / new cards
+- [ ] Game metrics / statistics
+- [ ] UI/UX improvement
+- [ ] Sound / music
+- [ ] Multiplayer / online
+- [ ] Other
 
-**Nutzen**
-Warum wäre dieses Feature sinnvoll?
+**Benefit**
+Why would this feature make sense?
 
-**Vorschläge zur Umsetzung**
-Ideen, wie es umgesetzt werden könnte.
+**Implementation ideas**
+Ideas on how it could be built.
